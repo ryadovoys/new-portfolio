@@ -13,6 +13,39 @@ class CardEditor {
         await this.loadCards();
         this.setupCards();
         this.bindEvents();
+        this.initSortable();
+    }
+
+    initSortable() {
+        const grid = document.querySelector('.card-grid');
+        if (!grid) return;
+
+        new Sortable(grid, {
+            animation: 200,
+            easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+            handle: '.card__image',
+            ghostClass: 'card--ghost',
+            chosenClass: 'card--chosen',
+            dragClass: 'card--dragging',
+            onEnd: (evt) => {
+                // Reorder cards array
+                const movedCard = this.cards.splice(evt.oldIndex, 1)[0];
+                this.cards.splice(evt.newIndex, 0, movedCard);
+
+                // Update card indices
+                this.cards.forEach((card, i) => {
+                    card.id = i;
+                    const element = card.element;
+                    element.querySelector('.card__title').dataset.cardIndex = i;
+                    element.querySelector('.card__description').dataset.cardIndex = i;
+                    element.querySelector('.card__image').dataset.cardIndex = i;
+                    const deleteBtn = element.querySelector('.card__delete-btn');
+                    if (deleteBtn) deleteBtn.dataset.cardIndex = i;
+                });
+
+                this.saveCards();
+            }
+        });
     }
 
     async loadCards() {
@@ -94,8 +127,31 @@ class CardEditor {
         e.stopPropagation();
         const index = parseInt(e.currentTarget.dataset.cardIndex);
         const zone = e.currentTarget.parentElement;
+        const card = this.cards[index];
 
-        // Clear the media
+        // Check if it's a carousel with multiple images
+        if (card && card.mediaType === 'carousel' && Array.isArray(card.media) && card.media.length > 1) {
+            // Remove only the current slide
+            const currentSlide = parseInt(zone.dataset.currentSlide) || 0;
+            card.media.splice(currentSlide, 1);
+
+            if (card.media.length === 1) {
+                // Only one left - convert back to single image
+                card.mediaType = 'image';
+                card.media = card.media[0];
+                this.setCardMedia(zone, card.media, 'image', index);
+            } else {
+                // Still multiple - rebuild carousel
+                const newSlide = Math.min(currentSlide, card.media.length - 1);
+                const items = card.media.map(path => ({ path, type: 'image' }));
+                this.setCardCarousel(zone, items, index);
+                this.goToSlide(zone, newSlide);
+            }
+            this.saveCards();
+            return;
+        }
+
+        // Clear all media (single image or last item)
         zone.innerHTML = '';
         zone.classList.remove('card__image--carousel');
         zone.classList.add('card__image--dropzone');
@@ -525,19 +581,6 @@ class CardEditor {
 
         zone.appendChild(track);
 
-        // Create dots
-        const dots = document.createElement('div');
-        dots.className = 'carousel__dots';
-
-        items.forEach((_, i) => {
-            const dot = document.createElement('button');
-            dot.className = 'carousel__dot' + (i === 0 ? ' carousel__dot--active' : '');
-            dot.addEventListener('click', () => this.goToSlide(zone, i));
-            dots.appendChild(dot);
-        });
-
-        zone.appendChild(dots);
-
         // Initialize carousel state
         zone.dataset.currentSlide = 0;
         zone.dataset.totalSlides = items.length;
@@ -620,21 +663,52 @@ class CardEditor {
             track.style.transition = 'none';
             track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
         });
+
+        // Hover scrub navigation
+        let isHovering = false;
+
+        zone.addEventListener('mouseenter', () => {
+            isHovering = true;
+        });
+
+        zone.addEventListener('mouseleave', () => {
+            isHovering = false;
+        });
+
+        zone.addEventListener('mousemove', (e) => {
+            // Don't scrub while dragging
+            if (isDragging || !isHovering) return;
+
+            const totalSlides = parseInt(zone.dataset.totalSlides);
+            if (totalSlides <= 1) return;
+
+            const rect = zone.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const containerWidth = rect.width;
+
+            // Calculate which slide based on mouse position
+            const zoneWidth = containerWidth / totalSlides;
+            let targetSlide = Math.floor(mouseX / zoneWidth);
+
+            // Clamp to valid range
+            targetSlide = Math.max(0, Math.min(targetSlide, totalSlides - 1));
+
+            const currentSlide = parseInt(zone.dataset.currentSlide);
+            if (targetSlide !== currentSlide) {
+                track.style.transition = 'transform 0.15s ease-out';
+                this.goToSlide(zone, targetSlide);
+            }
+        });
     }
 
     goToSlide(zone, index) {
         const track = zone.querySelector('.carousel__track');
-        const dots = zone.querySelectorAll('.carousel__dot');
         const slideWidth = zone.offsetWidth;
 
         track.style.transition = 'transform 0.3s ease';
         track.style.transform = `translateX(-${index * slideWidth}px)`;
 
         zone.dataset.currentSlide = index;
-
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('carousel__dot--active', i === index);
-        });
     }
 
     async saveCards() {

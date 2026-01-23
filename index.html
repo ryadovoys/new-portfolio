@@ -21,15 +21,44 @@
   <link rel="stylesheet" href="css/components/sidebar.css">
   <link rel="stylesheet" href="css/components/card.css">
   <link rel="stylesheet" href="css/components/card-editor.css">
+  <link rel="stylesheet" href="css/components/theme-toggle.css">
 </head>
 
 <body>
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <svg class="theme-toggle__icon theme-toggle__icon--sun" width="20" height="20" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5" />
+      <path
+        d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+    </svg>
+    <svg class="theme-toggle__icon theme-toggle__icon--moon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  </button>
+
   <div class="page">
     <!-- Sidebar -->
     <aside class="sidebar">
       <!-- Logo -->
       <div class="sidebar__logo">
-        <img src="assets/logo.svg" alt="Sergey Ryadovoy" class="sidebar__logo-mark">
+        <svg class="sidebar__logo-mark" width="45" height="24" viewBox="0 0 45 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <rect x="16.8" y="14.3999" width="4" height="5.6" fill="currentColor" />
+          <rect y="16" width="4" height="4" fill="currentColor" />
+          <rect x="16.8" y="4" width="4" height="4" fill="currentColor" />
+          <rect x="24.8" y="4" width="4" height="20" fill="currentColor" />
+          <rect y="4" width="4" height="6.4" fill="currentColor" />
+          <rect x="40.8" y="4" width="4" height="12" fill="currentColor" />
+          <rect x="40.8" y="20" width="4" height="4" fill="currentColor" />
+          <rect x="32.8" y="16" width="8" height="4" fill="currentColor" />
+          <rect x="28.8" width="12" height="4" fill="currentColor" />
+          <rect x="4" y="20" width="12.8" height="4" fill="currentColor" />
+          <rect x="4" y="10.3999" width="12.8" height="4" fill="currentColor" />
+          <rect x="4" width="12.8" height="4" fill="currentColor" />
+        </svg>
       </div>
 
       <!-- Navigation -->
@@ -132,6 +161,33 @@
             <p class="card__description">Click to edit description text.</p>
           </div>
         </div>
+
+        <!-- Card 10 -->
+        <div class="card">
+          <div class="card__image"></div>
+          <div class="card__content">
+            <h3 class="card__title">Card title</h3>
+            <p class="card__description">Click to edit description text.</p>
+          </div>
+        </div>
+
+        <!-- Card 11 -->
+        <div class="card">
+          <div class="card__image"></div>
+          <div class="card__content">
+            <h3 class="card__title">Card title</h3>
+            <p class="card__description">Click to edit description text.</p>
+          </div>
+        </div>
+
+        <!-- Card 12 -->
+        <div class="card">
+          <div class="card__image"></div>
+          <div class="card__content">
+            <h3 class="card__title">Card title</h3>
+            <p class="card__description">Click to edit description text.</p>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -139,10 +195,12 @@
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
   <!-- Scripts -->
   <script src="js/animations.js"></script>
   <script src="js/card-editor.js"></script>
+  <script src="js/theme-toggle.js"></script>
 </body>
 
 </html>

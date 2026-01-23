@@ -58,3 +58,18 @@
     color: var(--text-primary);
     line-height: var(--line-height-normal);
 }
+
+/* Sortable drag states */
+.card--ghost {
+    opacity: 0.4;
+}
+
+.card--chosen {
+    cursor: grabbing;
+}
+
+.card--dragging {
+    opacity: 0.9;
+    transform: scale(1.02);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}

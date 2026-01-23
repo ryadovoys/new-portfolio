@@ -97,13 +97,13 @@
 
 .card__title[contenteditable="true"]:hover,
 .card__description[contenteditable="true"]:hover {
-    background-color: var(--color-neutral-100);
+    background-color: var(--input-bg-hover);
 }
 
 .card__title[contenteditable="true"]:focus,
 .card__description[contenteditable="true"]:focus {
-    background-color: var(--color-white);
-    outline: 2px solid var(--color-neutral-400);
+    background-color: var(--input-bg-focus);
+    outline: 2px solid var(--input-border-focus);
 }
 
 /* Video in cards */

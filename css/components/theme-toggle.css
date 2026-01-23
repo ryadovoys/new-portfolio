@@ -1,0 +1,68 @@
+/* =================================================================
+   THEME TOGGLE
+   Fixed bottom-left button for switching light/dark mode
+   ================================================================= */
+
+.theme-toggle {
+    position: fixed;
+    bottom: var(--page-padding);
+    left: var(--page-padding);
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: var(--toggle-bg);
+    color: var(--toggle-icon);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.2s ease;
+    z-index: 100;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Icon visibility based on theme */
+.theme-toggle__icon {
+    position: absolute;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Light theme: show moon icon (click to go dark) */
+[data-theme="light"] .theme-toggle__icon--sun,
+:root:not([data-theme]) .theme-toggle__icon--sun {
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+
+[data-theme="light"] .theme-toggle__icon--moon,
+:root:not([data-theme]) .theme-toggle__icon--moon {
+    opacity: 1;
+    transform: rotate(0);
+}
+
+/* Dark theme: show sun icon (click to go light) */
+[data-theme="dark"] .theme-toggle__icon--moon {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+[data-theme="dark"] .theme-toggle__icon--sun {
+    opacity: 1;
+    transform: rotate(0);
+}
+
+/* Responsive - adjust position on mobile */
+@media (max-width: 768px) {
+    .theme-toggle {
+        bottom: var(--space-6);
+        left: var(--space-6);
+    }
+}

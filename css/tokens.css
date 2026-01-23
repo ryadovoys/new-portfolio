@@ -61,16 +61,19 @@
    --radius-lg: 12px;
    --radius-xl: 16px;
    --radius-2xl: 20px;
+}
 
-   /* -----------------------------------------------------------------
-     SEMANTIC TOKENS
-     Reference primitives - used in components
-     ----------------------------------------------------------------- */
+/* -----------------------------------------------------------------
+   SEMANTIC TOKENS - LIGHT THEME (default)
+   ----------------------------------------------------------------- */
 
+:root,
+[data-theme="light"] {
    /* Background */
    --bg-page: var(--color-neutral-50);
    --bg-card: var(--color-white);
    --bg-card-image: var(--color-neutral-100);
+   --bg-overlay: rgba(0, 0, 0, 0.6);
 
    /* Text */
    --text-primary: var(--color-neutral-900);
@@ -97,4 +100,44 @@
    --page-padding: var(--space-12);
    --grid-gap: var(--space-3);
    --section-gap: var(--space-9);
+
+   /* Theme Toggle */
+   --toggle-bg: var(--color-neutral-100);
+   --toggle-icon: var(--color-neutral-900);
+
+   /* Inputs / Editable Text */
+   --input-bg-hover: var(--color-neutral-100);
+   --input-bg-focus: var(--color-white);
+   --input-border-focus: var(--color-neutral-400);
+}
+
+/* -----------------------------------------------------------------
+   SEMANTIC TOKENS - DARK THEME
+   ----------------------------------------------------------------- */
+
+[data-theme="dark"] {
+   /* Background */
+   --bg-page: var(--color-neutral-1000);
+   --bg-card: var(--color-neutral-900);
+   --bg-card-image: var(--color-neutral-900);
+   --bg-overlay: rgba(255, 255, 255, 0.1);
+
+   /* Text */
+   --text-primary: var(--color-white);
+   --text-secondary: var(--color-neutral-400);
+   --text-muted: var(--color-neutral-600);
+   --text-inverse: var(--color-neutral-900);
+
+   /* Links */
+   --link-color: var(--color-white);
+   --link-hover: var(--color-neutral-400);
+
+   /* Theme Toggle */
+   --toggle-bg: var(--color-neutral-900);
+   --toggle-icon: var(--color-white);
+
+   /* Inputs / Editable Text */
+   --input-bg-hover: var(--color-neutral-900);
+   --input-bg-focus: var(--color-neutral-900);
+   --input-border-focus: var(--color-neutral-600);
 }

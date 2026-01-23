@@ -23,6 +23,7 @@
 .sidebar__logo-mark {
     height: 32px;
     width: auto;
+    color: var(--text-primary);
 }
 
 /* Navigation */
