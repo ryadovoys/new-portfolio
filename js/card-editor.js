@@ -53,95 +53,85 @@ class CardEditor {
             const response = await fetch('/api/cards');
             const savedCards = await response.json();
 
-            const cardElements = document.querySelectorAll('.card');
+            // Clear existing static cards (except the placeholder)
+            const grid = document.querySelector('.card-grid');
+            const placeholder = document.getElementById('addCardPlaceholder');
 
-            cardElements.forEach((card, index) => {
-                const savedData = savedCards[index] || {};
+            // Remove all .card elements that are NOT the placeholder
+            const existingCards = grid.querySelectorAll('.card:not(#addCardPlaceholder)');
+            existingCards.forEach(card => card.remove());
 
-                this.cards.push({
-                    element: card,
-                    id: index,
-                    title: savedData.title || '',
-                    description: savedData.description || '',
-                    description: savedData.description || '',
-                    tag: savedData.tag || '',
-                    media: savedData.media || null,
-                    mediaType: savedData.mediaType || null
+            this.cards = [];
+
+            if (savedCards && savedCards.length > 0) {
+                // Create dynamic cards from data
+                savedCards.forEach((cardData, index) => {
+                    this.createCardFromData(cardData, index, grid, placeholder);
                 });
-
-                if (savedData.title) {
-                    card.querySelector('.card__title').textContent = savedData.title;
-                }
-                if (savedData.description) {
-                    card.querySelector('.card__description').textContent = savedData.description;
-                }
-                if (savedData.tag) {
-                    const tagEl = card.querySelector('.card__tag');
-                    if (tagEl) {
-                        tagEl.textContent = savedData.tag;
-                        this.updateTagColor(tagEl);
-                    }
-                }
-                if (savedData.media) {
-                    const imageContainer = card.querySelector('.card__image');
-                    this.setCardMedia(imageContainer, savedData.media, savedData.mediaType, index);
-                }
-            });
+            } else {
+                // Fallback: If no data, maybe we want to create some default empty cards?
+                // For now, let's just start with 0 cards and the user can add them.
+                console.log('No saved cards found, starting empty');
+            }
         } catch (e) {
-            console.log('No saved cards found, starting fresh');
-            document.querySelectorAll('.card').forEach((card, index) => {
-                this.cards.push({
-                    element: card,
-                    id: index,
-                    title: card.querySelector('.card__title')?.textContent || '',
-                    description: card.querySelector('.card__description')?.textContent || '',
-                    title: card.querySelector('.card__title')?.textContent || '',
-                    description: card.querySelector('.card__description')?.textContent || '',
-                    tag: card.querySelector('.card__tag')?.textContent || '',
-                    media: null,
-                    mediaType: null
-                });
-            });
+            console.error('Error loading cards:', e);
+        }
+    }
+
+    createCardFromData(data, index, grid, placeholder) {
+        // Determine card class based on data.width
+        const isWide = data.width === 'wide';
+        const cardClass = isWide ? 'card card--wide' : 'card';
+
+        const cardEl = document.createElement('div');
+        cardEl.className = cardClass;
+
+        // Build HTML structure
+        cardEl.innerHTML = `
+          <div class="card__image"></div>
+          <div class="card__content">
+            <div class="card__header">
+              <h3 class="card__title">${data.title || 'Card title'}</h3>
+              <span class="card__tag">${data.tag || ''}</span>
+            </div>
+            <p class="card__description">${data.description || 'Click to edit description text.'}</p>
+          </div>
+        `;
+
+        // Insert into DOM
+        grid.insertBefore(cardEl, placeholder);
+
+        // Store in memory
+        this.cards.push({
+            element: cardEl,
+            id: index,
+            title: data.title || '',
+            description: data.description || '',
+            tag: data.tag || '',
+            media: data.media || null,
+            mediaType: data.mediaType || null
+        });
+
+        // Initialize features (edit, drag-drop, color, etc.)
+        this.setupNewCard(cardEl, index);
+
+        // Load media if present
+        if (data.media) {
+            const imageContainer = cardEl.querySelector('.card__image');
+            this.setCardMedia(imageContainer, data.media, data.mediaType, index);
+        }
+
+        // Apply tag color
+        const tagEl = cardEl.querySelector('.card__tag');
+        if (tagEl && data.tag) {
+            this.updateTagColor(tagEl);
         }
     }
 
     setupCards() {
-        document.querySelectorAll('.card').forEach((card, index) => {
-            const title = card.querySelector('.card__title');
-            const description = card.querySelector('.card__description');
-            const tag = card.querySelector('.card__tag');
-            const imageContainer = card.querySelector('.card__image');
-
-            if (title) {
-                title.contentEditable = true;
-                title.dataset.cardIndex = index;
-            }
-            if (description) {
-                description.contentEditable = true;
-                description.dataset.cardIndex = index;
-            }
-            if (tag) {
-                tag.contentEditable = true;
-                tag.dataset.cardIndex = index;
-                // Set placeholder text when empty
-                if (!tag.textContent.trim()) {
-                    tag.dataset.placeholder = 'TAG';
-                }
-            }
-
-            if (imageContainer) {
-                imageContainer.dataset.cardIndex = index;
-                imageContainer.classList.add('card__image--dropzone');
-
-                // Add delete button
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'card__delete-btn';
-                deleteBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
-                deleteBtn.dataset.cardIndex = index;
-                deleteBtn.addEventListener('click', (e) => this.clearCardMedia(e));
-                imageContainer.appendChild(deleteBtn);
-            }
-        });
+        // Now mostly handled by createCardFromData / setupNewCard
+        // We can keep this empty or remove it, but for safety let's leave valid empty function
+        // in case anything calls it.
     }
 
     clearCardMedia(e) {
@@ -917,6 +907,7 @@ class CardEditor {
             title: card.title,
             description: card.description,
             tag: card.tag,
+            width: card.element.classList.contains('card--wide') ? 'wide' : 'regular',
             media: card.media,
             mediaType: card.mediaType
         }));
