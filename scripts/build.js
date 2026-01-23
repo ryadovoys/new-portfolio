@@ -116,11 +116,10 @@ let html = fs.readFileSync(INDEX_FILE, 'utf8');
 const cardsHTML = cards.map((c, i) => generateCardHTML(c, i)).join('\n');
 
 // Inject into grid
-// Look for where the grid starts and ends, or easier: replace the placeholder or empty grid content.
-// The index.html has static cards + placeholder. 
-// We want to REPLACE the inner contents of <div class="card-grid"> ... </div>
-const gridRegex = /<div class="card-grid">([\s\S]*?)<\/div>/;
-html = html.replace(gridRegex, `<div class="card-grid">\n${cardsHTML}\n</div>`);
+// Use </main> as the anchor to ensure we capture the entire grid content, 
+// preventing early termination at nested </div> tags.
+const gridRegex = /<div class="card-grid">[\s\S]*?<\/main>/;
+html = html.replace(gridRegex, `<div class="card-grid">\n${cardsHTML}\n</div>\n    </main>`);
 
 // Remove Editor Scripts & Styles
 // Remove Sortable
