@@ -1,9 +1,10 @@
 [
   {
-    "title": "Global brands",
-    "description": "Throughout my career I worked a lot with global brands like Visa, Delta, Amway, Mondelez, RaceTrac, and more. I've designed and lead various of projects, from websites and apps to global campaigns.",
+    "title": "Introduction",
+    "description": "Hi, my name is Sergey Ryadovoy. I'm a design leader with strong graphic design foundations and product thinking. 15 years in design and leadership—from branding and visual design to digital and AI products.",
     "tag": "Personal",
-    "media": "/assets/images/visa-cover-2.gif",
+    "width": "regular",
+    "media": "/assets/images/1-hello-rotation.gif",
     "mediaType": "image"
   },
   {
@@ -15,87 +16,144 @@
     "mediaType": "video"
   },
   {
+    "title": "Digitas AI",
+    "description": "For the past few years, I've been deeply involved in building AI tools. From developing modern design and management workflows in Claude Code to designing interfaces and working closely with developer teams. One of those projects is Digitas internal AI agentic platform that we're working on through 2025-2026.",
+    "tag": "Project",
+    "width": "regular",
+    "media": "/assets/images/Animation-WebsiteAsset.gif",
+    "mediaType": "image"
+  },
+  {
     "title": "UI/UX design",
     "description": "Led product design for Visa's global digital presence. Websites, apps, dashboards. Directed redesigns for Amway, RaceTrac, Delta Airlines.",
     "tag": "Skill",
-    "media": null,
-    "mediaType": null
+    "width": "regular",
+    "media": "/assets/images/CleanShot 2026-01-23 at 12.20.51.gif",
+    "mediaType": "image"
+  },
+  {
+    "title": "Global brands",
+    "description": "Throughout my career I worked a lot with global brands like Visa, Delta, Amway, Mondelez, L'oreal, RaceTrac, and more. I've designed and lead various of projects, from websites and apps to global campaigns.",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/images/visa-cover-2.gif",
+    "mediaType": "image"
+  },
+  {
+    "title": "Amway Website",
+    "description": "Click to edit description text.",
+    "tag": "Project",
+    "width": "wide",
+    "media": [
+      "/assets/images/7-upload-1.gif",
+      "/assets/images/1-screenshot-medium.webp"
+    ],
+    "mediaType": "carousel"
   },
   {
     "title": "Design systems",
     "description": "Built design systems for Visa, RaceTrac, Amway, and more. Components, tokens, variables, documentation — foundations that scale across teams.",
     "tag": "Skill",
+    "width": "regular",
     "media": "/assets/images/design-system.jpg",
     "mediaType": "image"
   },
   {
-    "title": "Product partner",
-    "description": "Partner, not executor. Formulate hypotheses, connect design to metrics, run workshops with dev teams. Bridge design and engineering to ship what was designed.",
-    "tag": "Skill",
-    "media": "/assets/images/product-thinking.jpg",
+    "title": "AI workflows",
+    "description": "Finding the bridge between design and AI and building the new design workflow. Claude Code, Cursor, Antigravity, MCP tools—using AI systematically across research, ideation, prototyping, designing and code.",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/images/bridge.jpg",
     "mediaType": "image"
   },
   {
-    "title": "AI workflows",
-    "description": "Building the new design workflow. Claude Code, Cursor, Antigravity, MCP tools — using AI systematically across research, ideation, prototyping, and code.",
+    "title": "Building apps, tools, shortcuts",
+    "description": "Love creating internal tools that solve real problems. From task managers to prototyping apps",
+    "tag": "Experience",
+    "width": "regular",
+    "media": [
+      "/assets/images/CleanShot 2026-01-23 at 13.08.33@2x.png",
+      "/assets/images/1-frame-189.jpg"
+    ],
+    "mediaType": "carousel"
+  },
+  {
+    "title": "Public talks",
+    "description": "During last few years I gave a few public talks sharing my findings and experiments into the AI field, showing some of the interesting ways to use AI for designers",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/images/the_magic_of_code.gif",
+    "mediaType": "image"
+  },
+  {
+    "title": "Mindcomplete",
+    "description": "Click to edit description text.",
+    "tag": "Experiment",
+    "width": "wide",
+    "media": "/assets/images/mindcomplete-hero-1.mp4",
+    "mediaType": "video"
+  },
+  {
+    "title": "Strong design foundations",
+    "description": "Composition, typography, color, form — shaped by years in branding. Featured in Logolounge, Dieline, Packaging of the World.",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/images/445351806_414975888023839_2041003039465379185_n.jpg",
+    "mediaType": "image"
+  },
+  {
+    "title": "Logo design",
+    "description": "100+ logos designed throughout my career. From startups to federal brands — identity systems that last.",
     "tag": "Skill",
-    "media": "/assets/images/Animation-WebsiteAsset.gif",
+    "width": "regular",
+    "media": "/assets/images/4-artboard-5.jpg",
+    "mediaType": "image"
+  },
+  {
+    "title": "Packaging design",
+    "description": "Click to edit description text.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": [
+      "/assets/images/1-FB-Elian-Cosmetics-00.webp",
+      "/assets/images/10-final-w.webp",
+      "/assets/images/8-image-6.jpg",
+      "/assets/images/3-image-2.webp",
+      "/assets/images/image-94c7bde8-39b3-4499-9bd7-078179309d51.jpg.webp",
+      "/assets/images/image-b91beb23-3af2-4376-be93-0d7d491a16aa.jpg.webp"
+    ],
+    "mediaType": "carousel"
+  },
+  {
+    "title": "Branding and identity design",
+    "description": "Click to edit description text.",
+    "tag": "",
+    "width": "regular",
+    "media": "/assets/images/Image-52a8929d-be08-4763-b53d-de6641f18e50.gif",
     "mediaType": "image"
   },
   {
     "title": "Typography",
     "description": "Deep love for type. Created Peace Sans — 500K+ downloads. Typography is the foundation of everything I design.",
     "tag": "Skill",
-    "media": null,
-    "mediaType": null
-  },
-  {
-    "title": "Strong design foundations",
-    "description": "Composition, typography, color, form — shaped by years in branding. Featured in Logolounge, Dieline, Packaging of the World.",
-    "tag": "Skill",
-    "media": "/assets/images/design-foundation.jpg",
+    "width": "regular",
+    "media": "/assets/images/peace-sans.jpg",
     "mediaType": "image"
   },
   {
-    "title": "Logo design",
-    "description": "100+ logos designed throughout my career. From startups to federal brands — identity systems that last.",
-    "tag": "skill",
-    "media": null,
-    "mediaType": null
-  },
-  {
-    "title": "Building apps & tools",
-    "description": "Love creating internal tools that solve real problems. From task managers to prototyping apps — if it doesn't exist, I build it.",
-    "tag": "skill",
-    "media": "/assets/images/ai-prototyping.jpg",
+    "title": "36 days of type",
+    "description": "Created a font using just code in Openframeworks.",
+    "tag": "Experiment",
+    "width": "wide",
+    "media": "/assets/images/1-36-days-of-type-project-card.gif",
     "mediaType": "image"
-  },
-  {
-    "title": "Figma plugins",
-    "description": "Improving design workflows through custom Figma plugins. If the tool doesn't do what I need, I extend it.",
-    "tag": "skill",
-    "media": null,
-    "mediaType": null
   },
   {
     "title": "California culture",
     "description": "Inspired by skate, surf, snowboard culture. Old skate magazine aesthetics, 80s California vibe — it's part of who I am.",
-    "tag": "skill",
-    "media": null,
-    "mediaType": null
-  },
-  {
-    "title": "",
-    "description": "",
-    "tag": "",
-    "media": null,
-    "mediaType": null
-  },
-  {
-    "title": "Card title",
-    "description": "Click to edit description text.",
-    "tag": "",
-    "media": null,
-    "mediaType": null
+    "tag": "Personal",
+    "width": "regular",
+    "media": "/assets/images/CleanShot 2026-01-23 at 14.10.15@2x.png",
+    "mediaType": "image"
   }
 ]

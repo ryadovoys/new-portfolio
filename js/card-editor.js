@@ -317,6 +317,8 @@ class CardEditor {
                     const video = document.createElement('video');
                     video.src = asset.path;
                     video.muted = true;
+                    video.setAttribute('muted', '');
+                    video.setAttribute('playsinline', '');
                     item.appendChild(video);
                 } else {
                     const img = document.createElement('img');
@@ -488,6 +490,8 @@ class CardEditor {
         const index = parseInt(zone.dataset.cardIndex);
         const files = Array.from(e.dataTransfer.files);
 
+        if (zone.classList.contains('card__image--loading')) return;
+
         if (files.length > 0) {
             await this.uploadAndSetMedia(zone, files, index);
         }
@@ -600,6 +604,7 @@ class CardEditor {
             video.autoplay = true;
             video.loop = true;
             video.muted = true;
+            video.setAttribute('muted', '');
             video.playsInline = true;
             zone.appendChild(video);
         } else {
@@ -645,6 +650,7 @@ class CardEditor {
                 video.autoplay = true;
                 video.loop = true;
                 video.muted = true;
+                video.setAttribute('muted', '');
                 video.playsInline = true;
                 slide.appendChild(video);
             } else {
@@ -721,7 +727,14 @@ class CardEditor {
             }
 
             track.style.transition = 'transform 0.3s ease';
+            track.style.transition = 'transform 0.3s ease';
             this.goToSlide(zone, newSlide);
+
+            // Cleanup window listeners
+            window.removeEventListener('mousemove', handleMove);
+            window.removeEventListener('mouseup', handleEnd);
+            window.removeEventListener('touchmove', handleMove); // If added to window? No, handleMove used for both.
+            // window.removeEventListener('touchend', handleEnd); // If added to window? handleEnd is on track for touch.
         };
 
         // Mouse events
@@ -733,6 +746,25 @@ class CardEditor {
         track.addEventListener('touchstart', handleStart, { passive: true });
         track.addEventListener('touchmove', handleMove, { passive: false });
         track.addEventListener('touchend', handleEnd);
+
+        // Cleanup function to remove window listeners when carousel is destroyed/replaced
+        // Note: usage of this approach relies on the fact that we replace innerHTML
+        // Ideally we should track these listeners and remove them explicitly.
+        // For now, removing them on handleEnd ensures we don't leak during interaction,
+        // but if we replace the card while dragging, we might leak. 
+        // A better approach for the window listeners:
+
+        const cleanup = () => {
+            window.removeEventListener('mousemove', handleMove);
+            window.removeEventListener('mouseup', handleEnd);
+            window.removeEventListener('touchmove', handleMove);
+            // We can't remove touchend easily if it was added to track, but track is removed from DOM.
+            // Window listeners are the main concern.
+        };
+
+        // Append cleanup to the track so we can find it? No, that's messy.
+        // Instead, we will remove window listeners inside handleEnd.
+
 
         // Resize handler - recalculate position
         window.addEventListener('resize', () => {
