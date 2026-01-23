@@ -1,0 +1,60 @@
+/* =================================================================
+   CARD COMPONENT
+   Skill cards with image and description
+   ================================================================= */
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap);
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+    height: 100%;
+}
+
+/* Image Container */
+.card__image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--bg-card-image);
+    border-radius: var(--card-image-radius);
+    overflow: hidden;
+}
+
+.card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Placeholder for animation/video */
+.card__image--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+/* Content */
+.card__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.card__title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    line-height: var(--line-height-normal);
+}
+
+.card__description {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-primary);
+    line-height: var(--line-height-normal);
+}

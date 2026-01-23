@@ -1,0 +1,63 @@
+/* =================================================================
+   LAYOUT
+   Page structure and grid system
+   ================================================================= */
+
+/* Page Container */
+.page {
+    display: flex;
+    gap: var(--grid-gap);
+    padding: var(--page-padding);
+    min-height: 100vh;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    min-width: 0;
+    padding-right: var(--page-padding);
+}
+
+/* Card Grid */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: var(--grid-gap);
+    row-gap: var(--space-12);
+}
+
+/* Featured row - first row with larger card */
+.card-grid--featured {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: var(--grid-gap);
+    row-gap: var(--space-12);
+    margin-bottom: var(--space-12);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card-grid--featured {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        flex-direction: column;
+        padding: var(--space-6);
+    }
+
+    .main-content {
+        padding-right: 0;
+    }
+
+    .card-grid,
+    .card-grid--featured {
+        grid-template-columns: 1fr;
+    }
+}

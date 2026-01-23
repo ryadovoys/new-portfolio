@@ -1,0 +1,279 @@
+/* =================================================================
+   CARD EDITOR STYLES
+   Dropzone and editable states
+   ================================================================= */
+
+/* Dropzone */
+.card__image--dropzone {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Delete button */
+.card__delete-btn {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    border: none;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease, background 0.2s ease;
+    z-index: 20;
+}
+
+.card__image:hover .card__delete-btn {
+    opacity: 1;
+}
+
+.card__delete-btn:hover {
+    background: rgba(220, 38, 38, 0.9);
+}
+
+/* Hide delete button when no media */
+.card__image--dropzone:not(:has(img)):not(:has(video)):not(.card__image--carousel) .card__delete-btn {
+    display: none;
+}
+
+.card__image--dropzone::after {
+    content: 'Drop image or video';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.card__image--dropzone:has(img),
+.card__image--dropzone:has(video) {
+    /* Hide placeholder text when media exists */
+}
+
+.card__image--dropzone:has(img)::after,
+.card__image--dropzone:has(video)::after {
+    opacity: 0;
+}
+
+.card__image--dragover {
+    background: var(--color-neutral-200);
+    border: 2px dashed var(--color-neutral-400);
+}
+
+.card__image--dragover::after {
+    content: 'Release to upload';
+    color: var(--text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.card__image--loading::after {
+    content: 'Uploading...';
+    color: var(--text-primary);
+}
+
+/* Editable text */
+.card__title[contenteditable="true"],
+.card__description[contenteditable="true"] {
+    cursor: text;
+    border-radius: var(--radius-sm);
+    padding: 2px 4px;
+    margin: -2px -4px;
+    transition: background-color 0.2s ease;
+}
+
+.card__title[contenteditable="true"]:hover,
+.card__description[contenteditable="true"]:hover {
+    background-color: var(--color-neutral-100);
+}
+
+.card__title[contenteditable="true"]:focus,
+.card__description[contenteditable="true"]:focus {
+    background-color: var(--color-white);
+    outline: 2px solid var(--color-neutral-400);
+}
+
+/* Video in cards */
+.card__image video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* =================================================================
+   CAROUSEL STYLES
+   ================================================================= */
+
+.card__image--carousel {
+    overflow: hidden;
+    cursor: grab;
+}
+
+.card__image--carousel::after {
+    display: none;
+}
+
+.carousel--dragging {
+    cursor: grabbing;
+}
+
+.carousel__track {
+    display: flex;
+    height: 100%;
+    will-change: transform;
+}
+
+.carousel__slide {
+    flex: 0 0 100%;
+    height: 100%;
+}
+
+.carousel__slide img,
+.carousel__slide video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Dots */
+.carousel__dots {
+    position: absolute;
+    bottom: var(--space-3);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: var(--space-2);
+    z-index: 10;
+}
+
+.carousel__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.carousel__dot:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.carousel__dot--active {
+    background: var(--color-white);
+    transform: scale(1.2);
+}
+
+/* =================================================================
+   ASSET PICKER
+   ================================================================= */
+
+.asset-picker {
+    position: absolute;
+    inset: 0;
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.asset-picker__header {
+    padding: var(--space-3);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--color-neutral-100);
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.asset-picker__confirm {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    background: var(--color-neutral-900);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.asset-picker__confirm:hover {
+    background: var(--color-neutral-800);
+}
+
+.asset-picker__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: min-content;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    overflow-y: auto;
+    flex: 1;
+}
+
+.asset-picker__item {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.asset-picker__item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.asset-picker__item img,
+.asset-picker__item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Selected state */
+.asset-picker__item--selected {
+    outline: 3px solid var(--color-neutral-900);
+    outline-offset: -3px;
+}
+
+.asset-picker__item--selected::after {
+    content: '✓';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    background: var(--color-neutral-900);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.asset-picker__item {
+    position: relative;
+}

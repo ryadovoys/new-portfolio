@@ -1,0 +1,100 @@
+/* =================================================================
+   DESIGN TOKENS
+   ================================================================= */
+
+/* -----------------------------------------------------------------
+   PRIMITIVE TOKENS
+   Raw values - the source of truth
+   ----------------------------------------------------------------- */
+
+:root {
+   /* Colors - Neutral */
+   --color-neutral-50: #f7f7f7;
+   --color-neutral-100: #e5e5e5;
+   --color-neutral-200: #cccccc;
+   --color-neutral-400: #999999;
+   --color-neutral-600: #666666;
+   --color-neutral-800: #333333;
+   --color-neutral-900: #202020;
+   --color-neutral-1000: #000000;
+   --color-white: #ffffff;
+
+   /* Typography - Font Family */
+   --font-family-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+   /* Typography - Font Size */
+   --font-size-xs: 12px;
+   --font-size-sm: 14px;
+   --font-size-base: 16px;
+   --font-size-lg: 18px;
+   --font-size-xl: 20px;
+   --font-size-2xl: 24px;
+   --font-size-3xl: 32px;
+
+   /* Typography - Font Weight */
+   --font-weight-regular: 400;
+   --font-weight-medium: 500;
+   --font-weight-semibold: 600;
+   --font-weight-bold: 700;
+
+   /* Typography - Line Height */
+   --line-height-tight: 1.2;
+   --line-height-normal: 1.4;
+   --line-height-relaxed: 1.6;
+
+   /* Spacing */
+   --space-1: 4px;
+   --space-2: 8px;
+   --space-3: 12px;
+   --space-4: 16px;
+   --space-5: 20px;
+   --space-6: 24px;
+   --space-8: 32px;
+   --space-9: 36px;
+   --space-10: 40px;
+   --space-12: 48px;
+   --space-16: 64px;
+
+   /* Border Radius */
+   --radius-sm: 4px;
+   --radius-md: 8px;
+   --radius-lg: 12px;
+   --radius-xl: 16px;
+   --radius-2xl: 20px;
+
+   /* -----------------------------------------------------------------
+     SEMANTIC TOKENS
+     Reference primitives - used in components
+     ----------------------------------------------------------------- */
+
+   /* Background */
+   --bg-page: var(--color-neutral-50);
+   --bg-card: var(--color-white);
+   --bg-card-image: var(--color-neutral-100);
+
+   /* Text */
+   --text-primary: var(--color-neutral-900);
+   --text-secondary: var(--color-neutral-600);
+   --text-muted: var(--color-neutral-400);
+   --text-inverse: var(--color-white);
+
+   /* Links */
+   --link-color: var(--color-neutral-900);
+   --link-hover: var(--color-neutral-600);
+
+   /* Component: Card */
+   --card-bg: transparent;
+   --card-radius: var(--radius-xl);
+   --card-image-radius: var(--radius-lg);
+   --card-padding: 0;
+   --card-gap: var(--space-3);
+
+   /* Component: Sidebar */
+   --sidebar-width: 280px;
+   --sidebar-gap: var(--space-9);
+
+   /* Layout */
+   --page-padding: var(--space-12);
+   --grid-gap: var(--space-3);
+   --section-gap: var(--space-9);
+}
