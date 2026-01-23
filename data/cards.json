@@ -1,9 +1,12 @@
 [
   {
-    "title": "50+ brands",
+    "title": "Global brands",
     "description": "From federal companies to global brands. Visa, Delta, Amway, Mondelez, RaceTrac, and many more across my career.",
-    "media": null,
-    "mediaType": null
+    "media": [
+      "/assets/images/visa-cover-2.gif",
+      "/assets/images/CleanShot 2026-01-22 at 19.22.59@2x.png"
+    ],
+    "mediaType": "carousel"
   },
   {
     "title": "Product thinking",

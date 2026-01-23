@@ -15,7 +15,6 @@
 .main-content {
     flex: 1;
     min-width: 0;
-    padding-right: var(--page-padding);
 }
 
 /* Card Grid */
@@ -50,6 +49,7 @@
     .page {
         flex-direction: column;
         padding: var(--space-6);
+        gap: var(--space-12);
     }
 
     .main-content {

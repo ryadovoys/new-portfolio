@@ -404,9 +404,27 @@ class CardEditor {
                 }
             }
 
-            if (uploadedPaths.length === 1) {
-                // Single file - use simple media
-                const { path, type } = uploadedPaths[0];
+            // Get existing media for this card
+            const existingCard = this.cards[cardIndex];
+            let allItems = [];
+
+            // If card already has media, include it
+            if (existingCard && existingCard.media) {
+                if (existingCard.mediaType === 'carousel' && Array.isArray(existingCard.media)) {
+                    // Already a carousel - add existing items
+                    allItems = existingCard.media.map(path => ({ path, type: 'image' }));
+                } else if (existingCard.media) {
+                    // Single image/video - convert to array
+                    allItems = [{ path: existingCard.media, type: existingCard.mediaType || 'image' }];
+                }
+            }
+
+            // Add newly uploaded files
+            allItems = [...allItems, ...uploadedPaths];
+
+            if (allItems.length === 1) {
+                // Still just one file
+                const { path, type } = allItems[0];
                 this.setCardMedia(zone, path, type, cardIndex);
 
                 if (this.cards[cardIndex]) {
@@ -414,12 +432,12 @@ class CardEditor {
                     this.cards[cardIndex].mediaType = type;
                     this.saveCards();
                 }
-            } else if (uploadedPaths.length > 1) {
-                // Multiple files - create carousel
-                this.setCardCarousel(zone, uploadedPaths, cardIndex);
+            } else if (allItems.length > 1) {
+                // Multiple files - create/update carousel
+                this.setCardCarousel(zone, allItems, cardIndex);
 
                 if (this.cards[cardIndex]) {
-                    this.cards[cardIndex].media = uploadedPaths.map(p => p.path);
+                    this.cards[cardIndex].media = allItems.map(p => p.path);
                     this.cards[cardIndex].mediaType = 'carousel';
                     this.saveCards();
                 }
@@ -594,6 +612,14 @@ class CardEditor {
         track.addEventListener('touchstart', handleStart, { passive: true });
         track.addEventListener('touchmove', handleMove, { passive: false });
         track.addEventListener('touchend', handleEnd);
+
+        // Resize handler - recalculate position
+        window.addEventListener('resize', () => {
+            const currentSlide = parseInt(zone.dataset.currentSlide) || 0;
+            const slideWidth = zone.offsetWidth;
+            track.style.transition = 'none';
+            track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+        });
     }
 
     goToSlide(zone, index) {
