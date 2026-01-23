@@ -63,6 +63,8 @@ class CardEditor {
                     id: index,
                     title: savedData.title || '',
                     description: savedData.description || '',
+                    description: savedData.description || '',
+                    tag: savedData.tag || '',
                     media: savedData.media || null,
                     mediaType: savedData.mediaType || null
                 });
@@ -72,6 +74,13 @@ class CardEditor {
                 }
                 if (savedData.description) {
                     card.querySelector('.card__description').textContent = savedData.description;
+                }
+                if (savedData.tag) {
+                    const tagEl = card.querySelector('.card__tag');
+                    if (tagEl) {
+                        tagEl.textContent = savedData.tag;
+                        this.updateTagColor(tagEl);
+                    }
                 }
                 if (savedData.media) {
                     const imageContainer = card.querySelector('.card__image');
@@ -86,6 +95,9 @@ class CardEditor {
                     id: index,
                     title: card.querySelector('.card__title')?.textContent || '',
                     description: card.querySelector('.card__description')?.textContent || '',
+                    title: card.querySelector('.card__title')?.textContent || '',
+                    description: card.querySelector('.card__description')?.textContent || '',
+                    tag: card.querySelector('.card__tag')?.textContent || '',
                     media: null,
                     mediaType: null
                 });
@@ -97,6 +109,7 @@ class CardEditor {
         document.querySelectorAll('.card').forEach((card, index) => {
             const title = card.querySelector('.card__title');
             const description = card.querySelector('.card__description');
+            const tag = card.querySelector('.card__tag');
             const imageContainer = card.querySelector('.card__image');
 
             if (title) {
@@ -106,6 +119,14 @@ class CardEditor {
             if (description) {
                 description.contentEditable = true;
                 description.dataset.cardIndex = index;
+            }
+            if (tag) {
+                tag.contentEditable = true;
+                tag.dataset.cardIndex = index;
+                // Set placeholder text when empty
+                if (!tag.textContent.trim()) {
+                    tag.dataset.placeholder = 'TAG';
+                }
             }
 
             if (imageContainer) {
@@ -129,19 +150,18 @@ class CardEditor {
         const zone = e.currentTarget.parentElement;
         const card = this.cards[index];
 
-        // Check if it's a carousel with multiple images
-        if (card && card.mediaType === 'carousel' && Array.isArray(card.media) && card.media.length > 1) {
-            // Remove only the current slide
+        if (!card) return;
+
+        // 1. If has carousel media, remove current slide
+        if (card.mediaType === 'carousel' && Array.isArray(card.media) && card.media.length > 1) {
             const currentSlide = parseInt(zone.dataset.currentSlide) || 0;
             card.media.splice(currentSlide, 1);
 
             if (card.media.length === 1) {
-                // Only one left - convert back to single image
                 card.mediaType = 'image';
                 card.media = card.media[0];
                 this.setCardMedia(zone, card.media, 'image', index);
             } else {
-                // Still multiple - rebuild carousel
                 const newSlide = Math.min(currentSlide, card.media.length - 1);
                 const items = card.media.map(path => ({ path, type: 'image' }));
                 this.setCardCarousel(zone, items, index);
@@ -151,34 +171,62 @@ class CardEditor {
             return;
         }
 
-        // Clear all media (single image or last item)
-        zone.innerHTML = '';
-        zone.classList.remove('card__image--carousel');
-        zone.classList.add('card__image--dropzone');
+        // 2. If has single media, clear it
+        if (card.media) {
+            zone.innerHTML = '';
+            zone.classList.remove('card__image--carousel');
+            zone.classList.add('card__image--dropzone');
 
-        // Re-add delete button (hidden by CSS when no media)
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'card__delete-btn';
-        deleteBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
-        deleteBtn.dataset.cardIndex = index;
-        deleteBtn.addEventListener('click', (e) => this.clearCardMedia(e));
-        zone.appendChild(deleteBtn);
+            this.addDeleteButton(zone, index);
 
-        // Re-bind drag events
-        zone.addEventListener('dragover', (e) => this.handleDragOver(e));
-        zone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
-        zone.addEventListener('drop', (e) => this.handleDrop(e));
+            // Re-bind events for the new dropzone
+            zone.addEventListener('dragover', (e) => this.handleDragOver(e));
+            zone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+            zone.addEventListener('drop', (e) => this.handleDrop(e));
 
-        // Update card data
-        if (this.cards[index]) {
-            this.cards[index].media = null;
-            this.cards[index].mediaType = null;
+            card.media = null;
+            card.mediaType = null;
             this.saveCards();
+            return;
         }
+
+        // 3. If NO media, delete the card itself
+        this.removeCard(index);
+    }
+
+    removeCard(index) {
+        const card = this.cards[index];
+        if (!card) return;
+
+        // Remove from DOM
+        card.element.remove();
+
+        // Remove from array
+        this.cards.splice(index, 1);
+
+        // Update indices for all remaining cards
+        this.cards.forEach((c, i) => {
+            c.id = i;
+            const element = c.element;
+            const title = element.querySelector('.card__title');
+            const description = element.querySelector('.card__description');
+            const tag = element.querySelector('.card__tag');
+            const image = element.querySelector('.card__image');
+            const deleteBtn = element.querySelector('.card__delete-btn');
+
+            if (title) title.dataset.cardIndex = i;
+            if (description) description.dataset.cardIndex = i;
+            if (tag) tag.dataset.cardIndex = i;
+            if (image) image.dataset.cardIndex = i;
+            if (deleteBtn) deleteBtn.dataset.cardIndex = i;
+        });
+
+        this.saveCards();
     }
 
     bindEvents() {
-        document.querySelectorAll('.card__title, .card__description').forEach(el => {
+        document.querySelectorAll('.card__title, .card__description, .card__tag').forEach(el => {
+            el.addEventListener('click', (e) => e.stopPropagation()); // Prevent card link click
             el.addEventListener('blur', (e) => this.handleTextEdit(e));
             el.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -193,6 +241,14 @@ class CardEditor {
             zone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
             zone.addEventListener('drop', (e) => this.handleDrop(e));
             zone.addEventListener('click', (e) => this.handleZoneClick(e));
+        });
+
+        // Add Card buttons
+        document.querySelectorAll('.card-add__btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const type = btn.dataset.type;
+                this.addNewCard(type);
+            });
         });
 
         // Close picker when clicking outside
@@ -385,12 +441,44 @@ class CardEditor {
 
     handleTextEdit(e) {
         const index = parseInt(e.target.dataset.cardIndex);
-        const field = e.target.classList.contains('card__title') ? 'title' : 'description';
+        let field;
+        if (e.target.classList.contains('card__title')) {
+            field = 'title';
+        } else if (e.target.classList.contains('card__tag')) {
+            field = 'tag';
+            // Update tag color based on content
+            this.updateTagColor(e.target);
+        } else {
+            field = 'description';
+        }
 
         if (this.cards[index]) {
-            this.cards[index][field] = e.target.textContent;
+            this.cards[index][field] = e.target.textContent.trim();
             this.saveCards();
         }
+    }
+
+    updateTagColor(tagElement) {
+        const text = tagElement.textContent.trim().toUpperCase();
+
+        // Remove all variant classes
+        tagElement.classList.remove('card__tag--skill', 'card__tag--project', 'card__tag--personal', 'card__tag--experience', 'card__tag--experiment', 'card__tag--empty');
+
+        // Apply appropriate class based on content
+        if (!text) {
+            tagElement.classList.add('card__tag--empty');
+        } else if (text === 'SKILL') {
+            tagElement.classList.add('card__tag--skill');
+        } else if (text === 'PROJECT') {
+            tagElement.classList.add('card__tag--project');
+        } else if (text === 'PERSONAL') {
+            tagElement.classList.add('card__tag--personal');
+        } else if (text === 'EXPERIENCE') {
+            tagElement.classList.add('card__tag--experience');
+        } else if (text === 'EXPERIMENT') {
+            tagElement.classList.add('card__tag--experiment');
+        }
+        // Default: uses base --tag-bg and --tag-text (purple)
     }
 
     handleDragOver(e) {
@@ -711,10 +799,124 @@ class CardEditor {
         zone.dataset.currentSlide = index;
     }
 
+    async addNewCard(type) {
+        const grid = document.querySelector('.card-grid');
+        const placeholder = document.getElementById('addCardPlaceholder');
+        if (!grid || !placeholder) return;
+
+        const index = this.cards.length;
+        const cardClass = type === 'wide' ? 'card card--wide' : 'card';
+
+        const cardEl = document.createElement('div');
+        cardEl.className = cardClass;
+        cardEl.innerHTML = `
+          <div class="card__image"></div>
+          <div class="card__content">
+            <div class="card__header">
+              <h3 class="card__title">Card title</h3>
+              <span class="card__tag"></span>
+            </div>
+            <p class="card__description">Click to edit description text.</p>
+          </div>
+        `;
+
+        // Insert before placeholder
+        grid.insertBefore(cardEl, placeholder);
+
+        const newCard = {
+            element: cardEl,
+            id: index,
+            title: 'Card title',
+            description: 'Click to edit description text.',
+            tag: '',
+            media: null,
+            mediaType: null
+        };
+
+        this.cards.push(newCard);
+
+        // Setup the new card (contentEditable, delete buttons, etc.)
+        this.setupNewCard(cardEl, index);
+
+        // Save progress
+        this.saveCards();
+
+        // Scroll to the new card
+        cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    setupNewCard(card, index) {
+        const title = card.querySelector('.card__title');
+        const description = card.querySelector('.card__description');
+        const tag = card.querySelector('.card__tag');
+        const imageContainer = card.querySelector('.card__image');
+
+        if (title) {
+            title.contentEditable = true;
+            title.dataset.cardIndex = index;
+            title.addEventListener('click', (e) => e.stopPropagation());
+            title.addEventListener('blur', (e) => this.handleTextEdit(e));
+            title.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    e.target.blur();
+                }
+            });
+        }
+        if (description) {
+            description.contentEditable = true;
+            description.dataset.cardIndex = index;
+            description.addEventListener('click', (e) => e.stopPropagation());
+            description.addEventListener('blur', (e) => this.handleTextEdit(e));
+            description.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    e.target.blur();
+                }
+            });
+        }
+        if (tag) {
+            tag.contentEditable = true;
+            tag.dataset.cardIndex = index;
+            tag.addEventListener('click', (e) => e.stopPropagation());
+            tag.addEventListener('blur', (e) => this.handleTextEdit(e));
+            tag.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    e.target.blur();
+                }
+            });
+            // Set placeholder text when empty
+            if (!tag.textContent.trim()) {
+                tag.dataset.placeholder = 'TAG';
+                this.updateTagColor(tag);
+            }
+        }
+
+        if (imageContainer) {
+            imageContainer.dataset.cardIndex = index;
+            imageContainer.classList.add('card__image--dropzone');
+
+            // Add delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'card__delete-btn';
+            deleteBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
+            deleteBtn.dataset.cardIndex = index;
+            deleteBtn.addEventListener('click', (e) => this.clearCardMedia(e));
+            imageContainer.appendChild(deleteBtn);
+
+            imageContainer.addEventListener('dragover', (e) => this.handleDragOver(e));
+            imageContainer.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+            imageContainer.addEventListener('drop', (e) => this.handleDrop(e));
+            imageContainer.addEventListener('click', (e) => this.handleZoneClick(e));
+        }
+    }
+
     async saveCards() {
         const dataToSave = this.cards.map(card => ({
             title: card.title,
             description: card.description,
+            tag: card.tag,
             media: card.media,
             mediaType: card.mediaType
         }));

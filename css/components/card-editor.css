@@ -37,9 +37,9 @@
     background: rgba(220, 38, 38, 0.9);
 }
 
-/* Hide delete button when no media */
-.card__image--dropzone:not(:has(img)):not(:has(video)):not(.card__image--carousel) .card__delete-btn {
-    display: none;
+/* Keep delete button visible on hover even without media */
+.card__image:hover .card__delete-btn {
+    opacity: 1;
 }
 
 .card__image--dropzone::after {

@@ -16,8 +16,43 @@
    --color-neutral-600: #666666;
    --color-neutral-800: #333333;
    --color-neutral-900: #202020;
-   --color-neutral-1000: #000000;
+   --color-neutral-1000: #1A1A1A;
    --color-white: #ffffff;
+
+   /* Colors - Accents */
+   --color-purple-100: #F3E8FF;
+   --color-purple-200: #E9D5FF;
+   --color-purple-700: #7E22CE;
+   --color-purple-800: #6B21A8;
+   --color-purple-900: #581C87;
+
+   /* Colors - Green (for PROJECT tags) */
+   --color-green-100: #DCFCE7;
+   --color-green-200: #BBF7D0;
+   --color-green-700: #15803D;
+   --color-green-800: #166534;
+   --color-green-900: #14532D;
+
+   /* Colors - Orange (for PERSONAL tags) */
+   --color-orange-100: #FFEDD5;
+   --color-orange-200: #FED7AA;
+   --color-orange-700: #C2410C;
+   --color-orange-800: #9A3412;
+   --color-orange-900: #7C2D12;
+
+   /* Colors - Blue (for EXPERIENCE tags) */
+   --color-blue-100: #DBEAFE;
+   --color-blue-200: #BFDBFE;
+   --color-blue-700: #1D4ED8;
+   --color-blue-800: #1E40AF;
+   --color-blue-900: #1E3A8A;
+
+   /* Colors - Yellow (for EXPERIMENT tags) */
+   --color-yellow-100: #FEF9C3;
+   --color-yellow-200: #FEF08A;
+   --color-yellow-700: #A16207;
+   --color-yellow-800: #854D0E;
+   --color-yellow-900: #713F12;
 
    /* Typography - Font Family */
    --font-family-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -87,10 +122,26 @@
 
    /* Component: Card */
    --card-bg: transparent;
-   --card-radius: var(--radius-xl);
-   --card-image-radius: var(--radius-lg);
+   --card-radius: var(--radius-md);
+   --card-image-radius: var(--radius-md);
    --card-padding: 0;
-   --card-gap: var(--space-3);
+   --card-gap: 10px;
+
+   /* Component: Tag - Default (SKILL = purple) */
+   --tag-bg: var(--color-purple-200);
+   --tag-text: var(--color-purple-800);
+
+   /* Tag variants */
+   --tag-empty-bg: var(--color-neutral-200);
+   --tag-empty-text: var(--color-neutral-600);
+   --tag-project-bg: var(--color-green-200);
+   --tag-project-text: var(--color-green-800);
+   --tag-personal-bg: var(--color-orange-200);
+   --tag-personal-text: var(--color-orange-800);
+   --tag-experience-bg: var(--color-blue-200);
+   --tag-experience-text: var(--color-blue-800);
+   --tag-experiment-bg: var(--color-yellow-200);
+   --tag-experiment-text: var(--color-yellow-800);
 
    /* Component: Sidebar */
    --sidebar-width: 280px;
@@ -98,7 +149,7 @@
 
    /* Layout */
    --page-padding: var(--space-12);
-   --grid-gap: var(--space-3);
+   --grid-gap: var(--space-2);
    --section-gap: var(--space-9);
 
    /* Theme Toggle */
@@ -140,4 +191,20 @@
    --input-bg-hover: var(--color-neutral-900);
    --input-bg-focus: var(--color-neutral-900);
    --input-border-focus: var(--color-neutral-600);
+
+   /* Component: Tag */
+   --tag-bg: var(--color-purple-900);
+   --tag-text: var(--color-purple-200);
+
+   /* Tag variants - Dark theme */
+   --tag-empty-bg: var(--color-neutral-800);
+   --tag-empty-text: var(--color-neutral-400);
+   --tag-project-bg: var(--color-green-900);
+   --tag-project-text: var(--color-green-200);
+   --tag-personal-bg: var(--color-orange-900);
+   --tag-personal-text: var(--color-orange-200);
+   --tag-experience-bg: var(--color-blue-900);
+   --tag-experience-text: var(--color-blue-200);
+   --tag-experiment-bg: var(--color-yellow-900);
+   --tag-experiment-text: var(--color-yellow-200);
 }

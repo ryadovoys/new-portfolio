@@ -1,78 +1,99 @@
 [
   {
     "title": "Global brands",
-    "description": "From federal companies to global brands. Visa, Delta, Amway, Mondelez, RaceTrac, and many more across my career.",
-    "media": [
-      "/assets/images/visa-cover-2.gif",
-      "/assets/images/CleanShot 2026-01-22 at 19.22.59@2x.png",
-      "/assets/images/racetrac.jpg",
-      "/assets/images/walmart.jpg"
-    ],
-    "mediaType": "carousel"
-  },
-  {
-    "title": "AI workflows",
-    "description": "Building the new design workflow. Claude Code, Cursor, Antigravity, MCP tools — using AI systematically across research, ideation, prototyping, and code.",
-    "media": "/assets/images/AI fluency.jpg",
+    "description": "Throughout my career I worked a lot with global brands like Visa, Delta, Amway, Mondelez, RaceTrac, and more. I've designed and lead various of projects, from websites and apps to global campaigns.",
+    "tag": "Personal",
+    "media": "/assets/images/visa-cover-2.gif",
     "mediaType": "image"
   },
   {
-    "title": "Design systems",
-    "description": "Built design systems for Visa, RaceTrac, Amway, and more. Components, tokens, variables, documentation — foundations that scale across teams.",
-    "media": "/assets/images/design-system.jpg",
-    "mediaType": "image"
+    "title": "Visa Website (2022–2025)",
+    "description": "Directed Visa's digital rebranding rollout. I built the global design system in Figma, replacing our Sketch workflows so teams worldwide could ship consistent, accessible products faster. We created a ton of web pages and campaigns that established the new visual identity across digital. I also explored opportunities for what the site could become—ideas that are now reflected in the new website launching in 2026. We're continuing to work together on this.",
+    "tag": "Project",
+    "media": "/assets/images/visa-showcase-2020-2024.mp4",
+    "mediaType": "video"
   },
   {
     "title": "UI/UX design",
     "description": "Led product design for Visa's global digital presence. Websites, apps, dashboards. Directed redesigns for Amway, RaceTrac, Delta Airlines.",
+    "tag": "Skill",
     "media": null,
     "mediaType": null
   },
   {
+    "title": "Design systems",
+    "description": "Built design systems for Visa, RaceTrac, Amway, and more. Components, tokens, variables, documentation — foundations that scale across teams.",
+    "tag": "Skill",
+    "media": "/assets/images/design-system.jpg",
+    "mediaType": "image"
+  },
+  {
+    "title": "Product partner",
+    "description": "Partner, not executor. Formulate hypotheses, connect design to metrics, run workshops with dev teams. Bridge design and engineering to ship what was designed.",
+    "tag": "Skill",
+    "media": "/assets/images/product-thinking.jpg",
+    "mediaType": "image"
+  },
+  {
+    "title": "AI workflows",
+    "description": "Building the new design workflow. Claude Code, Cursor, Antigravity, MCP tools — using AI systematically across research, ideation, prototyping, and code.",
+    "tag": "Skill",
+    "media": "/assets/images/Animation-WebsiteAsset.gif",
+    "mediaType": "image"
+  },
+  {
     "title": "Typography",
     "description": "Deep love for type. Created Peace Sans — 500K+ downloads. Typography is the foundation of everything I design.",
+    "tag": "Skill",
     "media": null,
     "mediaType": null
   },
   {
     "title": "Strong design foundations",
     "description": "Composition, typography, color, form — shaped by years in branding. Featured in Logolounge, Dieline, Packaging of the World.",
+    "tag": "Skill",
     "media": "/assets/images/design-foundation.jpg",
     "mediaType": "image"
   },
   {
     "title": "Logo design",
     "description": "100+ logos designed throughout my career. From startups to federal brands — identity systems that last.",
+    "tag": "skill",
     "media": null,
     "mediaType": null
   },
   {
     "title": "Building apps & tools",
     "description": "Love creating internal tools that solve real problems. From task managers to prototyping apps — if it doesn't exist, I build it.",
+    "tag": "skill",
     "media": "/assets/images/ai-prototyping.jpg",
-    "mediaType": "image"
-  },
-  {
-    "title": "Product partner",
-    "description": "Partner, not executor. Formulate hypotheses, connect design to metrics, run workshops with dev teams. Bridge design and engineering to ship what was designed.",
-    "media": "/assets/images/product-thinking.jpg",
     "mediaType": "image"
   },
   {
     "title": "Figma plugins",
     "description": "Improving design workflows through custom Figma plugins. If the tool doesn't do what I need, I extend it.",
+    "tag": "skill",
     "media": null,
     "mediaType": null
   },
   {
     "title": "California culture",
     "description": "Inspired by skate, surf, snowboard culture. Old skate magazine aesthetics, 80s California vibe — it's part of who I am.",
+    "tag": "skill",
     "media": null,
     "mediaType": null
   },
   {
-    "title": "Packaging design",
-    "description": "Years of packaging design experience. Physical products, shelf presence, production constraints — design that you can hold.",
+    "title": "",
+    "description": "",
+    "tag": "",
+    "media": null,
+    "mediaType": null
+  },
+  {
+    "title": "Card title",
+    "description": "Click to edit description text.",
+    "tag": "",
     "media": null,
     "mediaType": null
   }

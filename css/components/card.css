@@ -13,14 +13,24 @@
     height: 100%;
 }
 
+/* Wide card variant */
+.card--wide {
+    grid-column: span 2;
+}
+
 /* Image Container */
 .card__image {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 0.88 / 1;
     background: var(--bg-card-image);
     border-radius: var(--card-image-radius);
     overflow: hidden;
+}
+
+/* Wide card image ratio */
+.card--wide .card__image {
+    aspect-ratio: 16 / 9;
 }
 
 .card__image img {
@@ -49,7 +59,86 @@
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     color: var(--text-primary);
+    color: var(--text-primary);
     line-height: var(--line-height-normal);
+}
+
+.card__header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+}
+
+.card__tag {
+    display: inline-flex;
+    align-items: center;
+    height: fit-content;
+    font-size: 12px;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.02em;
+    padding: 4px 6px 3px;
+    border-radius: 4px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    line-height: 1;
+    white-space: nowrap;
+    transition: opacity 0.2s ease, background 0.2s ease;
+    cursor: pointer;
+    min-width: 24px;
+    outline: none;
+}
+
+.card__tag:not(:empty) {
+    opacity: 1;
+}
+
+/* Always show placeholder when empty */
+.card__tag:empty,
+.card__tag--empty {
+    opacity: 0.5;
+    background: var(--tag-empty-bg);
+    color: var(--tag-empty-text);
+}
+
+.card__tag:empty::before {
+    content: 'TAG';
+}
+
+/* Tag color variants */
+.card__tag--skill {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+}
+
+.card__tag--project {
+    background: var(--tag-project-bg);
+    color: var(--tag-project-text);
+}
+
+.card__tag--personal {
+    background: var(--tag-personal-bg);
+    color: var(--tag-personal-text);
+}
+
+.card__tag--experience {
+    background: var(--tag-experience-bg);
+    color: var(--tag-experience-text);
+}
+
+.card__tag--experiment {
+    background: var(--tag-experiment-bg);
+    color: var(--tag-experiment-text);
+}
+
+/* Focus state for editing */
+.card__tag:focus {
+    opacity: 1;
+    outline: none;
+}
+
+.card__tag:focus:empty::before {
+    content: 'TAG';
+    opacity: 0.5;
 }
 
 .card__description {
@@ -72,4 +161,86 @@
     opacity: 0.9;
     transform: scale(1.02);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Overrides */
+@media (max-width: 1200px) {
+    .card--wide {
+        grid-column: auto;
+    }
+}
+
+/* =================================================================
+   ADD CARD PLACEHOLDER
+   ================================================================= */
+
+.card--add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background: transparent;
+    border: 2px dashed var(--color-neutral-200);
+    border-radius: var(--card-radius);
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.card--add:hover {
+    border-color: var(--color-neutral-400);
+    background: var(--bg-card-image);
+}
+
+.card-add__options {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.card-add__btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-6);
+    background: transparent;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-add__btn:hover {
+    background: var(--bg-card);
+    border-color: var(--color-neutral-400);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-add__btn svg {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.card-add__btn:hover svg {
+    opacity: 1;
+}
+
+[data-theme="dark"] .card--add {
+    border-color: var(--color-neutral-800);
+}
+
+[data-theme="dark"] .card--add:hover {
+    border-color: var(--color-neutral-600);
+}
+
+[data-theme="dark"] .card-add__btn {
+    border-color: var(--color-neutral-800);
+}
+
+[data-theme="dark"] .card-add__btn:hover {
+    border-color: var(--color-neutral-600);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
