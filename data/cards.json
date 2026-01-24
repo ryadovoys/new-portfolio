@@ -60,23 +60,7 @@
     "description": "Finding the bridge between design and AI and building the new design workflow. Claude Code, Cursor, Antigravity, MCP tools—using AI systematically across research, ideation, prototyping, designing and code.",
     "tag": "Experience",
     "width": "regular",
-    "media": "/assets/images/bridge.jpg",
-    "mediaType": "image"
-  },
-  {
-    "title": "Building tools",
-    "description": "I love creating internal tools that solve real problems. From iOS apps and web applications to Figma plugins and Apple shortcuts that help with everyday tasks.",
-    "tag": "Experience",
-    "width": "regular",
-    "media": "/assets/images/1742363793017.jpeg",
-    "mediaType": "image"
-  },
-  {
-    "title": "Public talks",
-    "description": "During last few years I gave a few public talks sharing my findings and experiments into the AI field, showing some of the interesting ways to use AI for designers",
-    "tag": "Experience",
-    "width": "regular",
-    "media": "/assets/images/the_magic_of_code.gif",
+    "media": "/assets/images/workflows.jpg",
     "mediaType": "image"
   },
   {
@@ -88,6 +72,22 @@
     "mediaType": "video"
   },
   {
+    "title": "Building tools",
+    "description": "I love creating internal tools that solve real problems. From iOS apps and web applications to Figma plugins and Apple shortcuts that help with everyday tasks.",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/images/apps.jpg",
+    "mediaType": "image"
+  },
+  {
+    "title": "Public talks",
+    "description": "During last few years I gave a few public talks sharing my findings and experiments into the AI field, showing some of the interesting ways to use AI for designers",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/images/the_magic_of_code.gif",
+    "mediaType": "image"
+  },
+  {
     "title": "Design base",
     "description": "Composition, typography, color, form — shaped by years in branding. Featured in Logolounge, Dieline, Packaging of the World.",
     "tag": "Experience",
@@ -96,19 +96,27 @@
     "mediaType": "image"
   },
   {
-    "title": "Logo design",
-    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/Image-590bb1b1-a148-4566-a6f2-eaa6aaca32be.gif",
-    "mediaType": "image"
-  },
-  {
     "title": "Packaging design",
     "description": "Years of packaging design experience. Physical products, shelf presence, production constraints. Work featured in Dieline and Packaging of the World.",
     "tag": "Skill",
     "width": "regular",
     "media": "/assets/images/upload-1766444315366-4.webp",
+    "mediaType": "image"
+  },
+  {
+    "title": "36 days of type",
+    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
+    "tag": "Experiment",
+    "width": "wide",
+    "media": "/assets/images/1-36-days-of-type-project-card.gif",
+    "mediaType": "image"
+  },
+  {
+    "title": "Logo design",
+    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/Image-590bb1b1-a148-4566-a6f2-eaa6aaca32be.gif",
     "mediaType": "image"
   },
   {
@@ -125,22 +133,6 @@
     "tag": "Skill",
     "width": "regular",
     "media": "/assets/images/peace-sans.jpg",
-    "mediaType": "image"
-  },
-  {
-    "title": "36 days of type",
-    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
-    "tag": "Experiment",
-    "width": "wide",
-    "media": "/assets/images/1-36-days-of-type-project-card.gif",
-    "mediaType": "image"
-  },
-  {
-    "title": "California culture",
-    "description": "Inspired by skate, surf, snowboard culture. Old skate magazine aesthetics, 80s California vibe — it's part of who I am.",
-    "tag": "Personal",
-    "width": "regular",
-    "media": "/assets/images/CleanShot 2026-01-23 at 14.10.15@2x.png",
     "mediaType": "image"
   }
 ]
