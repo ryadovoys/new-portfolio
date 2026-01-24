@@ -158,9 +158,9 @@
    --sidebar-gap: var(--space-9);
 
    /* Layout */
-   --page-padding: var(--space-12);
-   --grid-gap: var(--space-9);
-   --grid-vertical-gap: var(--space-12);
+   --page-padding: var(--space-15);
+   --grid-gap: var(--space-15);
+   --grid-vertical-gap: var(--space-18);
    --section-gap: var(--space-9);
 
    /* Theme Toggle */

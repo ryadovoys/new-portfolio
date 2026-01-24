@@ -22,7 +22,7 @@
 .card__image {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1.185;
+    aspect-ratio: 1 / 1.236;
     background: var(--bg-card-image);
     border-radius: var(--card-image-radius);
     overflow: hidden;
