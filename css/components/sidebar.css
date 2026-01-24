@@ -174,5 +174,7 @@
         width: 100%;
         position: static;
         gap: var(--space-6);
+        padding-left: var(--space-6);
+        padding-right: var(--space-6);
     }
 }
