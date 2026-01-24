@@ -9,50 +9,50 @@
 
 :root {
    /* Colors - Neutral */
-   --color-neutral-50: #FFFFFF;
-   --color-neutral-100: #EBE5E1;
-   --color-neutral-200: #D6CFC9;
-   --color-neutral-400: #A19992;
-   --color-neutral-600: #6B635C;
-   --color-neutral-800: #38332E;
-   --color-neutral-900: #24201D;
-   --color-neutral-1000: #12100E;
+   --color-neutral-50: #f7f7f7;
+   --color-neutral-100: #e5e5e5;
+   --color-neutral-200: #cccccc;
+   --color-neutral-400: #999999;
+   --color-neutral-600: #666666;
+   --color-neutral-800: #333333;
+   --color-neutral-900: #202020;
+   --color-neutral-1000: #111111;
    --color-white: #ffffff;
 
    /* Colors - Accents */
-   --color-purple-100: #F5E5FF;
-   --color-purple-200: #EACFFC;
-   --color-purple-700: #8824D6;
-   --color-purple-800: #7422B3;
-   --color-purple-900: #601D91;
+   --color-purple-100: #F3E8FF;
+   --color-purple-200: #E9D5FF;
+   --color-purple-700: #7E22CE;
+   --color-purple-800: #6B21A8;
+   --color-purple-900: #581C87;
 
    /* Colors - Green (for PROJECT tags) */
-   --color-green-100: #E6F5DD;
-   --color-green-200: #CDF0BC;
-   --color-green-700: #3E7532;
-   --color-green-800: #335E2A;
-   --color-green-900: #264A20;
+   --color-green-100: #DCFCE7;
+   --color-green-200: #BBF7D0;
+   --color-green-700: #15803D;
+   --color-green-800: #166534;
+   --color-green-900: #14532D;
 
    /* Colors - Orange (for PERSONAL tags) */
-   --color-orange-100: #FFECD1;
-   --color-orange-200: #FCD0A1;
-   --color-orange-700: #C74D1A;
-   --color-orange-800: #9E3F17;
-   --color-orange-900: #7F3414;
+   --color-orange-100: #FFEDD5;
+   --color-orange-200: #FED7AA;
+   --color-orange-700: #C2410C;
+   --color-orange-800: #9A3412;
+   --color-orange-900: #7C2D12;
 
    /* Colors - Blue (for EXPERIENCE tags) */
-   --color-blue-100: #E3E8FC;
-   --color-blue-200: #C7D4FA;
-   --color-blue-700: #355CC9;
-   --color-blue-800: #2D4C9E;
-   --color-blue-900: #243D7D;
+   --color-blue-100: #DBEAFE;
+   --color-blue-200: #BFDBFE;
+   --color-blue-700: #1D4ED8;
+   --color-blue-800: #1E40AF;
+   --color-blue-900: #1E3A8A;
 
    /* Colors - Yellow (for EXPERIMENT tags) */
-   --color-yellow-100: #FEF8CA;
-   --color-yellow-200: #FDEE96;
-   --color-yellow-700: #A66B0D;
-   --color-yellow-800: #8A590F;
-   --color-yellow-900: #754C12;
+   --color-yellow-100: #FEF9C3;
+   --color-yellow-200: #FEF08A;
+   --color-yellow-700: #A16207;
+   --color-yellow-800: #854D0E;
+   --color-yellow-900: #713F12;
 
    /* Typography - Font Family */
    --font-family-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -115,7 +115,7 @@
 :root,
 [data-theme="light"] {
    /* Background */
-   --bg-page: var(--color-neutral-50);
+   --bg-page: var(--color-white);
    --bg-card: var(--color-white);
    --bg-card-image: var(--color-neutral-100);
    --bg-overlay: rgba(0, 0, 0, 0.6);
@@ -164,8 +164,8 @@
    --section-gap: var(--space-9);
 
    /* Theme Toggle */
-   --toggle-bg: var(--color-neutral-100);
-   --toggle-icon: var(--color-neutral-900);
+   --toggle-bg: var(--color-blue-100);
+   --toggle-icon: var(--color-blue-900);
 
    /* Inputs / Editable Text */
    --input-bg-hover: var(--color-neutral-100);
@@ -195,8 +195,8 @@
    --link-hover: var(--color-neutral-400);
 
    /* Theme Toggle */
-   --toggle-bg: var(--color-neutral-900);
-   --toggle-icon: var(--color-white);
+   --toggle-bg: var(--color-yellow-900);
+   --toggle-icon: var(--color-yellow-100);
 
    /* Inputs / Editable Text */
    --input-bg-hover: var(--color-neutral-900);
