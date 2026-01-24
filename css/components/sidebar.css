@@ -47,18 +47,20 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    margin-right: 12px;
+    width: 0;
+    height: 20px;
+    margin-right: 0;
     overflow: hidden;
     white-space: nowrap;
     opacity: 0;
-    border-radius: 50%;
-    transition: opacity 0.3s ease, background-color 0.3s ease;
+    border-radius: var(--radius-sm);
+    transition: width 0.3s ease, margin-right 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
     flex-shrink: 0;
 }
 
 .sidebar__nav-link:hover::before {
+    width: 20px;
+    margin-right: 12px;
     opacity: 1;
     background-color: var(--color-neutral-100);
 }
@@ -71,7 +73,7 @@
 .sidebar__nav-link--linkedin::before {
     content: '';
     background-image: url('../../assets/LinkedIn_icon.png');
-    background-size: 16px;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
 }
