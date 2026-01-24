@@ -22,7 +22,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     column-gap: var(--grid-gap);
-    row-gap: var(--space-8);
+    row-gap: var(--grid-vertical-gap);
 }
 
 /* Featured row - first row with larger card */
@@ -30,7 +30,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     column-gap: var(--grid-gap);
-    row-gap: var(--space-12);
+    row-gap: var(--grid-vertical-gap);
     margin-bottom: var(--space-12);
 }
 

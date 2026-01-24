@@ -77,8 +77,9 @@
    --line-height-normal: 1.4;
    --line-height-relaxed: 1.6;
 
-   /* Spacing */
+   --space-0-5: 2px;
    --space-1: 4px;
+   --space-1-5: 6px;
    --space-2: 8px;
    --space-3: 12px;
    --space-4: 16px;
@@ -88,7 +89,9 @@
    --space-9: 36px;
    --space-10: 40px;
    --space-12: 48px;
+   --space-15: 60px;
    --space-16: 64px;
+   --space-18: 72px;
 
    /* Border Radius */
    --radius-xs: 2px;
@@ -99,7 +102,7 @@
    --radius-2xl: 20px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
    :root {
       --font-size-sm: 16px;
    }
@@ -156,7 +159,8 @@
 
    /* Layout */
    --page-padding: var(--space-12);
-   --grid-gap: var(--space-2);
+   --grid-gap: var(--space-9);
+   --grid-vertical-gap: var(--space-12);
    --section-gap: var(--space-9);
 
    /* Theme Toggle */

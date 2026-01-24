@@ -22,7 +22,7 @@
 .card__image {
     position: relative;
     width: 100%;
-    aspect-ratio: 0.88 / 1;
+    aspect-ratio: 1 / 1.185;
     background: var(--bg-card-image);
     border-radius: var(--card-image-radius);
     overflow: hidden;
@@ -52,7 +52,7 @@
 .card__content {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    gap: var(--space-1-5);
 }
 
 .card__title {
