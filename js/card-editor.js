@@ -129,6 +129,120 @@ class CardEditor {
         }
     }
 
+    addInsertZone(cardEl, index) {
+        // Create zone
+        const zone = document.createElement('div');
+        zone.className = 'card__add-zone';
+        zone.title = 'Add card here';
+
+        // Create button
+        const btn = document.createElement('div');
+        btn.className = 'card__add-btn';
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" /></svg>`;
+
+        zone.appendChild(btn);
+
+        // Add click handler
+        zone.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.insertInvisibleCard(index);
+        });
+
+        cardEl.appendChild(zone);
+    }
+
+    insertInvisibleCard(afterIndex) {
+        const newData = {
+            title: 'New Card',
+            description: 'Invisible card description',
+            tag: '',
+            width: 'invisible',
+            media: null,
+            mediaType: null
+        };
+
+        const grid = document.querySelector('.card-grid');
+        const afterCard = this.cards[afterIndex].element;
+
+        // Insert AFTER the current card (afterIndex)
+        // referenceNode should be the next sibling of the current card
+        const referenceNode = afterCard.nextSibling;
+
+        const cardEl = document.createElement('div');
+        cardEl.className = 'card card--invisible';
+
+        cardEl.innerHTML = `
+          <div class="card__image"></div>
+          <div class="card__content">
+            <div class="card__header">
+              <h3 class="card__title">${newData.title}</h3>
+              <span class="card__tag"></span>
+            </div>
+            <p class="card__description">${newData.description}</p>
+          </div>
+        `;
+
+        if (referenceNode) {
+            grid.insertBefore(cardEl, referenceNode);
+        } else {
+            // Should generally rely on placeholder being last, but for safety:
+            const placeholder = document.getElementById('addCardPlaceholder');
+            grid.insertBefore(cardEl, placeholder);
+        }
+
+        const newIndex = afterIndex + 1;
+
+        // Insert into array
+        this.cards.splice(newIndex, 0, {
+            element: cardEl,
+            id: newIndex,
+            title: newData.title,
+            description: newData.description,
+            tag: newData.tag,
+            media: newData.media,
+            mediaType: newData.mediaType
+        });
+
+        // Initialize features
+        this.setupNewCard(cardEl, newIndex);
+
+        // Update indices for ALL cards, because insertion shifts everything after
+        this.updateAllIndices();
+
+        this.saveCards();
+    }
+
+    updateAllIndices() {
+        this.cards.forEach((c, i) => {
+            c.id = i;
+            const element = c.element;
+            const title = element.querySelector('.card__title');
+            const description = element.querySelector('.card__description');
+            const tag = element.querySelector('.card__tag');
+            const image = element.querySelector('.card__image');
+            const zone = element.querySelector('.card__add-zone');
+
+            // Update controls indices
+            const deleteBtn = element.querySelector('.card__control-btn[data-action="delete"]');
+            const duplicateBtn = element.querySelector('.card__control-btn[data-action="duplicate"]');
+
+            if (title) title.dataset.cardIndex = i;
+            if (description) description.dataset.cardIndex = i;
+            if (tag) tag.dataset.cardIndex = i;
+            if (image) image.dataset.cardIndex = i;
+            if (deleteBtn) deleteBtn.dataset.cardIndex = i;
+            if (duplicateBtn) duplicateBtn.dataset.cardIndex = i;
+
+            // Re-bind the zone click (simplest way is to remove old listener and add new, 
+            // but since we passed index in closure, we might need to refresh the zone element or listener)
+            // Actually, best to just replace the zone element to ensure fresh closure
+            if (zone) {
+                zone.remove();
+                this.addInsertZone(element, i);
+            }
+        });
+    }
+
     setupCards() {
         // Now mostly handled by createCardFromData / setupNewCard
         // We can keep this empty or remove it, but for safety let's leave valid empty function
@@ -1057,6 +1171,9 @@ class CardEditor {
             imageContainer.addEventListener('drop', (e) => this.handleDrop(e));
             imageContainer.addEventListener('click', (e) => this.handleZoneClick(e));
         }
+
+        // Add "Add Between" zone
+        this.addInsertZone(card, index);
     }
 
     async saveCards() {

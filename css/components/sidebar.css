@@ -12,6 +12,14 @@
     position: sticky;
     top: var(--page-padding);
     height: fit-content;
+    z-index: 100;
+}
+
+/* Header (Logo + Toggle) */
+.sidebar__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Logo */
@@ -24,6 +32,58 @@
     height: 32px;
     width: auto;
     color: var(--text-primary);
+}
+
+/* Menu Toggle Button (Desktop: Hidden) */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary);
+    padding: 0;
+    position: relative;
+    width: 48px;
+    height: 48px;
+}
+
+.menu-toggle__icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -12px;
+    margin-left: -12px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.menu-toggle__icon--close {
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+
+/* Prevent transitions during resize */
+.resize-animation-stopper * {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* When open (parent class on sidebar or body), toggle icons */
+.sidebar--open .menu-toggle__icon--menu {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+.sidebar--open .menu-toggle__icon--close {
+    opacity: 1;
+    transform: rotate(0);
+}
+
+
+/* Sidebar Content (Desktop: Normal flow) */
+.sidebar__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sidebar-gap);
 }
 
 /* Navigation */
@@ -172,7 +232,82 @@
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
-        position: static;
-        gap: var(--space-6);
+        position: sticky;
+        top: 0;
+        gap: 0;
+        background: var(--bg-page);
+        padding: var(--space-4) 0;
+        margin-top: calc(var(--space-8) * -1);
+        /* Counteract layout padding if needed, but sticky usually needs distinct container */
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.3s ease;
+        z-index: 1000;
+        /* High z-index to stay on top */
+    }
+
+    /* Add border/shadow when stuck if we want? User just said sticky white bg. */
+
+    .sidebar__header {
+        position: relative;
+        z-index: 1002;
+        /* Above drawer */
+        background: var(--bg-page);
+        /* Ensure header stays opaque */
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    /* Burger Menu Drawer */
+    .sidebar__content {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 80%;
+        background: var(--bg-page);
+        /* Explicitly background color */
+        padding: var(--space-15) var(--space-6) var(--space-6);
+
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1001;
+        /* Behind header but above page */
+        justify-content: flex-start;
+        padding-top: 80px;
+        /* Space for header */
+        align-items: flex-start;
+        /* Left align links */
+    }
+
+    .sidebar--open .sidebar__content {
+        transform: translateX(0);
+    }
+
+    /* Links alignment */
+    .sidebar__nav,
+    .sidebar__intro,
+    .sidebar__contact {
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    /* Backdrop */
+    .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        /* Below sidebar */
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(2px);
+    }
+
+    .sidebar--open .sidebar-backdrop {
+        opacity: 1;
+        pointer-events: auto;
     }
 }

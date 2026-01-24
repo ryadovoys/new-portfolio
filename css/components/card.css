@@ -165,7 +165,7 @@
 }
 
 /* Responsive Overrides */
-@media (max-width: 1200px) {
+@media (max-width: 1024px) {
     .card--wide {
         grid-column: auto;
     }
@@ -290,4 +290,63 @@
 /* Hide dropzone text */
 .card--invisible .card__image--dropzone::after {
     display: none;
+}
+
+/* =================================================================
+   ADD BETWEEN CARDS
+   ================================================================= */
+
+.card {
+    position: relative;
+    /* Ensure card is relative for absolute positioning of zone */
+}
+
+.card__add-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -50px;
+    /* Center in 60px gap (30px center + 20px half-width) */
+    width: 40px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* Adjust for the gap. If gap is var(--card-gap), we ideally want to center in that gap.
+   Let's assume the zone is attached to the right side.
+   Note: This might overlap somewhat with the next card, but z-index should handle hovering.
+*/
+
+.card__add-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-blue-500);
+    /* Primary action color */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: scale(0.8);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card__add-zone:hover {
+    opacity: 1;
+}
+
+.card__add-zone:hover .card__add-btn {
+    transform: scale(1);
+}
+
+.card__add-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 3;
 }

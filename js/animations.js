@@ -36,14 +36,15 @@ function initScrollReveal() {
         });
     });
 
-    // Also animate sidebar
+    // Also animate sidebar (Desktop only)
     const sidebar = document.querySelector('.sidebar');
-    if (sidebar) {
+    if (sidebar && window.innerWidth > 768) {
         gsap.from(sidebar, {
             opacity: 0,
             x: -20,
             duration: 0.6,
-            ease: 'power2.out'
+            ease: 'power2.out',
+            clearProps: 'transform' // Clear transform after animation to avoid stacking context issues
         });
     }
 }
