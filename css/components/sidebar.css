@@ -37,10 +37,84 @@
     font-size: var(--font-size-sm);
     color: var(--link-color);
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.sidebar__nav-link::before {
+    content: '+';
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition: width 0.3s ease, margin-right 0.3s ease, opacity 0.3s ease;
 }
 
 .sidebar__nav-link:hover {
-    color: var(--link-hover);
+    color: var(--link-color);
+    /* Maintain color */
+    text-decoration: none;
+}
+
+.sidebar__nav-link:hover::before {
+    width: 16px;
+    /* Increased for + sign visibility */
+    margin-right: 12px;
+    opacity: 1;
+}
+
+/* Specific LinkedIn icon override */
+.sidebar__nav-link--linkedin::before {
+    content: '';
+    /* Remove character */
+    background-image: url('../../assets/LinkedIn_icon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.sidebar__nav-link--linkedin:hover::before {
+    width: 16px;
+    height: 16px;
+    margin-right: 12px;
+    opacity: 1;
+}
+
+/* Specific Mail icon override */
+.sidebar__nav-link--mail::before {
+    content: '';
+    /* Remove character */
+    background-image: url('../../assets/mail-2020-03-26.webp');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 2px;
+}
+
+.sidebar__nav-link--mail:hover::before {
+    width: 16px;
+    height: 16px;
+    margin-right: 12px;
+    opacity: 1;
+}
+
+/* Specific Resume icon override */
+.sidebar__nav-link--resume::before {
+    content: '';
+    /* Remove character */
+    background-image: url('../../assets/03c03b9252728796b26f5128a8e700b4.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 2px;
+}
+
+.sidebar__nav-link--resume:hover::before {
+    width: 16px;
+    height: 16px;
+    margin-right: 12px;
+    opacity: 1;
 }
 
 /* Introduction */
@@ -76,10 +150,30 @@
 .sidebar__contact a {
     color: var(--text-primary);
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.sidebar__contact a::before {
+    content: '+';
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition: width 0.3s ease, margin-right 0.3s ease, opacity 0.3s ease;
 }
 
 .sidebar__contact a:hover {
-    text-decoration: underline;
+    color: var(--text-primary);
+    /* Maintain color */
+    text-decoration: none;
+}
+
+.sidebar__contact a:hover::before {
+    width: 1ch;
+    margin-right: 12px;
+    opacity: 1;
 }
 
 /* Responsive */
