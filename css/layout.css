@@ -48,7 +48,7 @@
 @media (max-width: 768px) {
     .page {
         flex-direction: column;
-        padding: var(--space-6) var(--space-1);
+        padding: var(--space-6) var(--space-5);
         gap: var(--space-12);
     }
 
