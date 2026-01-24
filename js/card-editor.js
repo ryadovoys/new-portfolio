@@ -896,13 +896,10 @@ class CardEditor {
         // Instead, we will remove window listeners inside handleEnd.
 
 
-        // Resize handler - recalculate position
-        window.addEventListener('resize', () => {
-            const currentSlide = parseInt(zone.dataset.currentSlide) || 0;
-            const slideWidth = zone.offsetWidth;
-            track.style.transition = 'none';
-            track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
-        });
+        // Resize handler no longer needed for transform updates since we use percentages
+        // But we might need it for other things? No, strictly for transform it's not needed.	
+        // If we were using pixels we'd need it.
+        // We can remove it to save resources.
 
         // Hover scrub navigation
         let isHovering = false;
@@ -943,10 +940,11 @@ class CardEditor {
 
     goToSlide(zone, index) {
         const track = zone.querySelector('.carousel__track');
-        const slideWidth = zone.offsetWidth;
+        if (!track) return;
 
         track.style.transition = 'transform 0.3s ease';
-        track.style.transform = `translateX(-${index * slideWidth}px)`;
+        // Use percentage + gap to avoid sub-pixel rendering gaps
+        track.style.transform = `translateX(calc(-${index} * (100% + 2px)))`;
 
         zone.dataset.currentSlide = index;
     }

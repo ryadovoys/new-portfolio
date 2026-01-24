@@ -145,6 +145,7 @@
 
 .carousel__track {
     display: flex;
+    gap: 2px;
     height: 100%;
     will-change: transform;
 }
