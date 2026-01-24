@@ -20,7 +20,7 @@
 /* Card Grid */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     column-gap: var(--grid-gap);
     row-gap: var(--grid-vertical-gap);
 }
@@ -28,7 +28,7 @@
 /* Featured row - first row with larger card */
 .card-grid--featured {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
     column-gap: var(--grid-gap);
     row-gap: var(--grid-vertical-gap);
     margin-bottom: var(--space-12);
@@ -48,7 +48,7 @@
 @media (max-width: 768px) {
     .page {
         flex-direction: column;
-        padding: var(--space-6) var(--space-5);
+        padding: var(--space-8) var(--space-4);
         gap: var(--space-12);
     }
 
