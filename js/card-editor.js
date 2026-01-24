@@ -80,8 +80,9 @@ class CardEditor {
 
     createCardFromData(data, index, grid, placeholder) {
         // Determine card class based on data.width
-        const isWide = data.width === 'wide';
-        const cardClass = isWide ? 'card card--wide' : 'card';
+        let cardClass = 'card';
+        if (data.width === 'wide') cardClass += ' card--wide';
+        if (data.width === 'invisible') cardClass += ' card--invisible';
 
         const cardEl = document.createElement('div');
         cardEl.className = cardClass;
@@ -167,7 +168,7 @@ class CardEditor {
             zone.classList.remove('card__image--carousel');
             zone.classList.add('card__image--dropzone');
 
-            this.addDeleteButton(zone, index);
+            this.addCardControls(zone, index);
 
             // Re-bind events for the new dropzone
             zone.addEventListener('dragover', (e) => this.handleDragOver(e));
@@ -194,7 +195,6 @@ class CardEditor {
         // Remove from array
         this.cards.splice(index, 1);
 
-        // Update indices for all remaining cards
         this.cards.forEach((c, i) => {
             c.id = i;
             const element = c.element;
@@ -202,13 +202,121 @@ class CardEditor {
             const description = element.querySelector('.card__description');
             const tag = element.querySelector('.card__tag');
             const image = element.querySelector('.card__image');
-            const deleteBtn = element.querySelector('.card__delete-btn');
+
+            // Update controls indices
+            const deleteBtn = element.querySelector('.card__control-btn[data-action="delete"]');
+            const duplicateBtn = element.querySelector('.card__control-btn[data-action="duplicate"]');
 
             if (title) title.dataset.cardIndex = i;
             if (description) description.dataset.cardIndex = i;
             if (tag) tag.dataset.cardIndex = i;
             if (image) image.dataset.cardIndex = i;
             if (deleteBtn) deleteBtn.dataset.cardIndex = i;
+            if (duplicateBtn) duplicateBtn.dataset.cardIndex = i;
+        });
+
+        this.saveCards();
+    }
+
+    duplicateCard(e) {
+        e.stopPropagation();
+        const index = parseInt(e.currentTarget.dataset.cardIndex);
+        const originalCard = this.cards[index];
+        if (!originalCard) return;
+
+        // Create deep copy of data
+        const newData = {
+            title: originalCard.title,
+            description: originalCard.description,
+            tag: originalCard.tag,
+            width: originalCard.element.classList.contains('card--wide') ? 'wide' :
+                originalCard.element.classList.contains('card--invisible') ? 'invisible' : 'regular',
+            media: Array.isArray(originalCard.media) ? [...originalCard.media] : originalCard.media,
+            mediaType: originalCard.mediaType
+        };
+
+        const grid = document.querySelector('.card-grid');
+        // Insert AFTER the current card
+        const referenceNode = originalCard.element.nextSibling;
+
+        // We can reuse logic if we refactor createCardFromData slightly or just manually create it
+        // Let's refactor createCardFromData to accept a reference node?
+        // Or just copy logic here for simplicity to avoid breaking changes
+
+        // Determine card class
+        let cardClass = 'card';
+        if (newData.width === 'wide') cardClass += ' card--wide';
+        if (newData.width === 'invisible') cardClass += ' card--invisible';
+
+        const cardEl = document.createElement('div');
+        cardEl.className = cardClass;
+
+        cardEl.innerHTML = `
+          <div class="card__image"></div>
+          <div class="card__content">
+            <div class="card__header">
+              <h3 class="card__title">${newData.title || 'Card title'}</h3>
+              <span class="card__tag">${newData.tag || ''}</span>
+            </div>
+            <p class="card__description">${newData.description || 'Click to edit description text.'}</p>
+          </div>
+        `;
+
+        if (referenceNode) {
+            grid.insertBefore(cardEl, referenceNode);
+        } else {
+            // It was the last card (or second to last before placeholder)
+            // Just insert before placeholder
+            const placeholder = document.getElementById('addCardPlaceholder');
+            grid.insertBefore(cardEl, placeholder);
+        }
+
+        const newIndex = index + 1;
+
+        // Insert into array
+        this.cards.splice(newIndex, 0, {
+            element: cardEl,
+            id: newIndex,
+            title: newData.title,
+            description: newData.description,
+            tag: newData.tag,
+            media: newData.media,
+            mediaType: newData.mediaType
+        });
+
+        // Initialize features
+        this.setupNewCard(cardEl, newIndex);
+
+        // Load media if present
+        if (newData.media) {
+            const imageContainer = cardEl.querySelector('.card__image');
+            this.setCardMedia(imageContainer, newData.media, newData.mediaType, newIndex);
+        }
+
+        // Apply tag color
+        const tagEl = cardEl.querySelector('.card__tag');
+        if (tagEl && newData.tag) {
+            this.updateTagColor(tagEl);
+        }
+
+        // Update indices for all cards
+        this.cards.forEach((c, i) => {
+            c.id = i;
+            const element = c.element;
+            const title = element.querySelector('.card__title');
+            const description = element.querySelector('.card__description');
+            const tag = element.querySelector('.card__tag');
+            const image = element.querySelector('.card__image');
+
+            const deleteBtn = element.querySelector('.card__control-btn[data-action="delete"]');
+            const duplicateBtn = element.querySelector('.card__control-btn[data-action="duplicate"]');
+
+            if (title) title.dataset.cardIndex = i;
+            if (description) description.dataset.cardIndex = i;
+            if (tag) tag.dataset.cardIndex = i;
+            if (image) image.dataset.cardIndex = i;
+            if (deleteBtn) deleteBtn.dataset.cardIndex = i;
+            if (duplicateBtn) duplicateBtn.dataset.cardIndex = i;
         });
 
         this.saveCards();
@@ -250,8 +358,8 @@ class CardEditor {
     }
 
     handleZoneClick(e) {
-        // Don't open picker if clicking delete button or if has media
-        if (e.target.closest('.card__delete-btn')) return;
+        // Don't open picker if clicking control buttons or if has media
+        if (e.target.closest('.card__control-btn')) return;
 
         const zone = e.currentTarget;
         const hasMedia = zone.querySelector('img') || zone.querySelector('video') || zone.classList.contains('card__image--carousel');
@@ -614,21 +722,43 @@ class CardEditor {
             zone.appendChild(img);
         }
 
-        // Add delete button
-        this.addDeleteButton(zone, cardIndex);
+        // Add controls
+        this.addCardControls(zone, cardIndex);
     }
 
-    addDeleteButton(zone, cardIndex) {
-        // Remove existing delete button if any
-        const existing = zone.querySelector('.card__delete-btn');
+    addCardControls(zone, cardIndex) {
+        // Remove existing controls if any
+        const existing = zone.querySelector('.card__controls');
         if (existing) existing.remove();
+        // Also remove legacy single delete button just in case
+        const legacyBtn = zone.querySelector('.card__delete-btn');
+        if (legacyBtn) legacyBtn.remove();
 
+        const controls = document.createElement('div');
+        controls.className = 'card__controls';
+
+        // Duplicate Button
+        const duplicateBtn = document.createElement('button');
+        duplicateBtn.className = 'card__control-btn';
+        duplicateBtn.dataset.action = 'duplicate';
+        duplicateBtn.dataset.cardIndex = cardIndex;
+        duplicateBtn.title = 'Duplicate Card';
+        duplicateBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+        duplicateBtn.addEventListener('click', (e) => this.duplicateCard(e));
+
+        // Delete Button
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'card__delete-btn';
-        deleteBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
+        deleteBtn.className = 'card__control-btn';
+        deleteBtn.dataset.action = 'delete';
         deleteBtn.dataset.cardIndex = cardIndex;
-        deleteBtn.addEventListener('click', (e) => this.clearCardMedia(e));
-        zone.appendChild(deleteBtn);
+        deleteBtn.title = 'Delete Card';
+        deleteBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
+        deleteBtn.addEventListener('click', (e) => this.clearCardMedia(e)); // Reuse clear logic for delete action
+
+        controls.appendChild(duplicateBtn);
+        controls.appendChild(deleteBtn);
+
+        zone.appendChild(controls);
     }
 
     setCardCarousel(zone, items, cardIndex) {
@@ -672,8 +802,8 @@ class CardEditor {
         // Add drag/swipe functionality
         this.initCarouselDrag(zone, track);
 
-        // Add delete button
-        this.addDeleteButton(zone, cardIndex);
+        // Add controls
+        this.addCardControls(zone, cardIndex);
     }
 
     initCarouselDrag(zone, track) {
@@ -827,7 +957,9 @@ class CardEditor {
         if (!grid || !placeholder) return;
 
         const index = this.cards.length;
-        const cardClass = type === 'wide' ? 'card card--wide' : 'card';
+        let cardClass = 'card';
+        if (type === 'wide') cardClass += ' card--wide';
+        if (type === 'invisible') cardClass += ' card--invisible';
 
         const cardEl = document.createElement('div');
         cardEl.className = cardClass;
@@ -919,13 +1051,8 @@ class CardEditor {
             imageContainer.dataset.cardIndex = index;
             imageContainer.classList.add('card__image--dropzone');
 
-            // Add delete button
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'card__delete-btn';
-            deleteBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
-            deleteBtn.dataset.cardIndex = index;
-            deleteBtn.addEventListener('click', (e) => this.clearCardMedia(e));
-            imageContainer.appendChild(deleteBtn);
+            // Add controls
+            this.addCardControls(imageContainer, index);
 
             imageContainer.addEventListener('dragover', (e) => this.handleDragOver(e));
             imageContainer.addEventListener('dragleave', (e) => this.handleDragLeave(e));
@@ -939,7 +1066,9 @@ class CardEditor {
             title: card.title,
             description: card.description,
             tag: card.tag,
-            width: card.element.classList.contains('card--wide') ? 'wide' : 'regular',
+            tag: card.tag,
+            width: card.element.classList.contains('card--wide') ? 'wide' :
+                card.element.classList.contains('card--invisible') ? 'invisible' : 'regular',
             media: card.media,
             mediaType: card.mediaType
         }));

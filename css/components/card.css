@@ -244,3 +244,49 @@
     border-color: var(--color-neutral-600);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
+/* Invisible card variant */
+/* Invisible card variant */
+.card--invisible {
+    background: transparent;
+    box-shadow: none;
+    border: 1px dashed transparent;
+    /* Hidden by default */
+    transition: border-color 0.2s ease;
+}
+
+.card--invisible:hover {
+    border-color: var(--color-neutral-300);
+}
+
+/* Hide media container background */
+.card--invisible .card__image {
+    background: transparent;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Hide media elements specifically */
+.card--invisible .card__image img,
+.card--invisible .card__image video,
+.card--invisible .card__image .carousel__track {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Hide text content */
+.card--invisible .card__content {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* On hover, don't show background, just the dashed border from parent */
+.card--invisible:hover .card__image {
+    background: transparent;
+}
+
+/* Hide dropzone text */
+.card--invisible .card__image--dropzone::after {
+    display: none;
+}
