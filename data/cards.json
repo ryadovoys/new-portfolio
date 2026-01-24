@@ -44,11 +44,8 @@
     "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products.",
     "tag": "Project",
     "width": "wide",
-    "media": [
-      "/assets/images/7-upload-1.gif",
-      "/assets/images/1-screenshot-medium.webp"
-    ],
-    "mediaType": "carousel"
+    "media": "/assets/images/7-upload-1.gif",
+    "mediaType": "image"
   },
   {
     "title": "Design systems",
@@ -67,15 +64,12 @@
     "mediaType": "image"
   },
   {
-    "title": "Building apps, tools, shortcuts",
-    "description": "Love creating internal tools that solve real problems. From task managers to prototyping apps",
+    "title": "Building tools",
+    "description": "I love creating internal tools that solve real problems. From iOS apps and web applications to Figma plugins and Apple shortcuts that help with everyday tasks.",
     "tag": "Experience",
     "width": "regular",
-    "media": [
-      "/assets/images/CleanShot 2026-01-23 at 13.08.33@2x.png",
-      "/assets/images/1-frame-189.jpg"
-    ],
-    "mediaType": "carousel"
+    "media": "/assets/images/CleanShot 2026-01-23 at 13.08.33@2x.png",
+    "mediaType": "image"
   },
   {
     "title": "Public talks",
@@ -94,7 +88,7 @@
     "mediaType": "video"
   },
   {
-    "title": "Strong design foundations",
+    "title": "Design base",
     "description": "Composition, typography, color, form — shaped by years in branding. Featured in Logolounge, Dieline, Packaging of the World.",
     "tag": "Experience",
     "width": "regular",
@@ -103,10 +97,10 @@
   },
   {
     "title": "Logo design",
-    "description": "100+ logos designed throughout my career. From startups to federal brands — identity systems that last.",
+    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/images/4-artboard-5.jpg",
+    "media": "/assets/images/Image-590bb1b1-a148-4566-a6f2-eaa6aaca32be.gif",
     "mediaType": "image"
   },
   {
