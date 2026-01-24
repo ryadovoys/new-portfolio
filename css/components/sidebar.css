@@ -44,40 +44,47 @@
 
 .sidebar__nav-link::before {
     content: '+';
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 0;
+    height: 24px;
     overflow: hidden;
     white-space: nowrap;
     opacity: 0;
+    border-radius: 50%;
     transition: width 0.3s ease, margin-right 0.3s ease, opacity 0.3s ease;
+    flex-shrink: 0;
 }
 
 .sidebar__nav-link:hover {
     color: var(--link-color);
-    /* Maintain color */
     text-decoration: none;
 }
 
 .sidebar__nav-link:hover::before {
-    width: 16px;
-    /* Increased for + sign visibility */
+    width: 24px;
     margin-right: 12px;
     opacity: 1;
+    background-color: var(--color-neutral-100);
+}
+
+[data-theme="dark"] .sidebar__nav-link:hover::before {
+    background-color: var(--color-neutral-800);
 }
 
 /* Specific LinkedIn icon override */
 .sidebar__nav-link--linkedin::before {
     content: '';
-    /* Remove character */
     background-image: url('../../assets/LinkedIn_icon.png');
-    background-size: contain;
+    background-size: 16px;
     background-repeat: no-repeat;
     background-position: center;
 }
 
 .sidebar__nav-link--linkedin:hover::before {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     margin-right: 12px;
     opacity: 1;
 }
@@ -85,17 +92,15 @@
 /* Specific Mail icon override */
 .sidebar__nav-link--mail::before {
     content: '';
-    /* Remove character */
     background-image: url('../../assets/mail-2020-03-26.webp');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    border-radius: 2px;
 }
 
 .sidebar__nav-link--mail:hover::before {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     margin-right: 12px;
     opacity: 1;
 }
@@ -103,17 +108,15 @@
 /* Specific Resume icon override */
 .sidebar__nav-link--resume::before {
     content: '';
-    /* Remove character */
     background-image: url('../../assets/03c03b9252728796b26f5128a8e700b4.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    border-radius: 2px;
 }
 
 .sidebar__nav-link--resume:hover::before {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     margin-right: 12px;
     opacity: 1;
 }
