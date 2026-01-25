@@ -4,7 +4,7 @@ const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Borde
 // Resume Content
 const content = {
     name: "SERGEY RYADOVOY",
-    contact: "Cupertino, CA | ryadovoys@gmail.com | ryadovoy.com | linkedin.com/in/sergeyryadovoy",
+    contact: "Mountain View, CA | ryadovoys@gmail.com | ryadovoy.com | linkedin.com/in/sergeyryadovoy",
 
     summary: "Design leader with 15 years of experience across branding, digital products, and AI. Currently VP of Experience Design at Digitas, leading AI product design for enterprise clients and internal AI platforms. I design conversational AI interfaces, build design systems, and prototype rapidly using classic design tools such as Figma and modern approaches such as coding with AI. Strong foundation in visual design, typography, and composition. I believe in keeping humans in the loop when designing AI experiences.",
 
@@ -86,27 +86,43 @@ const content = {
     }
 };
 
-// Style Settings: Helvetica Clean
+// Style Settings: Matches ryadovoy-resume-2026.docx (Extracted)
 const style = {
-    font: "Helvetica",
-    headingSize: 20 * 2, // 20pt (docx uses half-points)
-    bodySize: 10 * 2,    // 10pt
-    sectionSize: 10 * 2,  // 10pt (matching body as per preset)
-    lineHeight: 1.45 * 240, // Twips (240 = 1 line) approx adjustment
-    paragraphSpacing: 80, // Twips (~4px)
-    sectionSpacing: 320,  // Twips (~16px)
-    border: true
+    font: "Arial",
+    headingSize: 40,   // 20pt (sz=40)
+    bodySize: 24,      // 12pt (sz=24)
+    contactSize: 22,   // 11pt (sz=22)
+    sectionSize: 28,   // 14pt (sz=28) - "Heading 1" in DOCX is 14pt
+    jobTitleSize: 24,  // 12pt (sz=24)
+
+    lineHeight: 276,   // w:line="276"
+
+    // Margins (Twips)
+    margins: {
+        top: 900,      // 0.625 in
+        right: 1080,   // 0.75 in
+        bottom: 1080,  // 0.75 in
+        left: 1080     // 0.75 in
+    },
+
+    // Colors
+    separatorColor: "B7B7B7",
+
+    // Spacing
+    paragraphSpacing: 200, // 200 twips (10pt) - Used in contact spacing
+    sectionSpacingBefore: 480, // 24pt
+    sectionSpacingAfter: 240,  // 12pt
+
+    border: false // No borders in reference file styles
 };
 
 // Helper: Create Section Title
 const createSectionTitle = (text) => {
     const paragraphOptions = {
         text: text.toUpperCase(),
-        heading: HeadingLevel.HEADING_2,
-        spacing: { before: style.sectionSpacing, after: 120 }, // 120 twips = 6pt
-        border: style.border ? {
-            bottom: { style: BorderStyle.SINGLE, size: 6, space: 4 }
-        } : undefined
+        heading: HeadingLevel.HEADING_1, // Using Heading 1 as per reference
+        spacing: { before: style.sectionSpacingBefore, after: style.sectionSpacingAfter },
+        border: undefined // Explicitly no border
     };
 
     return new Paragraph(paragraphOptions);
@@ -123,15 +139,18 @@ const doc = new Document({
                     color: "000000"
                 },
                 paragraph: {
-                    spacing: { line: 276 } // Approx 1.15 line height default, adjusted below
+                    spacing: { line: style.lineHeight }
                 }
             },
-            heading2: {
+            heading1: {
                 run: {
                     font: style.font,
                     size: style.sectionSize,
                     bold: true,
                     color: "000000"
+                },
+                paragraph: {
+                    spacing: { before: style.sectionSpacingBefore, after: style.sectionSpacingAfter }
                 }
             }
         }
@@ -139,12 +158,7 @@ const doc = new Document({
     sections: [{
         properties: {
             page: {
-                margin: {
-                    top: 1008, // 0.7in
-                    right: 1008,
-                    bottom: 1008,
-                    left: 1008
-                }
+                margin: style.margins
             }
         },
         children: [
@@ -164,16 +178,19 @@ const doc = new Document({
 
             // Contact
             new Paragraph({
-                text: content.contact,
+                children: content.contact.split(" | ").flatMap((item, index, array) => [
+                    new TextRun({ text: item, size: style.contactSize }), // 11pt
+                    ...(index < array.length - 1 ? [new TextRun({ text: "  |  ", color: style.separatorColor, size: style.contactSize })] : [])
+                ]),
                 alignment: AlignmentType.LEFT,
-                spacing: { after: style.sectionSpacing }
+                spacing: { after: 200 } // Matches extracted "200"
             }),
 
             // SUMMARY
             createSectionTitle("Summary"),
             new Paragraph({
                 text: content.summary,
-                spacing: { after: style.paragraphSpacing }
+                spacing: { after: 60 } // Matches extracted "60"
             }),
 
             // SKILLS
@@ -183,7 +200,7 @@ const doc = new Document({
                     new TextRun({ text: skill.category + ": ", bold: true }),
                     new TextRun({ text: skill.items })
                 ],
-                spacing: { after: style.paragraphSpacing }
+                spacing: { after: 60 } // Matches extracted "60"
             })),
 
             // EXPERIENCE
@@ -191,23 +208,21 @@ const doc = new Document({
             ...content.experience.flatMap(job => [
                 new Paragraph({
                     children: [
-                        new TextRun({ text: job.title, bold: true, size: style.bodySize + 2 }), // Slightly larger title
-                        new TextRun({ text: " | " + job.company }),
-                        new TextRun({ text: "\t" + job.dates, italics: true })
+                        new TextRun({ text: job.title, bold: true }), // size inherited (24/12pt)
+                        new TextRun({ text: "  |  ", color: style.separatorColor }),
+                        new TextRun({ text: job.company }),
+                        new TextRun({ text: "  |  ", color: style.separatorColor }), // Added second separator per reference text
+                        new TextRun({ text: job.dates }) // Removed italics, matched reference
                     ],
-                    tabStops: [
-                        { type: "right", position: 9800 } // Approx right align
-                    ],
-                    spacing: { before: 200, after: 60 }
+                    spacing: { after: 40 } // Matches extracted "40"
                 }),
                 ...(job.description ? [new Paragraph({
                     text: job.description,
-                    spacing: { after: 60 }
-                })] : []),
-                ...job.bullets.map(bullet => new Paragraph({
-                    text: bullet,
-                    bullet: { level: 0 },
                     spacing: { after: 40 }
+                })] : []),
+                ...job.bullets.map((bullet, index, array) => new Paragraph({
+                    text: "• " + bullet,
+                    spacing: { after: index === array.length - 1 ? 240 : 40 } // Last bullet has 12pt (240 twips) spacing
                 }))
             ]),
 
@@ -215,39 +230,47 @@ const doc = new Document({
             createSectionTitle("Projects & Outside Experience"),
             ...content.projects.map(project => new Paragraph({
                 children: [
-                    new TextRun({ text: project.name, bold: true }),
-                    new TextRun({ text: " - " + project.description })
+                    new TextRun({ text: project.name + ":", bold: true }), // Colon added
+                    new TextRun({ text: " " + project.description })
                 ],
-                spacing: { after: style.paragraphSpacing }
+                spacing: { after: 40 }
             })),
 
             // ACTIVITIES
             createSectionTitle("Activities & Leadership"),
-            ...content.activities.map(activity => new Paragraph({
-                children: [
-                    new TextRun({ text: activity.title, bold: true }),
-                    new TextRun({ text: " | " + activity.details })
-                ],
-                spacing: { after: style.paragraphSpacing }
-            })),
+            ...content.activities.map(activity => {
+                const separator = activity.title.includes("Figma") ? " " : ": ";
+                const details = activity.title.includes("Figma") ? "2024 – 2025" : activity.details;
+
+                return new Paragraph({
+                    children: [
+                        new TextRun({ text: activity.title, bold: true }),
+                        new TextRun({ text: separator + details })
+                    ],
+                    spacing: { after: 40 }
+                });
+            }),
 
             // EDUCATION
             createSectionTitle("Education"),
             new Paragraph({
                 children: [
                     new TextRun({ text: content.education.degree, bold: true }),
-                    new TextRun({ text: " | " + content.education.school }),
-                    new TextRun({ text: "\t" + content.education.dates, italics: true })
+                    new TextRun({ text: "  |  ", color: style.separatorColor }),
+                    new TextRun({ text: content.education.school }),
+                    new TextRun({ text: "  |  ", color: style.separatorColor }), // Added pipe
+                    new TextRun({ text: content.education.schoolLocation || "Russia" }), // Hardcoded in XML "Russia", adding fallback
+                    new TextRun({ text: "  |  ", color: style.separatorColor }),
+                    new TextRun({ text: content.education.dates })
                 ],
-                tabStops: [
-                    { type: "right", position: 9800 }
-                ]
+                // No tab stops in reference for Education
             })
         ]
     }]
 });
 
 Packer.toBuffer(doc).then((buffer) => {
-    fs.writeFileSync("ryadovoy-resume-clean.docx", buffer);
-    console.log("Resume generated: ryadovoy-resume-clean.docx");
+    fs.writeFileSync("ryadovoy-resume-perfect.docx", buffer); // New filename
+    console.log("Resume generated: ryadovoy-resume-perfect.docx");
 });
+
