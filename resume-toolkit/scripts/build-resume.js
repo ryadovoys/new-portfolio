@@ -269,8 +269,11 @@ const doc = new Document({
     }]
 });
 
+const path = require('path');
+
 Packer.toBuffer(doc).then((buffer) => {
-    fs.writeFileSync("ryadovoy-resume-perfect.docx", buffer); // New filename
-    console.log("Resume generated: ryadovoy-resume-perfect.docx");
+    const outputPath = path.join(__dirname, '../output', "ryadovoy-resume-perfect.docx");
+    fs.writeFileSync(outputPath, buffer);
+    console.log(`Resume generated: ${outputPath}`);
 });
 
