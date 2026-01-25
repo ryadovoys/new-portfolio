@@ -10,15 +10,13 @@ const content = {
 
 
     body: [
-        "I'm a design leader with 15 years of experience, currently VP of Experience Design at Digitas, where I lead AI product design. I'm applying for the Senior AI Product Designer role on the Gemini team because I want to design AI experiences at the scale and quality that Google operates at.",
+        "I'm applying for the Senior AI Product Designer role because I'm already building with Gemini. As a designer who codes, I used the Gemini API to build 'Mindcomplete', a Figma plugin that brings generative writing directly into the design environment. I want to bring this hands-on technical understanding of your models to the Gemini App team.",
 
-        "At Digitas, I lead a team focused on AI interfaces and design systems. One of our main projects is an internal agentic platform with conversational AI experiences, including chatbot interfaces that let users train bots with their own data. I prototype rapidly using Figma and code, which helps teams make decisions faster. Before that, I led Visa's digital presence for three years, building their design system and exploring AI experiments.",
+        "Experience wise, I currently lead AI product design at Digitas. My team builds agentic platforms where we don't just imagine AI features—we prototype them. I use ComfyUI and advanced generative workflows (from Midjourney to Kling and Sora) to simulate model responses and define design requirements before engineering starts. This matches your need for a designer who can 'bridge design and technology' and 'simulate model responses'.",
 
-        "I also build my own AI products. Mindcomplete is a Figma plugin that uses Gemini to complete your writing in real time. Journely is an iOS app I created for iPad, a conversational UI that uses handwriting instead of typed text for journaling and therapy. Both are available to download.",
+        "My background spans 15 years, including leading Visa's design system and building successful consumer iOS apps like Journely. I understand how to turn complex model capabilities into intuitive, human-centered features.",
 
-        "What makes me different is my combination of skills. Strong visual foundation from years of branding and typography. Systems thinking from building design systems at scale. And hands-on AI experience, not just exploring, but shipping real products. I also believe in keeping humans in the loop when designing AI, which was a priority in our Digitas platform.",
-
-        "I'd love to bring this experience to the Gemini team."
+        "I'm excited about the chance to help shape the future of Generative Media with DeepMind."
     ]
 };
 

@@ -6,13 +6,13 @@ const content = {
     name: "SERGEY RYADOVOY",
     contact: "Mountain View, CA | ryadovoys@gmail.com | ryadovoy.com | linkedin.com/in/sergeyryadovoy",
 
-    summary: "Design leader with 15 years of experience across branding, digital products, and AI. Currently VP of Experience Design at Digitas, leading AI product design for enterprise clients and internal AI platforms. I design conversational AI interfaces, build design systems, and prototype rapidly using classic design tools such as Figma and modern approaches such as coding with AI. Strong foundation in visual design, typography, and composition. I believe in keeping humans in the loop when designing AI experiences.",
+    summary: "Design leader with 15 years of experience building generative media tools and AI platforms. Currently VP at Digitas, I combine deep technical prototyping (ComfyUI, Gemini API) with product strategy to ship agentic AI experiences. I design by building—using code and advanced generative workflows to bridge the gap between model capabilities and user needs.",
 
     skills: [
-        { category: "AI & Prototyping", items: "Conversational AI interfaces, AI-powered tools, Figma (advanced prototyping), AI coding for rapid iteration, ProtoPie, Principle" },
-        { category: "Motion Design", items: "After Effects, Figma prototyping, Cavalry" },
-        { category: "Platforms", items: "Web, mobile, desktop apps, cross-platform design" },
-        { category: "Design Systems", items: "Figma components, tokens, variables, documentation, scalable systems" }
+        { category: "Generative Media", items: "ComfyUI, Midjourney, Visual Electric, Kling, Sora, Runway, Google Nano Banana Pro, Advanced Weavy workflows" },
+        { category: "AI & Prototyping", items: "Gemini API, Conversational UI, Figma (Advanced), AI Coding, ProtoPie, Principle" },
+        { category: "Platforms", items: "Web, Cloud-based Creative Tools, Mobile, Desktop Apps" },
+        { category: "Design Systems", items: "Figma Variables, Token Architecture, Scalable Systems" }
     ],
 
     experience: [
@@ -272,7 +272,7 @@ const doc = new Document({
 const path = require('path');
 
 Packer.toBuffer(doc).then((buffer) => {
-    const outputPath = path.join(__dirname, '../output', "ryadovoy-resume-perfect.docx");
+    const outputPath = path.join(__dirname, '../output', "ryadovoy-resume-google.docx");
     fs.writeFileSync(outputPath, buffer);
     console.log(`Resume generated: ${outputPath}`);
 });
