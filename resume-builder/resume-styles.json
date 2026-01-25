@@ -1,0 +1,31 @@
+{
+  "page": {
+    "width": "8.5in",
+    "padding": "0.75in"
+  },
+  "fonts": {
+    "heading": "Arial",
+    "body": "Arial"
+  },
+  "colors": {
+    "text": "#000000",
+    "headings": "#000000",
+    "links": "#000000"
+  },
+  "sizes": {
+    "name": "18pt",
+    "contact": "10pt",
+    "sectionHeading": "11pt",
+    "jobTitle": "10pt",
+    "body": "10pt"
+  },
+  "spacing": {
+    "sectionMarginTop": "14px",
+    "sectionMarginBottom": "8px",
+    "paragraphMargin": "4px",
+    "lineHeight": "1.3"
+  },
+  "borders": {
+    "sectionBorder": "1px solid #000000"
+  }
+}

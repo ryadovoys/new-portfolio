@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder - Sergey Ryadovoy</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Editor Panel */
+    .editor-panel {
+      width: 320px;
+      background: #252525;
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 1px solid #333;
+      flex-shrink: 0;
+    }
+
+    .editor-panel h2 {
+      font-size: 14px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .preset-btn {
+      padding: 12px 8px;
+      background: #333;
+      border: 2px solid #444;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 11px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover {
+      border-color: #666;
+      background: #3a3a3a;
+    }
+
+    .preset-btn.active {
+      border-color: #4a9eff;
+      background: #2a3a4a;
+    }
+
+    .preset-btn .preset-name {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .preset-btn .preset-desc {
+      color: #888;
+      font-size: 10px;
+    }
+
+    .current-values {
+      background: #1a1a1a;
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 11px;
+      color: #888;
+    }
+
+    .current-values h4 {
+      color: #666;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+
+    .current-values code {
+      display: block;
+      color: #4a9eff;
+      font-family: monospace;
+      white-space: pre-wrap;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      background: #4a9eff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .btn:hover {
+      background: #3a8eef;
+    }
+
+    .btn-secondary {
+      background: #444;
+    }
+
+    .btn-secondary:hover {
+      background: #555;
+    }
+
+    /* Preview Panel */
+    .preview-panel {
+      flex: 1;
+      background: #333;
+      padding: 40px;
+      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* Resume Styles */
+    .resume {
+      background: #fff;
+      color: #000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      min-height: 11in;
+    }
+
+    .resume-header {
+      margin-bottom: 12px;
+    }
+
+    .resume-name {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .resume-contact {
+      color: #000;
+    }
+
+    .resume-section {
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid #000;
+      padding-bottom: 2px;
+      margin-bottom: 8px;
+    }
+
+    .job {
+      margin-bottom: 12px;
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .job-title {
+      font-weight: bold;
+    }
+
+    .job-dates {
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    .job-description {
+      margin: 4px 0;
+    }
+
+    .job-bullets {
+      padding-left: 20px;
+      margin: 4px 0;
+    }
+
+    .job-bullets li {
+      margin-bottom: 2px;
+    }
+
+    .skill-item {
+      margin-bottom: 4px;
+    }
+
+    .skill-category {
+      font-weight: bold;
+    }
+
+    .project-item, .activity-item {
+      margin-bottom: 4px;
+    }
+
+    .project-name, .activity-title {
+      font-weight: bold;
+    }
+
+    .education-item {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .editor-panel { display: none; }
+      .preview-panel { padding: 0; background: #fff; }
+      .resume { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="editor-panel">
+      <h2>Style Presets</h2>
+
+      <div class="preset-grid" id="presetGrid"></div>
+
+      <div class="current-values">
+        <h4>Current Style</h4>
+        <code id="currentValues"></code>
+      </div>
+
+      <button class="btn" onclick="saveStyles()" style="margin-top: 16px;">Save Styles JSON</button>
+      <button class="btn btn-secondary" onclick="window.print()">Print / Save PDF</button>
+    </div>
+
+    <div class="preview-panel">
+      <div class="resume" id="resume"></div>
+    </div>
+  </div>
+
+  <script>
+    // 10 Style Presets
+    const presets = [
+      {
+        name: "Clean Minimal",
+        desc: "Arial, tight spacing",
+        fonts: { heading: "Arial", body: "Arial" },
+        sizes: { name: "18pt", contact: "10pt", section: "10pt", job: "10pt", body: "10pt" },
+        spacing: { page: "0.6in", section: "12px", line: "1.35", paragraph: "3px", job: "10px" }
+      },
+      {
+        name: "Airy Modern",
+        desc: "Arial, more breathing room",
+        fonts: { heading: "Arial", body: "Arial" },
+        sizes: { name: "20pt", contact: "10pt", section: "10pt", job: "10pt", body: "10pt" },
+        spacing: { page: "0.75in", section: "16px", line: "1.5", paragraph: "5px", job: "14px" }
+      },
+      {
+        name: "Spacious Pro",
+        desc: "Arial, max whitespace",
+        fonts: { heading: "Arial", body: "Arial" },
+        sizes: { name: "22pt", contact: "10pt", section: "11pt", job: "10pt", body: "10pt" },
+        spacing: { page: "0.85in", section: "20px", line: "1.55", paragraph: "6px", job: "16px" }
+      },
+      {
+        name: "Classic Times",
+        desc: "Times New Roman, traditional",
+        fonts: { heading: "Times New Roman", body: "Times New Roman" },
+        sizes: { name: "20pt", contact: "10pt", section: "11pt", job: "10pt", body: "10pt" },
+        spacing: { page: "0.75in", section: "14px", line: "1.4", paragraph: "4px", job: "12px" }
+      },
+      {
+        name: "Academic",
+        desc: "Times New Roman, spacious",
+        fonts: { heading: "Times New Roman", body: "Times New Roman" },
+        sizes: { name: "18pt", contact: "10pt", section: "10pt", job: "10pt", body: "11pt" },
+        spacing: { page: "1in", section: "18px", line: "1.5", paragraph: "5px", job: "14px" }
+      },
+      {
+        name: "Georgia Elegant",
+        desc: "Georgia, refined look",
+        fonts: { heading: "Georgia", body: "Georgia" },
+        sizes: { name: "20pt", contact: "10pt", section: "10pt", job: "10pt", body: "10pt" },
+        spacing: { page: "0.75in", section: "16px", line: "1.45", paragraph: "4px", job: "12px" }
+      },
+      {
+        name: "Mixed Modern",
+        desc: "Arial heads, Georgia body",
+        fonts: { heading: "Arial", body: "Georgia" },
+        sizes: { name: "20pt", contact: "10pt", section: "10pt", job: "10pt", body: "10pt" },
+        spacing: { page: "0.7in", section: "14px", line: "1.45", paragraph: "4px", job: "12px" }
+      },
+      {
+        name: "Compact Dense",
+        desc: "Arial, fit more content",
+        fonts: { heading: "Arial", body: "Arial" },
+        sizes: { name: "16pt", contact: "9pt", section: "9pt", job: "9pt", body: "9pt" },
+        spacing: { page: "0.5in", section: "10px", line: "1.3", paragraph: "2px", job: "8px" }
+      },
+      {
+        name: "Helvetica Clean",
+        desc: "Helvetica, Swiss style",
+        fonts: { heading: "Helvetica", body: "Helvetica" },
+        sizes: { name: "20pt", contact: "9pt", section: "9pt", job: "10pt", body: "10pt" },
+        spacing: { page: "0.7in", section: "16px", line: "1.45", paragraph: "4px", job: "12px" },
+        border: true
+      },
+      {
+        name: "Helvetica No Line",
+        desc: "Helvetica, no borders",
+        fonts: { heading: "Helvetica", body: "Helvetica" },
+        sizes: { name: "20pt", contact: "9pt", section: "9pt", job: "10pt", body: "10pt" },
+        spacing: { page: "0.7in", section: "16px", line: "1.45", paragraph: "4px", job: "12px" },
+        border: false
+      },
+      {
+        name: "Balanced",
+        desc: "Calibri, good default",
+        fonts: { heading: "Calibri", body: "Calibri" },
+        sizes: { name: "20pt", contact: "10pt", section: "10pt", job: "10pt", body: "10pt" },
+        spacing: { page: "0.7in", section: "14px", line: "1.4", paragraph: "4px", job: "12px" }
+      }
+    ];
+
+    let currentPreset = 1; // Default to "Airy Modern"
+
+    // Content
+    const content = {
+      name: "SERGEY RYADOVOY",
+      contact: "Cupertino, CA | ryadovoys@gmail.com | ryadovoy.com | linkedin.com/in/sergeyryadovoy",
+
+      summary: "Design leader with 15 years of experience across branding, digital products, and AI. Currently VP of Experience Design at Digitas, leading AI product design for enterprise clients and internal AI platforms. I design conversational AI interfaces, build design systems, and prototype rapidly using classic design tools such as Figma and modern approaches such as coding with AI. Strong foundation in visual design, typography, and composition. I believe in keeping humans in the loop when designing AI experiences.",
+
+      skills: [
+        { category: "AI & Prototyping", items: "Conversational AI interfaces, AI-powered tools, Figma (advanced prototyping), AI coding for rapid iteration, ProtoPie, Principle" },
+        { category: "Motion Design", items: "After Effects, Figma prototyping, Cavalry" },
+        { category: "Platforms", items: "Web, mobile, desktop apps, cross-platform design" },
+        { category: "Design Systems", items: "Figma components, tokens, variables, documentation, scalable systems" }
+      ],
+
+      experience: [
+        {
+          title: "Vice President of Experience Design",
+          company: "Digitas",
+          dates: "January 2025 - Present",
+          description: "Leading a design team focused on AI interfaces and design systems for enterprise clients.",
+          bullets: [
+            "Designed conversational AI experiences for an internal agentic platform, including customizable chatbot interfaces that let users train bots with their own data",
+            "Prototyped AI interactions using Figma and code for rapid iteration and team decision-making",
+            "Created scalable design systems to improve team efficiency and brand consistency across touchpoints",
+            "Prioritized human-in-the-loop design patterns for responsible AI experiences",
+            "Led creative workshops to enhance cross-functional team collaboration"
+          ]
+        },
+        {
+          title: "Lead Experience Designer",
+          company: "Digitas",
+          dates: "March 2020 - December 2024",
+          description: "Led design initiatives for major global brands, focusing on design systems and digital transformation.",
+          bullets: [
+            "Led Visa's creative initiatives for 3 years, shaping their digital presence and Figma design system as one of their main US creative partners",
+            "Designed conversational AI experiments for Visa and L'Oreal",
+            "Built scalable design systems for Visa and RaceTrac that significantly reduced production time",
+            "Led research and website redesign for Amway and Nutrilite digital products",
+            "Created pitches and prototypes that won partnerships with GoodEggs, FIS, and Snowflake",
+            "Designed cross-platform experiences for web, mobile, and apps"
+          ]
+        },
+        {
+          title: "Senior Graphic Designer / Art Director",
+          company: "Funky Agency",
+          dates: "September 2016 - August 2019",
+          description: "",
+          bullets: [
+            "Led packaging, branding, and communication design projects from research and strategy through final execution",
+            "Work earned 4 industry awards and features in The Dieline, Packaging of the World, and Behance Gallery",
+            "Built foundation in typography, composition, and visual craft that shapes digital product design approach"
+          ]
+        },
+        {
+          title: "Graphic Designer",
+          company: "Z&G Branding",
+          dates: "March 2012 - September 2016",
+          description: "",
+          bullets: [
+            "Worked with 50+ brands including major federal companies on brand identity and packaging",
+            "Grew from junior to senior designer, gaining experience across diverse design disciplines",
+            "2 projects published internationally, 2 Logolounge awards, 1 Behance feature"
+          ]
+        }
+      ],
+
+      projects: [
+        { name: "Mindcomplete", description: "AI-powered Figma plugin that uses Gemini to complete your writing in real-time. Available on Figma Community." },
+        { name: "Journely", description: "iOS app for iPad with conversational UI that uses handwriting instead of typed text for AI-powered journaling. Available on App Store." },
+        { name: "Peace Sans", description: "Free display font with 500K+ downloads, one of the most popular free fonts on Behance." }
+      ],
+
+      activities: [
+        { title: "Figma Config Leadership Attendee", details: "2024, 2025" },
+        { title: "Public Speaker", details: "Gave talks about AI and design, sharing experiments and practical ways designers can use AI" },
+        { title: "Design Mentorship", details: "Mentoring middle designers through monthly conversations to support their career growth" }
+      ],
+
+      education: {
+        degree: "Master of Computer Science",
+        school: "Ural State University",
+        dates: "2005 - 2010"
+      }
+    };
+
+    // Create preset buttons
+    function createPresetButtons() {
+      const grid = document.getElementById('presetGrid');
+      presets.forEach((preset, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'preset-btn' + (index === currentPreset ? ' active' : '');
+        btn.innerHTML = `<span class="preset-name">${preset.name}</span><span class="preset-desc">${preset.desc}</span>`;
+        btn.onclick = () => selectPreset(index);
+        grid.appendChild(btn);
+      });
+    }
+
+    // Select preset
+    function selectPreset(index) {
+      currentPreset = index;
+      document.querySelectorAll('.preset-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+      });
+      renderResume();
+      updateCurrentValues();
+    }
+
+    // Update current values display
+    function updateCurrentValues() {
+      const p = presets[currentPreset];
+      document.getElementById('currentValues').textContent =
+        `Font: ${p.fonts.heading} / ${p.fonts.body}\n` +
+        `Name: ${p.sizes.name}\n` +
+        `Body: ${p.sizes.body}\n` +
+        `Line height: ${p.spacing.line}\n` +
+        `Page padding: ${p.spacing.page}\n` +
+        `Section gap: ${p.spacing.section}`;
+    }
+
+    // Render resume
+    function renderResume() {
+      const p = presets[currentPreset];
+      const s = p.spacing;
+      const sz = p.sizes;
+      const f = p.fonts;
+      const resume = document.getElementById('resume');
+
+      resume.style.width = "8.5in";
+      resume.style.padding = s.page;
+      resume.style.fontFamily = f.body;
+      resume.style.fontSize = sz.body;
+      resume.style.lineHeight = s.line;
+      resume.style.color = "#000";
+
+      resume.innerHTML = `
+        <div class="resume-header" style="margin-bottom: ${s.section};">
+          <div class="resume-name" style="font-family: ${f.heading}; font-size: ${sz.name};">${content.name}</div>
+          <div class="resume-contact" style="font-size: ${sz.contact};">${content.contact}</div>
+        </div>
+
+        <div class="resume-section" style="margin-bottom: ${s.section};">
+          <div class="section-title" style="font-family: ${f.heading}; font-size: ${sz.section}; ${p.border === false ? 'border-bottom: none;' : ''}">Summary</div>
+          <p style="margin: ${s.paragraph} 0;">${content.summary}</p>
+        </div>
+
+        <div class="resume-section" style="margin-bottom: ${s.section};">
+          <div class="section-title" style="font-family: ${f.heading}; font-size: ${sz.section}; ${p.border === false ? 'border-bottom: none;' : ''}">Skills</div>
+          ${content.skills.map(skill => `
+            <div class="skill-item" style="margin: ${s.paragraph} 0;">
+              <span class="skill-category">${skill.category}:</span> ${skill.items}
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="resume-section" style="margin-bottom: ${s.section};">
+          <div class="section-title" style="font-family: ${f.heading}; font-size: ${sz.section}; ${p.border === false ? 'border-bottom: none;' : ''}">Experience</div>
+          ${content.experience.map(job => `
+            <div class="job" style="margin-bottom: ${s.job};">
+              <div class="job-header">
+                <span style="font-size: ${sz.job};"><span class="job-title">${job.title}</span> | ${job.company}</span>
+                <span class="job-dates" style="font-size: ${sz.body};">${job.dates}</span>
+              </div>
+              ${job.description ? `<div class="job-description" style="margin: ${s.paragraph} 0;">${job.description}</div>` : ''}
+              <ul class="job-bullets">
+                ${job.bullets.map(bullet => `<li style="margin-bottom: ${s.paragraph};">${bullet}</li>`).join('')}
+              </ul>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="resume-section" style="margin-bottom: ${s.section};">
+          <div class="section-title" style="font-family: ${f.heading}; font-size: ${sz.section}; ${p.border === false ? 'border-bottom: none;' : ''}">Projects & Outside Experience</div>
+          ${content.projects.map(project => `
+            <div class="project-item" style="margin: ${s.paragraph} 0;">
+              <span class="project-name">${project.name}</span> - ${project.description}
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="resume-section" style="margin-bottom: ${s.section};">
+          <div class="section-title" style="font-family: ${f.heading}; font-size: ${sz.section}; ${p.border === false ? 'border-bottom: none;' : ''}">Activities & Leadership</div>
+          ${content.activities.map(activity => `
+            <div class="activity-item" style="margin: ${s.paragraph} 0;">
+              <span class="activity-title">${activity.title}</span> | ${activity.details}
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="resume-section">
+          <div class="section-title" style="font-family: ${f.heading}; font-size: ${sz.section}; ${p.border === false ? 'border-bottom: none;' : ''}">Education</div>
+          <div class="education-item">
+            <span><span style="font-weight: bold;">${content.education.degree}</span> | ${content.education.school}</span>
+            <span style="font-style: italic;">${content.education.dates}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Save styles
+    function saveStyles() {
+      const p = presets[currentPreset];
+      const blob = new Blob([JSON.stringify(p, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'resume-styles.json';
+      a.click();
+    }
+
+    // Initialize
+    createPresetButtons();
+    renderResume();
+    updateCurrentValues();
+  </script>
+</body>
+</html>
