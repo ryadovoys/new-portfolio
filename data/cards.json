@@ -81,15 +81,15 @@
   },
   {
     "title": "Public talks",
-    "description": "During last few years I gave a few public talks sharing my findings and experiments into the AI field, showing some of the interesting ways to use AI for designers",
+    "description": "I've given several public talks about AI and design. Sharing experiments, tools, and interesting ways designers can use AI in their work.",
     "tag": "Experience",
     "width": "regular",
     "media": "/assets/images/the_magic_of_code.gif",
     "mediaType": "image"
   },
   {
-    "title": "Design base",
-    "description": "Composition, typography, color, form — shaped by years in branding. Featured in Logolounge, Dieline, Packaging of the World.",
+    "title": "Foundations",
+    "description": "Strong foundation in composition, typography, color, and form. All of this comes from years in branding and visual design. Featured in Logolounge, Dieline, Packaging of the World.",
     "tag": "Experience",
     "width": "regular",
     "media": "/assets/images/445351806_414975888023839_2041003039465379185_n.jpg",
@@ -97,7 +97,7 @@
   },
   {
     "title": "Packaging design",
-    "description": "Years of packaging design experience. Physical products, shelf presence, production constraints. Work featured in Dieline and Packaging of the World.",
+    "description": "Packaging taught me to think about the physical world. Materials, production, how things look on a shelf. Work featured in Dieline and Packaging of the World.",
     "tag": "Skill",
     "width": "regular",
     "media": "/assets/images/upload-1766444315366-4.webp",
@@ -128,9 +128,9 @@
     "mediaType": "video"
   },
   {
-    "title": "Typography",
-    "description": "Deep love for type. Created Peace Sans — 500K+ downloads. Typography is the foundation of everything I design.",
-    "tag": "Skill",
+    "title": "Peace Sans Free Font",
+    "description": "Peace Sans is a free display font I designed. It reached 500K+ downloads and became one of the most popular free fonts on Behance. I wanted to give something back to the design community. <a href='/assets/Peace Sans.zip' download>Download Peace Sans</a>",
+    "tag": "Project",
     "width": "regular",
     "media": "/assets/images/peace-sans.jpg",
     "mediaType": "image"
