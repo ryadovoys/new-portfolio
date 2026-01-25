@@ -120,11 +120,11 @@
     "mediaType": "image"
   },
   {
-    "title": "Logo design",
-    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/Image-590bb1b1-a148-4566-a6f2-eaa6aaca32be.gif",
+    "title": "Journely",
+    "description": "What if conversational UI wasn't about typing, but writing? I created Journely as an experiment to find natural ways to use AI in everyday life. It transforms journaling on iPad by blending handwriting with conversational intelligence. <a href='https://apps.apple.com/us/app/journely/id6744461713' target='_blank'>Download on iPad</a>",
+    "tag": "Project",
+    "width": "wide",
+    "media": "/assets/images/journely.jpg",
     "mediaType": "image"
   },
   {
@@ -133,6 +133,14 @@
     "tag": "Experience",
     "width": "regular",
     "media": "/assets/images/the_magic_of_code.gif",
+    "mediaType": "image"
+  },
+  {
+    "title": "Logo design",
+    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/Image-590bb1b1-a148-4566-a6f2-eaa6aaca32be.gif",
     "mediaType": "image"
   },
   {
@@ -160,11 +168,11 @@
     "mediaType": "image"
   },
   {
-    "title": "Journely",
-    "description": "What if conversational UI wasn't about typing, but writing? I created Journely as an experiment to find natural ways to use AI in everyday life. It transforms journaling on iPad by blending handwriting with conversational intelligence. <a href='https://apps.apple.com/us/app/journely/id6744461713' target='_blank'>Download on iPad</a>",
-    "tag": "Project",
-    "width": "wide",
-    "media": "/assets/images/journely.jpg",
+    "title": "Building tools",
+    "description": "I love creating internal tools that solve real problems. From iOS apps and web applications to Figma plugins and Apple shortcuts that help with everyday tasks.",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/images/apps.jpg",
     "mediaType": "image"
   }
 ]
