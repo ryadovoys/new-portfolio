@@ -24,12 +24,12 @@
     "mediaType": "image"
   },
   {
-    "title": "Generative Media",
-    "description": "I utilize a diverse stack of generative tools: Google Nano Banana Pro, Midjourney, Visual Electric, and Qwen for images; Kling, Wan, and Sora for video. My workflows range from consumer-facing apps like Higgsfield to building advanced, custom pipelines in ComfyUI and Weavy.",
-    "tag": "Skill",
+    "title": "Global brands",
+    "description": "Worked with many global brands across my career. Visa, Delta, Amway, Mondelez, L'Oreal, RaceTrac, and more. Everything from websites and apps to global campaigns. Every project taught me something new about working at scale.",
+    "tag": "Experience",
     "width": "regular",
-    "media": "/assets/images/copy_170C990E-007D-4414-9C0C-082100A8D690.mp4",
-    "mediaType": "video"
+    "media": "/assets/images/visa-cover-2.gif",
+    "mediaType": "image"
   },
   {
     "title": "Product design",
@@ -64,12 +64,12 @@
     "mediaType": "image"
   },
   {
-    "title": "Global brands",
-    "description": "Worked with many global brands across my career. Visa, Delta, Amway, Mondelez, L'Oreal, RaceTrac, and more. Everything from websites and apps to global campaigns. Every project taught me something new about working at scale.",
-    "tag": "Experience",
+    "title": "Generative Media",
+    "description": "I utilize a diverse stack of generative tools: Google Nano Banana Pro, Midjourney, Visual Electric, and Qwen for images; Kling, Wan, and Sora for video. My workflows range from consumer-facing apps like Higgsfield to building advanced, custom pipelines in ComfyUI and Weavy.",
+    "tag": "Skill",
     "width": "regular",
-    "media": "/assets/images/visa-cover-2.gif",
-    "mediaType": "image"
+    "media": "/assets/images/copy_170C990E-007D-4414-9C0C-082100A8D690.mp4",
+    "mediaType": "video"
   },
   {
     "title": "AI Prototyping",
@@ -84,7 +84,7 @@
     "description": "From the beginning of the AI age, I started exploring the future of interfaces for this new technology. How it can shape the way we interact with digital experiences and apps. From conversational AI to integrated invisible AI systems, I'm exploring opportunities and possibilities.",
     "tag": "Experience",
     "width": "regular",
-    "media": "/assets/images/CleanShot 2026-01-23 at 13.08.33@2x.png",
+    "media": "/assets/images/AI fluency.jpg",
     "mediaType": "image"
   },
   {
@@ -104,19 +104,19 @@
     "mediaType": "image"
   },
   {
-    "title": "Motion design",
-    "description": "Figma prototyping tools for quick motion examples, After Effects and Cavalry for complex motion assets. I love working with motion and always keep my skills up to date.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/Apr-21-2022 08-45-01.gif",
-    "mediaType": "image"
-  },
-  {
     "title": "Packaging design",
     "description": "Packaging taught me to think about the physical world. Materials, production, how things look on a shelf. Work featured in Dieline and Packaging of the World.",
     "tag": "Skill",
     "width": "regular",
     "media": "/assets/images/upload-1766444315366-4.webp",
+    "mediaType": "image"
+  },
+  {
+    "title": "Motion design",
+    "description": "Figma prototyping tools for quick motion examples, After Effects and Cavalry for complex motion assets. I love working with motion and always keep my skills up to date.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/Apr-21-2022 08-45-01.gif",
     "mediaType": "image"
   },
   {
@@ -128,27 +128,11 @@
     "mediaType": "image"
   },
   {
-    "title": "Building tools",
-    "description": "I love creating internal tools that solve real problems. From iOS apps and web applications to Figma plugins and Apple shortcuts that help with everyday tasks.",
-    "tag": "Experience",
-    "width": "regular",
-    "media": "/assets/images/apps.jpg",
-    "mediaType": "image"
-  },
-  {
     "title": "Public talks",
     "description": "I've given several public talks about AI and design. Sharing experiments, tools, and interesting ways designers can use AI in their work.",
     "tag": "Experience",
     "width": "regular",
     "media": "/assets/images/the_magic_of_code.gif",
-    "mediaType": "image"
-  },
-  {
-    "title": "36 days of type",
-    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
-    "tag": "Experiment",
-    "width": "wide",
-    "media": "/assets/images/1-36-days-of-type-project-card.gif",
     "mediaType": "image"
   },
   {
@@ -160,27 +144,27 @@
     "mediaType": "video"
   },
   {
-    "title": "New Card",
-    "description": "Invisible card description",
-    "tag": "",
-    "width": "invisible",
-    "media": null,
-    "mediaType": null
-  },
-  {
-    "title": "Card title",
-    "description": "Click to edit description text.",
-    "tag": "",
-    "width": "invisible",
-    "media": null,
-    "mediaType": null
-  },
-  {
     "title": "Peace Sans Free Font",
     "description": "Peace Sans is a free display font I designed. It reached 500K+ downloads and became one of the most popular free fonts on Behance. I wanted to give something back to the design community. <a href='/assets/Peace Sans.zip' download>Download Peace Sans</a>",
     "tag": "Project",
     "width": "regular",
     "media": "/assets/images/peace-sans.jpg",
+    "mediaType": "image"
+  },
+  {
+    "title": "36 days of type",
+    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
+    "tag": "Experiment",
+    "width": "wide",
+    "media": "/assets/images/1-36-days-of-type-project-card.gif",
+    "mediaType": "image"
+  },
+  {
+    "title": "Journely",
+    "description": "What if conversational UI wasn't about typing, but writing? I created Journely as an experiment to find natural ways to use AI in everyday life. It transforms journaling on iPad by blending handwriting with conversational intelligence. <a href='https://apps.apple.com/us/app/journely/id6744461713' target='_blank'>Download on iPad</a>",
+    "tag": "Project",
+    "width": "wide",
+    "media": "/assets/images/journely.jpg",
     "mediaType": "image"
   }
 ]
