@@ -44,6 +44,17 @@
     }
 }
 
+@media (min-width: 1728px) {
+
+    .card-grid,
+    .card-grid--featured {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 205px;
+        row-gap: 205px;
+        justify-content: normal;
+    }
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .card-grid {
