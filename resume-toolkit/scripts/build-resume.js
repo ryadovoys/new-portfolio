@@ -6,13 +6,13 @@ const content = {
     name: "SERGEY RYADOVOY",
     contact: "Mountain View, CA | ryadovoys@gmail.com | ryadovoy.com | linkedin.com/in/sergeyryadovoy",
 
-    summary: "Design leader with 15 years of experience building generative media tools and AI platforms. Currently VP at Digitas, I combine deep technical prototyping (ComfyUI, Gemini API) with product strategy to ship agentic AI experiences. I design by building—using code and advanced generative workflows to bridge the gap between model capabilities and user needs.",
+    summary: "Design leader with 15 years of experience. Currently VP at Digitas, architecting agentic AI platforms and generative media workflows. My approach is defined by a simple rule: don't just imagine features; prototype them with real models. I use the Gemini API to connect real models and Figma to create pixel-perfect user flows. This minimizes the gap between the prototype and the real product, allowing us to validate probabilistic interactions and make smarter product decisions early in the process.",
 
     skills: [
-        { category: "Generative Media", items: "ComfyUI, Midjourney, Visual Electric, Kling, Sora, Runway, Google Nano Banana Pro, Advanced Weavy workflows" },
-        { category: "AI & Prototyping", items: "Gemini API, Conversational UI, Figma (Advanced), AI Coding, ProtoPie, Principle" },
-        { category: "Platforms", items: "Web, Cloud-based Creative Tools, Mobile, Desktop Apps" },
-        { category: "Design Systems", items: "Figma Variables, Token Architecture, Scalable Systems" }
+        { category: "Product Design", items: "User-Centered Design, End-to-End Product Design, User Research, Systems Thinking, Design Strategy" },
+        { category: "AI & Generative Media", items: "Gemini API, Natural Language Processing (NLP), Machine Learning, Visual Electric, Sora, Runway, Kling" },
+        { category: "Prototyping & Code", items: "Figma, Adobe Creative Suite, HTML, JavaScript, Front-end, ProtoPie, Principle, Origami Studio" },
+        { category: "Design Systems", items: "Figma Variables, Token Architecture, Scalable Systems, Cross-Functional Collaboration" }
     ],
 
     experience: [
@@ -22,10 +22,10 @@ const content = {
             dates: "January 2025 - Present",
             description: "Leading a design team focused on AI interfaces and design systems for enterprise clients.",
             bullets: [
-                "Designed conversational AI experiences for an internal agentic platform, including customizable chatbot interfaces that let users train bots with their own data",
-                "Prototyped AI interactions using Figma and code for rapid iteration and team decision-making",
+                "Architected intuitive AI experiences for an internal agentic platform, designing end-to-end user flows that allow non-technical users to build and train their own agents",
+                "Simulated model responses using code, Figma, and Gemini API to validate probabilistic interactions before engineering handoff",
                 "Created scalable design systems to improve team efficiency and brand consistency across touchpoints",
-                "Prioritized human-in-the-loop design patterns for responsible AI experiences",
+                "Championed design innovation by prioritizing human-in-the-loop patterns for responsible AI experiences",
                 "Led creative workshops to enhance cross-functional team collaboration"
             ]
         },
@@ -271,8 +271,16 @@ const doc = new Document({
 
 const path = require('path');
 
+// Helper to get formatted timestamp MMDDYYHHMM
+const getTimestamp = () => {
+    const now = new Date();
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${pad(now.getMonth() + 1)}${pad(now.getDate())}${now.getFullYear().toString().slice(-2)}${pad(now.getHours())}${pad(now.getMinutes())}`;
+};
+
 Packer.toBuffer(doc).then((buffer) => {
-    const outputPath = path.join(__dirname, '../output', "ryadovoy-resume-google.docx");
+    const filename = `ryadovoy-resume-google-${getTimestamp()}.docx`;
+    const outputPath = path.join(__dirname, '../output', filename);
     fs.writeFileSync(outputPath, buffer);
     console.log(`Resume generated: ${outputPath}`);
 });

@@ -34,6 +34,16 @@
     margin-bottom: var(--space-12);
 }
 
+@media (min-width: 1440px) {
+
+    .card-grid,
+    .card-grid--featured {
+        grid-template-columns: repeat(3, 286px);
+        justify-content: space-between;
+        row-gap: calc(50vw - 659px);
+    }
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .card-grid {

@@ -10,13 +10,11 @@ const content = {
 
 
     body: [
-        "I'm applying for the Senior AI Product Designer role because I'm already building with Gemini. As a designer who codes, I used the Gemini API to build 'Mindcomplete', a Figma plugin that brings generative writing directly into the design environment. I want to bring this hands-on technical understanding of your models to the Gemini App team.",
+        "I'm applying for the Senior AI Product Designer role because I am already deeply invested in the Gemini ecosystem. As a designer who codes, I built 'Mindcomplete', a Figma plugin powered by the Gemini API that brings generative writing directly into the design environment. I want to bring this hands-on technical understanding and 0-to-1 build mentality to the DeepMind team.",
 
-        "Experience wise, I currently lead AI product design at Digitas. My team builds agentic platforms where we don't just imagine AI features—we prototype them. I use ComfyUI and advanced generative workflows (from Midjourney to Kling and Sora) to simulate model responses and define design requirements before engineering starts. This matches your need for a designer who can 'bridge design and technology' and 'simulate model responses'.",
+        "Currently, as VP of Experience Design at Digitas, I lead the design of agentic platforms. My approach is defined by a simple rule: don't just imagine features; prototype them with real models. I use the Gemini API to connect real models and Figma to create pixel-perfect user flows. This minimizes the gap between the prototype and the real product, allowing us to validate probabilistic interactions and make smarter product decisions early in the process.",
 
-        "My background spans 15 years, including leading Visa's design system and building successful consumer iOS apps like Journely. I understand how to turn complex model capabilities into intuitive, human-centered features.",
-
-        "I'm excited about the chance to help shape the future of Generative Media with DeepMind."
+        "DeepMind's mission to unlock state-of-the-art AI resonates with me because I believe the interface is the product. I am excited to help shape the future of Generative Media by building the tools I myself rely on to create."
     ]
 };
 
