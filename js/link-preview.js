@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
         "https://www.figma.com/community/plugin/1593731353807484611/mindcomplete": {
             title: "Mindcomplete - AI Writing Assistant",
             image: "assets/images/mindcomplete-figma-plugin-link.jpg"
+        },
+        "assets/Peace Sans.zip": {
+            title: "Peace Sans Free Font",
+            image: "assets/images/peace-sans-link.jpg"
         }
     };
 
@@ -37,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach to all links inside card descriptions
     // Note: Since cards might be dynamically loaded on build, but this runs clientside, it's fine. 
     // If cards were loaded via AJAX we'd need delegation, but here they are static in HTML.
-    
+
     // Helper to get domain
     const getDomain = (url) => {
         try {
@@ -50,8 +54,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Store RAF id for performance
     let rafId = null;
 
+
     const showTooltip = (e, url) => {
-        const data = PREVIEWS[url];
+        // Decode URL to handle spaces (e.g. %20 -> space)
+        const decodedUrl = decodeURIComponent(url);
+        let data = PREVIEWS[url] || PREVIEWS[decodedUrl];
+
+        // If not exact match, try matching end of URL (for relative paths)
+        if (!data) {
+            for (const key in PREVIEWS) {
+                if (url.endsWith(key) || decodedUrl.endsWith(key)) {
+                    data = PREVIEWS[key];
+                    break;
+                }
+            }
+        }
+
         if (!data) return; // Only show for known links
 
         // Populate Data
@@ -72,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Offset from cursor
         const offsetX = 20;
         const offsetY = 20;
-        
+
         let x = e.clientX + offsetX;
         let y = e.clientY + offsetY;
 
@@ -97,16 +115,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Delegation
     document.body.addEventListener('mouseover', (e) => {
-        if (e.target.tagName === 'A') {
-            const url = e.target.href;
-            if (PREVIEWS[url]) {
+        const link = e.target.closest('a');
+        if (link) {
+            // Check if it's a real link with href
+            const url = link.href;
+            if (url) {
                 showTooltip(e, url);
             }
         }
     });
 
     document.body.addEventListener('mouseout', (e) => {
-        if (e.target.tagName === 'A') {
+        const link = e.target.closest('a');
+        if (link) {
             hideTooltip();
         }
     });
