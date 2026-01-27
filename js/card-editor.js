@@ -14,6 +14,11 @@ class CardEditor {
         this.setupCards();
         this.bindEvents();
         this.initSortable();
+
+        // Initialize project card interactions after cards are loaded
+        if (window.cardViewer && typeof window.cardViewer.setupProjectCards === 'function') {
+            window.cardViewer.setupProjectCards();
+        }
     }
 
     initSortable() {
@@ -83,9 +88,15 @@ class CardEditor {
         let cardClass = 'card';
         if (data.width === 'wide') cardClass += ' card--wide';
         if (data.width === 'invisible') cardClass += ' card--invisible';
+        if (data.folder) cardClass += ' card--project';
 
         const cardEl = document.createElement('div');
         cardEl.className = cardClass;
+
+        // Add data-folder attribute if present
+        if (data.folder) {
+            cardEl.dataset.folder = data.folder;
+        }
 
         // Build HTML structure
         cardEl.innerHTML = `
@@ -273,6 +284,9 @@ class CardEditor {
             zone.addEventListener('drop', (e) => this.handleDrop(e));
 
             card.folder = null;
+            delete card.element.dataset.folder;
+            card.element.classList.remove('card--project');
+
             this.saveCards();
             return;
         }
@@ -676,9 +690,18 @@ class CardEditor {
         card.mediaType = null;
         card.folder = folder.path;
 
+        // Update DOM element
+        card.element.dataset.folder = folder.path;
+        card.element.classList.add('card--project');
+
         this.closeAssetPicker();
         this.loadFolderPreview(zone, folder.path, cardIndex);
         this.saveCards();
+
+        // Reinitialize project card interactions if CardViewer exists
+        if (window.cardViewer && typeof window.cardViewer.setupProjectCard === 'function') {
+            window.cardViewer.setupProjectCard(card.element);
+        }
     }
 
     async loadFolderPreview(zone, folderPath, cardIndex) {

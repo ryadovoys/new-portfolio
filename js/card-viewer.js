@@ -695,5 +695,5 @@ class CardViewer {
 
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
-    new CardViewer();
+    window.cardViewer = new CardViewer();
 });
