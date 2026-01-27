@@ -21,7 +21,7 @@ html {
 
 body {
     font-family: var(--font-family-sans);
-    font-weight: var(--font-weight-light);
+    font-weight: var(--font-weight-regular);
     line-height: var(--line-height-normal);
     font-variation-settings: var(--font-settings);
     font-optical-sizing: auto;
@@ -54,7 +54,7 @@ b {
 a {
     color: var(--link-color);
     text-decoration: underline;
-    font-weight: var(--font-weight-light);
+    font-weight: var(--font-weight-regular);
     transition: color 0.2s ease;
 }
 

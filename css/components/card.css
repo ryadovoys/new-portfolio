@@ -67,7 +67,7 @@
 .card__header {
     display: flex;
     align-items: baseline;
-    gap: var(--space-1);
+    gap: var(--space-2);
 }
 
 .card__tag {
@@ -90,6 +90,10 @@
 }
 
 .card__tag:not(:empty) {
+    opacity: 0;
+}
+
+.card:hover .card__tag:not(:empty) {
     opacity: 1;
 }
 
@@ -144,7 +148,7 @@
 
 .card__description {
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-light);
+    font-weight: var(--font-weight-regular);
     color: var(--text-primary);
     line-height: var(--line-height-normal);
 }
@@ -168,6 +172,11 @@
 @media (max-width: 1024px) {
     .card--wide {
         grid-column: auto;
+    }
+
+    /* Ensure tags are always visible on mobile/tablet */
+    .card__tag:not(:empty) {
+        opacity: 1 !important;
     }
 }
 
