@@ -232,16 +232,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                     activeCloseFunction = closeExpanded; // Start tracking close function
                     currentScrollX = 0;
 
-                    // Calculate target height (Image + Padding)
+                    // Calculate target dimensions
                     imageContainer.style.flexShrink = '0';
 
-                    const style = getComputedStyle(card);
-                    const paddingTop = parseFloat(style.paddingTop);
-                    const paddingBottom = parseFloat(style.paddingBottom);
-                    const targetHeight = imageContainer.offsetHeight + paddingTop + paddingBottom;
+                    let targetHeight, targetWidth, targetLeft;
 
-                    // Calculate target Left position
-                    const targetLeft = window.innerWidth <= 768 ? 20 : 40;
+                    // Get card padding
+                    const cardStyle = getComputedStyle(card);
+                    const pt = parseFloat(cardStyle.paddingTop);
+                    const pb = parseFloat(cardStyle.paddingBottom);
+                    const pl = parseFloat(cardStyle.paddingLeft);
+                    const pr = parseFloat(cardStyle.paddingRight);
+
+                    if (window.innerWidth <= 768) {
+                        // Mobile: 100% width (minus 20px padding each side in CSS usually, but here fixed 20px)
+                        targetHeight = imageContainer.offsetHeight + pt + pb;
+                        targetLeft = 20;
+                        targetWidth = window.innerWidth - 40;
+                    } else {
+                        // Desktop: Scale based on IMAGE height (window - 120px for 60px margins)
+                        // Use image original aspect ratio
+                        const imgRect = imageContainer.getBoundingClientRect();
+                        const imageRatio = imgRect.width / imgRect.height;
+
+                        const targetImageHeight = window.innerHeight - 120;
+                        const targetImageWidth = targetImageHeight * imageRatio;
+
+                        targetHeight = targetImageHeight + pt + pb;
+                        targetWidth = targetImageWidth + pl + pr;
+                        targetLeft = 40; // Standard left alignment
+                    }
 
                     requestAnimationFrame(() => {
                         card.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
@@ -249,6 +269,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         card.style.left = targetLeft + 'px';
                         card.style.transform = 'translateY(-50%)';
                         card.style.height = targetHeight + 'px';
+                        card.style.width = targetWidth + 'px';
 
                         setTimeout(() => {
                             if (activeExpandedCard === card) {
@@ -290,7 +311,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Animate back to placeholder
                 card.style.top = rect.top + 'px';
                 card.style.left = rect.left + 'px';
-                // Restore original height (from placeholder)
+                // Restore original dimensions (from placeholder)
+                card.style.width = rect.width + 'px';
                 card.style.height = rect.height + 'px';
                 // Reset transform (including scroll) to 0
                 card.style.transform = 'translate(0, 0)';
