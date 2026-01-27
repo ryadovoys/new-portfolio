@@ -4,8 +4,8 @@
     "description": "Hi, my name is Sergey Ryadovoy. I'm a design leader with strong graphic design foundations and product thinking. 15 years in design and leadership—from branding and visual design to digital and AI products.",
     "tag": "Personal",
     "width": "regular",
-    "media": "/assets/images/1-hello-rotation.gif",
-    "mediaType": "image",
+    "media": null,
+    "mediaType": null,
     "folder": "random"
   },
   {
@@ -195,6 +195,15 @@
     "width": "regular",
     "media": "/assets/images/apps.jpg",
     "mediaType": "image",
+    "folder": null
+  },
+  {
+    "title": "Card title",
+    "description": "Click to edit description text.",
+    "tag": "",
+    "width": "regular",
+    "media": null,
+    "mediaType": null,
     "folder": null
   }
 ]

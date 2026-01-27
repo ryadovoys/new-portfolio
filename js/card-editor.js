@@ -578,6 +578,9 @@ class CardEditor {
             tabs.appendChild(foldersTab);
             header.appendChild(tabs);
 
+            // Track selected folder
+            this.selectedFolder = null;
+
             const confirmBtn = document.createElement('button');
             confirmBtn.className = 'asset-picker__confirm';
             confirmBtn.textContent = 'Confirm';
@@ -652,7 +655,22 @@ class CardEditor {
                 name.textContent = folder.name;
                 item.appendChild(name);
 
-                item.addEventListener('click', () => this.selectFolder(folder, index));
+                item.addEventListener('click', (e) => {
+                    // Toggle selection logic
+                    const isSelected = item.classList.contains('asset-picker__folder--selected');
+
+                    // Deselect all folders
+                    foldersGrid.querySelectorAll('.asset-picker__folder').forEach(el =>
+                        el.classList.remove('asset-picker__folder--selected')
+                    );
+
+                    if (!isSelected) {
+                        item.classList.add('asset-picker__folder--selected');
+                        this.selectedFolder = folder;
+                    } else {
+                        this.selectedFolder = null;
+                    }
+                });
                 foldersGrid.appendChild(item);
             });
 
@@ -685,28 +703,57 @@ class CardEditor {
         }
     }
 
-    selectFolder(folder, cardIndex) {
-        const zone = this.currentPickerZone;
-        const card = this.cards[cardIndex];
+    selectFolder(folder, cardIndex, passedZone = null) {
+        // Use passed zone or fallback to currentPickerZone (which might be null if closed)
+        const zone = passedZone || this.currentPickerZone;
+        let card = this.cards[cardIndex];
 
-        if (!card || !zone) return;
+        // Defensive: ensure we have the card object and element
+        if (!card && zone) {
+            const cardEl = zone.closest('.card');
+            if (cardEl) {
+                console.warn('Card object missing, using DOM element directly');
+                card = { element: cardEl, folder: null }; // Mock object
+            }
+        }
 
-        // Clear media, set folder
-        card.media = null;
-        card.mediaType = null;
-        card.folder = folder.path;
+        if (!card || !zone) {
+            console.error('Missing card or zone in selectFolder', { card, zone });
+            return;
+        }
+
+        // Clear media, set folder (if it's a real card object)
+        if (this.cards[cardIndex]) {
+            card.media = null;
+            card.mediaType = null;
+            card.folder = folder.path;
+            this.saveCards(); // Save immediately to persist folder choice
+        }
 
         // Update DOM element
-        card.element.dataset.folder = folder.path;
-        card.element.classList.add('card--project');
+        if (card.element) {
+            card.element.dataset.folder = folder.path;
+            card.element.classList.add('card--project');
+            card.element.classList.remove('card--wide'); // Reset wide unless folder dictates otherwise
+        } else {
+            console.error('Card element missing');
+            return;
+        }
 
         this.closeAssetPicker();
+
         // Reinitialize project card interactions if CardViewer exists
+        console.log('Invoking setupProjectCard for', folder.path);
         if (window.cardViewer && typeof window.cardViewer.setupProjectCard === 'function') {
-            window.cardViewer.setupProjectCard(card.element).finally(() => {
-                this.addCardControls(zone, cardIndex);
-            });
+            window.cardViewer.setupProjectCard(card.element)
+                .then(() => console.log('setupProjectCard success'))
+                .catch(e => console.error('setupProjectCard failed', e))
+                .finally(() => {
+                    this.addCardControls(zone, cardIndex);
+                    console.log('addCardControls executed');
+                });
         } else {
+            console.warn('window.cardViewer missing or invalid', window.cardViewer);
             this.loadFolderPreview(zone, folder.path, cardIndex);
         }
     }
@@ -773,7 +820,7 @@ class CardEditor {
     }
 
     confirmAssetSelection() {
-        if (this.selectedAssets.length === 0) {
+        if (this.selectedAssets.length === 0 && !this.selectedFolder) {
             this.closeAssetPicker();
             return;
         }
@@ -783,10 +830,14 @@ class CardEditor {
 
         // Save selection before closing (closeAssetPicker clears selectedAssets)
         const selected = [...this.selectedAssets];
+        const selectedFolder = this.selectedFolder;
 
         this.closeAssetPicker();
 
-        if (selected.length === 1) {
+        if (selectedFolder) {
+            // Folder selected
+            this.selectFolder(selectedFolder, index, zone);
+        } else if (selected.length === 1) {
             // Single asset
             const asset = selected[0];
             const mediaType = asset.isVideo ? 'video' : 'image';
@@ -824,6 +875,7 @@ class CardEditor {
             picker.remove();
         }
         this.selectedAssets = [];
+        this.selectedFolder = null;
         this.currentPickerZone = null;
     }
 
@@ -1038,8 +1090,7 @@ class CardEditor {
 
         const controls = document.createElement('div');
         controls.className = 'card__controls';
-        controls.style.zIndex = '1000'; // Force high z-index for project cards overlay
-        console.log('Adding controls to card', cardIndex);
+        // z-index handled in CSS (should be < asset picker's 30)
 
         // Duplicate Button
         const duplicateBtn = document.createElement('button');

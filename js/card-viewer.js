@@ -176,8 +176,13 @@ class CardViewer {
         const closeButton = document.querySelector('.close-button');
 
         try {
-            const res = await fetch(`/api/folder-assets/${encodeURIComponent(folder)}.json`);
+            const url = `/api/folder-assets/${encodeURIComponent(folder)}.json`;
+            console.log('CardViewer: fetching', url);
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+
             const assets = await res.json();
+            console.log('CardViewer: assets received', assets.length);
 
             if (!assets || assets.length === 0) return;
 

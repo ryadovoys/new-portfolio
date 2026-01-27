@@ -202,6 +202,7 @@ app.get('/api/folder-assets', (req, res) => {
 
 // Static-compatible endpoint for folder assets
 app.get('/api/folder-assets/:folderName.json', (req, res) => {
+  console.log('Server: Request for folder json', req.params.folderName);
   const folderName = req.params.folderName;
   // Reuse existing logic
   const folderPath = path.join(imagesDir, folderName);
