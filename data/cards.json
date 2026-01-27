@@ -6,7 +6,7 @@
     "width": "regular",
     "media": null,
     "mediaType": null,
-    "folder": "random"
+    "folder": "introduction"
   },
   {
     "title": "Visa Website (2022–2025)",
@@ -76,9 +76,9 @@
     "description": "I utilize a diverse stack of generative tools: Google Nano Banana Pro, Midjourney, Visual Electric, and Qwen for images; Kling, Wan, and Sora for video. My workflows range from consumer-facing apps like Higgsfield to building advanced, custom pipelines in ComfyUI and Weavy.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/images/copy_170C990E-007D-4414-9C0C-082100A8D690.mp4",
-    "mediaType": "video",
-    "folder": null
+    "media": null,
+    "mediaType": null,
+    "folder": "generative-media"
   },
   {
     "title": "AI Prototyping",
@@ -195,15 +195,6 @@
     "width": "regular",
     "media": "/assets/images/apps.jpg",
     "mediaType": "image",
-    "folder": null
-  },
-  {
-    "title": "Card title",
-    "description": "Click to edit description text.",
-    "tag": "",
-    "width": "regular",
-    "media": null,
-    "mediaType": null,
     "folder": null
   }
 ]

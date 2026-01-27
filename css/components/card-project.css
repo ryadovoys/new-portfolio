@@ -20,8 +20,8 @@
 }
 
 /* Main image on top of layers with radius */
-.card--project .project-media-track > img,
-.card--project .project-media-track > video {
+.card--project .project-media-track>img,
+.card--project .project-media-track>video {
     position: relative;
     z-index: 2;
     background: inherit;
@@ -42,8 +42,8 @@
     opacity: 0;
     transform: translate(0, 0) scale(1);
     transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                opacity 0s;
+        left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0s;
     pointer-events: none;
 }
 
@@ -70,7 +70,7 @@ body.is-project-expanded {
     background-color: var(--bg-page);
 }
 
-body.is-project-expanded .card-grid > .card:not(.is-active),
+body.is-project-expanded .card-grid>.card:not(.is-active),
 body.is-project-expanded .sidebar,
 body.is-project-expanded .theme-toggle {
     opacity: 0 !important;
@@ -108,8 +108,8 @@ body.is-project-expanded .card--project.is-active .project-layer {
 /* Closing State: Delay opacity change */
 .card--project.is-closing .project-layer {
     transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                opacity 0s 0.8s;
+        left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0s 0.8s;
 }
 
 /* =================================================================
@@ -170,7 +170,7 @@ body.is-project-expanded .close-button {
     }
 
     /* Items in track */
-    .card--project .project-media-track > * {
+    .card--project .project-media-track>* {
         flex-shrink: 0;
         width: 90% !important;
         height: auto !important;
@@ -186,16 +186,16 @@ body.is-project-expanded .close-button {
     }
 
     /* Aspect ratios for items */
-    .card--project:not(.card--wide) .project-media-track > * {
+    .card--project:not(.card--wide) .project-media-track>* {
         aspect-ratio: 1 / 1.236 !important;
     }
 
-    .card--project.card--wide .project-media-track > * {
+    .card--project.card--wide .project-media-track>* {
         aspect-ratio: 16 / 9 !important;
     }
 
     /* Wide layer override for mobile */
-    body .card--project .project-media-track > div.project-layer.project-layer--wide {
+    body .card--project .project-media-track>div.project-layer.project-layer--wide {
         width: calc(90% * 1.236 * 16 / 9) !important;
         height: auto !important;
         aspect-ratio: 16 / 9 !important;
