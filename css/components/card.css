@@ -144,7 +144,7 @@
 
 .card__description {
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-light);
     color: var(--text-primary);
     line-height: var(--line-height-normal);
 }

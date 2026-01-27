@@ -55,7 +55,10 @@
    --color-yellow-900: #713F12;
 
    /* Typography - Font Family */
-   --font-family-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+   --font-family-sans: 'Google Sans Flex', -apple-system, BlinkMacSystemFont, sans-serif;
+
+   /* Typography - Settings */
+   --font-settings: "slnt" 0, "wdth" 100, "GRAD" 0, "ROND" 0;
 
    /* Typography - Font Size */
    --font-size-xs: 12px;
@@ -67,10 +70,11 @@
    --font-size-3xl: 32px;
 
    /* Typography - Font Weight */
+   --font-weight-light: 300;
    --font-weight-regular: 400;
    --font-weight-medium: 500;
    --font-weight-semibold: 600;
-   --font-weight-bold: 700;
+   --font-weight-bold: 500;
 
    /* Typography - Line Height */
    --line-height-tight: 1.2;
