@@ -131,7 +131,13 @@ class CardEditor {
         // Load media if present
         if (data.folder) {
             const imageContainer = cardEl.querySelector('.card__image');
-            this.loadFolderPreview(imageContainer, data.folder, index);
+            if (window.cardViewer && typeof window.cardViewer.setupProjectCard === 'function') {
+                window.cardViewer.setupProjectCard(cardEl).finally(() => {
+                    this.addCardControls(imageContainer, index);
+                });
+            } else {
+                this.loadFolderPreview(imageContainer, data.folder, index);
+            }
         } else if (data.media) {
             const imageContainer = cardEl.querySelector('.card__image');
             this.setCardMedia(imageContainer, data.media, data.mediaType, index);
@@ -695,12 +701,13 @@ class CardEditor {
         card.element.classList.add('card--project');
 
         this.closeAssetPicker();
-        this.loadFolderPreview(zone, folder.path, cardIndex);
-        this.saveCards();
-
         // Reinitialize project card interactions if CardViewer exists
         if (window.cardViewer && typeof window.cardViewer.setupProjectCard === 'function') {
-            window.cardViewer.setupProjectCard(card.element);
+            window.cardViewer.setupProjectCard(card.element).finally(() => {
+                this.addCardControls(zone, cardIndex);
+            });
+        } else {
+            this.loadFolderPreview(zone, folder.path, cardIndex);
         }
     }
 
@@ -1031,6 +1038,8 @@ class CardEditor {
 
         const controls = document.createElement('div');
         controls.className = 'card__controls';
+        controls.style.zIndex = '1000'; // Force high z-index for project cards overlay
+        console.log('Adding controls to card', cardIndex);
 
         // Duplicate Button
         const duplicateBtn = document.createElement('button');

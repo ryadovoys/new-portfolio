@@ -152,7 +152,7 @@ class CardViewer {
         const activeSlide = track.children[index];
         if (activeSlide) {
             const video = activeSlide.querySelector('video');
-            if (video) video.play().catch(() => {});
+            if (video) video.play().catch(() => { });
         }
     }
 

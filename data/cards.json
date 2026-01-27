@@ -196,13 +196,5 @@
     "media": "/assets/images/apps.jpg",
     "mediaType": "image",
     "folder": null
-  },
-  {
-    "title": "Card title",
-    "description": "Click to edit description text.",
-    "tag": "",
-    "width": "regular",
-    "media": null,
-    "mediaType": null
   }
 ]
