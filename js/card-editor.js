@@ -110,14 +110,18 @@ class CardEditor {
             description: data.description || '',
             tag: data.tag || '',
             media: data.media || null,
-            mediaType: data.mediaType || null
+            mediaType: data.mediaType || null,
+            folder: data.folder || null
         });
 
         // Initialize features (edit, drag-drop, color, etc.)
         this.setupNewCard(cardEl, index);
 
         // Load media if present
-        if (data.media) {
+        if (data.folder) {
+            const imageContainer = cardEl.querySelector('.card__image');
+            this.loadFolderPreview(imageContainer, data.folder, index);
+        } else if (data.media) {
             const imageContainer = cardEl.querySelector('.card__image');
             this.setCardMedia(imageContainer, data.media, data.mediaType, index);
         }
@@ -257,6 +261,22 @@ class CardEditor {
 
         if (!card) return;
 
+        // 0. If has folder, clear folder first
+        if (card.folder) {
+            zone.innerHTML = '';
+            zone.classList.add('card__image--dropzone');
+
+            this.addCardControls(zone, index);
+
+            zone.addEventListener('dragover', (e) => this.handleDragOver(e));
+            zone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+            zone.addEventListener('drop', (e) => this.handleDrop(e));
+
+            card.folder = null;
+            this.saveCards();
+            return;
+        }
+
         // 1. If has carousel media, remove current slide
         if (card.mediaType === 'carousel' && Array.isArray(card.media) && card.media.length > 1) {
             const currentSlide = parseInt(zone.dataset.currentSlide) || 0;
@@ -346,7 +366,8 @@ class CardEditor {
             width: originalCard.element.classList.contains('card--wide') ? 'wide' :
                 originalCard.element.classList.contains('card--invisible') ? 'invisible' : 'regular',
             media: Array.isArray(originalCard.media) ? [...originalCard.media] : originalCard.media,
-            mediaType: originalCard.mediaType
+            mediaType: originalCard.mediaType,
+            folder: originalCard.folder
         };
 
         const grid = document.querySelector('.card-grid');
@@ -395,14 +416,18 @@ class CardEditor {
             description: newData.description,
             tag: newData.tag,
             media: newData.media,
-            mediaType: newData.mediaType
+            mediaType: newData.mediaType,
+            folder: newData.folder
         });
 
         // Initialize features
         this.setupNewCard(cardEl, newIndex);
 
         // Load media if present
-        if (newData.media) {
+        if (newData.folder) {
+            const imageContainer = cardEl.querySelector('.card__image');
+            this.loadFolderPreview(imageContainer, newData.folder, newIndex);
+        } else if (newData.media) {
             const imageContainer = cardEl.querySelector('.card__image');
             this.setCardMedia(imageContainer, newData.media, newData.mediaType, newIndex);
         }
@@ -489,30 +514,49 @@ class CardEditor {
 
         const index = parseInt(zone.dataset.cardIndex);
 
-        // Fetch available assets
+        // Fetch available assets and folders
         try {
-            const response = await fetch('/api/assets');
-            const assets = await response.json();
+            const [assetsRes, foldersRes] = await Promise.all([
+                fetch('/api/assets'),
+                fetch('/api/folders')
+            ]);
+            const assets = await assetsRes.json();
+            const folders = await foldersRes.json();
 
-            if (assets.length === 0) {
-                return; // No assets, just allow drag-drop
+            if (assets.length === 0 && folders.length === 0) {
+                return; // Nothing to show
             }
 
             // Track selected assets
             this.selectedAssets = [];
             this.currentPickerZone = zone;
+            this.currentPickerTab = 'files';
 
             // Create picker
             const picker = document.createElement('div');
             picker.className = 'asset-picker';
             picker.dataset.cardIndex = index;
 
+            // Header with tabs
             const header = document.createElement('div');
             header.className = 'asset-picker__header';
 
-            const title = document.createElement('span');
-            title.textContent = 'Choose from assets';
-            header.appendChild(title);
+            const tabs = document.createElement('div');
+            tabs.className = 'asset-picker__tabs';
+
+            const filesTab = document.createElement('button');
+            filesTab.className = 'asset-picker__tab asset-picker__tab--active';
+            filesTab.textContent = 'Files';
+            filesTab.dataset.tab = 'files';
+
+            const foldersTab = document.createElement('button');
+            foldersTab.className = 'asset-picker__tab';
+            foldersTab.textContent = 'Folders';
+            foldersTab.dataset.tab = 'folders';
+
+            tabs.appendChild(filesTab);
+            tabs.appendChild(foldersTab);
+            header.appendChild(tabs);
 
             const confirmBtn = document.createElement('button');
             confirmBtn.className = 'asset-picker__confirm';
@@ -525,8 +569,13 @@ class CardEditor {
 
             picker.appendChild(header);
 
-            const grid = document.createElement('div');
-            grid.className = 'asset-picker__grid';
+            // Content container
+            const content = document.createElement('div');
+            content.className = 'asset-picker__content';
+
+            // Files grid
+            const filesGrid = document.createElement('div');
+            filesGrid.className = 'asset-picker__grid asset-picker__grid--files';
 
             assets.forEach(asset => {
                 const item = document.createElement('div');
@@ -549,16 +598,125 @@ class CardEditor {
                     item.appendChild(img);
                 }
 
-                // Toggle selection on click
                 item.addEventListener('click', () => this.toggleAssetSelection(item, asset));
-                grid.appendChild(item);
+                filesGrid.appendChild(item);
             });
 
-            picker.appendChild(grid);
+            content.appendChild(filesGrid);
+
+            // Folders grid
+            const foldersGrid = document.createElement('div');
+            foldersGrid.className = 'asset-picker__grid asset-picker__grid--folders';
+            foldersGrid.style.display = 'none';
+
+            folders.forEach(folder => {
+                const item = document.createElement('div');
+                item.className = 'asset-picker__folder';
+                item.dataset.folder = folder.path;
+                item.title = `${folder.name} (${folder.fileCount} files)`;
+
+                if (folder.preview) {
+                    const img = document.createElement('img');
+                    img.src = folder.preview;
+                    img.alt = folder.name;
+                    item.appendChild(img);
+                }
+
+                const badge = document.createElement('span');
+                badge.className = 'asset-picker__folder-badge';
+                badge.textContent = folder.fileCount;
+                item.appendChild(badge);
+
+                const name = document.createElement('span');
+                name.className = 'asset-picker__folder-name';
+                name.textContent = folder.name;
+                item.appendChild(name);
+
+                item.addEventListener('click', () => this.selectFolder(folder, index));
+                foldersGrid.appendChild(item);
+            });
+
+            content.appendChild(foldersGrid);
+            picker.appendChild(content);
+
+            // Tab switching
+            filesTab.addEventListener('click', (e) => {
+                e.stopPropagation();
+                filesTab.classList.add('asset-picker__tab--active');
+                foldersTab.classList.remove('asset-picker__tab--active');
+                filesGrid.style.display = '';
+                foldersGrid.style.display = 'none';
+                this.currentPickerTab = 'files';
+            });
+
+            foldersTab.addEventListener('click', (e) => {
+                e.stopPropagation();
+                foldersTab.classList.add('asset-picker__tab--active');
+                filesTab.classList.remove('asset-picker__tab--active');
+                filesGrid.style.display = 'none';
+                foldersGrid.style.display = '';
+                this.currentPickerTab = 'folders';
+            });
+
             zone.appendChild(picker);
 
         } catch (error) {
             console.error('Failed to load assets:', error);
+        }
+    }
+
+    selectFolder(folder, cardIndex) {
+        const zone = this.currentPickerZone;
+        const card = this.cards[cardIndex];
+
+        if (!card || !zone) return;
+
+        // Clear media, set folder
+        card.media = null;
+        card.mediaType = null;
+        card.folder = folder.path;
+
+        this.closeAssetPicker();
+        this.loadFolderPreview(zone, folder.path, cardIndex);
+        this.saveCards();
+    }
+
+    async loadFolderPreview(zone, folderPath, cardIndex) {
+        try {
+            const res = await fetch(`/api/folder-assets?folder=${encodeURIComponent(folderPath)}`);
+            const assets = await res.json();
+
+            zone.innerHTML = '';
+            zone.classList.remove('card__image--placeholder', 'card__image--carousel');
+
+            if (assets.length > 0) {
+                const first = assets[0];
+
+                if (first.isVideo) {
+                    const video = document.createElement('video');
+                    video.src = first.path;
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    zone.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = first.path;
+                    img.alt = '';
+                    zone.appendChild(img);
+                }
+
+                // Add folder badge
+                const badge = document.createElement('span');
+                badge.className = 'card__folder-badge';
+                badge.textContent = `${assets.length} layers`;
+                zone.appendChild(badge);
+            }
+
+            this.addCardControls(zone, cardIndex);
+        } catch (error) {
+            console.error('Failed to load folder preview:', error);
         }
     }
 
@@ -1181,11 +1339,11 @@ class CardEditor {
             title: card.title,
             description: card.description,
             tag: card.tag,
-            tag: card.tag,
             width: card.element.classList.contains('card--wide') ? 'wide' :
                 card.element.classList.contains('card--invisible') ? 'invisible' : 'regular',
             media: card.media,
-            mediaType: card.mediaType
+            mediaType: card.mediaType,
+            folder: card.folder
         }));
 
         try {

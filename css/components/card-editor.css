@@ -296,3 +296,115 @@
 .asset-picker__item {
     position: relative;
 }
+
+/* =================================================================
+   TABS
+   ================================================================= */
+
+.asset-picker__tabs {
+    display: flex;
+    gap: var(--space-1);
+}
+
+.asset-picker__tab {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.asset-picker__tab:hover {
+    background: var(--color-neutral-100);
+    color: var(--text-primary);
+}
+
+.asset-picker__tab--active {
+    background: var(--color-neutral-900);
+    color: var(--color-white);
+}
+
+.asset-picker__tab--active:hover {
+    background: var(--color-neutral-800);
+    color: var(--color-white);
+}
+
+.asset-picker__content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =================================================================
+   FOLDER ITEMS
+   ================================================================= */
+
+.asset-picker__folder {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    background: var(--color-neutral-100);
+}
+
+.asset-picker__folder:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.asset-picker__folder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.asset-picker__folder-badge {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+}
+
+.asset-picker__folder-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-2);
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    color: white;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* =================================================================
+   CARD FOLDER BADGE
+   ================================================================= */
+
+.card__folder-badge {
+    position: absolute;
+    bottom: var(--space-3);
+    left: var(--space-3);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    z-index: 10;
+}

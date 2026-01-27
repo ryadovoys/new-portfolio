@@ -1,0 +1,205 @@
+/* =================================================================
+   CARD PROJECT STYLES
+   Layer-based project cards with hover peek and expand interactions
+   ================================================================= */
+
+/* Project Card Base */
+.card--project {
+    position: relative;
+    z-index: 10;
+    transition: all 0.3s ease;
+    overflow: visible;
+    cursor: pointer;
+}
+
+/* Track for media (mapped to .card__image) */
+.project-media-track {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+}
+
+/* Main image on top of layers with radius */
+.card--project .project-media-track > img,
+.card--project .project-media-track > video {
+    position: relative;
+    z-index: 2;
+    background: inherit;
+    border-radius: var(--card-image-radius);
+}
+
+/* =================================================================
+   LAYERS
+   ================================================================= */
+
+.project-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+    z-index: 1;
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0s;
+    pointer-events: none;
+}
+
+/* Hover: Show first 2 layers offset (Desktop) */
+@media (hover: hover) {
+    .card--project:hover .project-layer--1 {
+        opacity: 1;
+        transform: translate(20px, 0) scale(1);
+    }
+
+    .card--project:hover .project-layer--2 {
+        opacity: 1;
+        transform: translate(40px, 0) scale(1);
+    }
+}
+
+/* =================================================================
+   EXPANDED STATE
+   ================================================================= */
+
+body.is-project-expanded {
+    overflow-y: hidden;
+    overflow-x: auto;
+    background-color: var(--bg-page);
+}
+
+body.is-project-expanded .card-grid > .card:not(.is-active),
+body.is-project-expanded .sidebar,
+body.is-project-expanded .theme-toggle {
+    opacity: 0 !important;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+
+.card--project.is-active {
+    z-index: 1000 !important;
+    cursor: default;
+    overflow: visible !important;
+}
+
+.card--placeholder {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.card--project.is-active .card__content {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Active layers spread out */
+body.is-project-expanded .card--project.is-active .project-layer {
+    opacity: 1;
+    left: calc(var(--layer-offset-index) * (100% + 4px));
+    transform: translate(0, 0) scale(1);
+    width: calc(var(--layer-width-mult) * 100% + (var(--layer-width-mult) - 1) * 4px);
+    z-index: 1;
+}
+
+/* Closing State: Delay opacity change */
+.card--project.is-closing .project-layer {
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0s 0.8s;
+}
+
+/* =================================================================
+   CLOSE BUTTON
+   ================================================================= */
+
+.close-button {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-primary);
+    width: 40px;
+    height: 40px;
+}
+
+body.is-project-expanded .close-button {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease 0.3s;
+}
+
+/* =================================================================
+   MOBILE: INLINE HORIZONTAL SCROLL
+   ================================================================= */
+
+@media (max-width: 768px) {
+    .card--project .project-media-track {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 10px;
+        padding-right: 10%;
+        margin: 0 -20px;
+        padding-left: 20px;
+        width: calc(100% + 40px);
+        scrollbar-width: none;
+        align-items: center;
+        background: transparent !important;
+        aspect-ratio: auto !important;
+        height: auto !important;
+        z-index: 20;
+    }
+
+    .card--project .project-media-track::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Items in track */
+    .card--project .project-media-track > * {
+        flex-shrink: 0;
+        width: 90% !important;
+        height: auto !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        scroll-snap-align: center;
+        border-radius: var(--radius-lg);
+        opacity: 1 !important;
+        object-fit: cover;
+        transform: none !important;
+        z-index: auto !important;
+    }
+
+    /* Aspect ratios for items */
+    .card--project:not(.card--wide) .project-media-track > * {
+        aspect-ratio: 1 / 1.236 !important;
+    }
+
+    .card--project.card--wide .project-media-track > * {
+        aspect-ratio: 16 / 9 !important;
+    }
+
+    /* Wide layer override for mobile */
+    body .card--project .project-media-track > div.project-layer.project-layer--wide {
+        width: calc(90% * 1.236 * 16 / 9) !important;
+        height: auto !important;
+        aspect-ratio: 16 / 9 !important;
+        flex: 0 0 auto !important;
+        align-self: center !important;
+    }
+}

@@ -133,6 +133,38 @@ app.get('/api/assets', (req, res) => {
   }
 });
 
+// List all folders in assets/images
+app.get('/api/folders', (req, res) => {
+  try {
+    const entries = fs.readdirSync(imagesDir, { withFileTypes: true });
+    const folders = entries
+      .filter(entry => entry.isDirectory())
+      .map(entry => {
+        const folderPath = path.join(imagesDir, entry.name);
+        const files = fs.readdirSync(folderPath);
+        const imageFiles = files.filter(f => /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(f));
+
+        // Get first image as preview
+        const preview = imageFiles.length > 0
+          ? `/assets/images/${entry.name}/${imageFiles[0]}`
+          : null;
+
+        return {
+          name: entry.name,
+          path: entry.name,
+          fileCount: imageFiles.length,
+          preview
+        };
+      })
+      .filter(folder => folder.fileCount > 0); // Only return folders with media
+
+    res.json(folders);
+  } catch (error) {
+    console.error('Error listing folders:', error);
+    res.json([]);
+  }
+});
+
 // Get assets from a specific folder
 app.get('/api/folder-assets', (req, res) => {
   const folderName = req.query.folder;

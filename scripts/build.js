@@ -28,7 +28,11 @@ if (fs.existsSync(DATA_FILE)) {
 // 3. Helper to generate Card HTML (matching logic in card-editor.js)
 function generateCardHTML(card, index) {
     const isWide = card.width === 'wide';
-    const cardClass = isWide ? 'card card--wide' : 'card';
+    const hasFolder = !!card.folder;
+
+    let cardClass = 'card';
+    if (isWide) cardClass += ' card--wide';
+    if (hasFolder) cardClass += ' card--project';
 
     // Tag HTML
     let tagHTML = '';
@@ -90,13 +94,11 @@ function generateCardHTML(card, index) {
         mediaHTML = `<div class="card__image" data-card-index="${index}"></div>`;
     }
 
-    // Link wrapper logic (if card has a link, wrap content? Or onclick?)
-    // Existing code index.html example uses onclick="window.open(...)".
-    // We don't have link data in the current cards.json structure shown in previous turns?
-    // Let's assume standard card structure for now. If link property existed, we'd add it.
+    // Build attributes
+    const folderAttr = hasFolder ? ` data-folder="${card.folder}"` : '';
 
     return `
-    <div class="${cardClass}">
+    <div class="${cardClass}"${folderAttr}>
         ${mediaHTML}
         <div class="card__content">
             <div class="card__header">
@@ -124,12 +126,32 @@ html = html.replace(gridRegex, `<div class="card-grid">\n${cardsHTML}\n</div>\n 
 // Remove Editor Scripts & Styles
 // Remove Sortable
 html = html.replace(/<script src=".*sortable.*"><\/script>/i, '');
-// Remove card-editor.js
+// Remove card-editor.js, replace with card-viewer.js
 html = html.replace(/<script src="js\/card-editor\.js"><\/script>/, '<script src="js/card-viewer.js"></script>');
-// Modify CSS links if needed (card-editor.css might be safe to keep or remove, let's keep for now as it probably has card styles)
-// Actually card-editor.css likely has the "add button" styles. We can leave it, unused styles are fine.
 
-// Remove Theme Toggle (Optionally, user might want this? User didn't ask to remove it. Keeping it.)
+// Add card-project.css link if not present
+if (!html.includes('card-project.css')) {
+    html = html.replace(
+        '<link rel="stylesheet" href="css/components/card-editor.css">',
+        '<link rel="stylesheet" href="css/components/card-editor.css">\n  <link rel="stylesheet" href="css/components/card-project.css">'
+    );
+}
+
+// Add close button for project cards (after theme toggle)
+const closeButtonHTML = `
+  <button class="close-button" aria-label="Close project">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>`;
+
+if (!html.includes('close-button')) {
+    html = html.replace(
+        '</button>\n\n  <div class="page">',
+        `</button>\n${closeButtonHTML}\n\n  <div class="page">`
+    );
+}
 
 // Write HTML
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), html);
