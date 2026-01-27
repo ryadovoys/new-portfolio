@@ -90,6 +90,17 @@
     .card--project.card--wide .project-media-track>* {
         aspect-ratio: 16 / 9 !important;
     }
+
+    /* Wide layer override for mobile */
+    /* Match height of regular items (90% × 1.236) but with 16:9 aspect ratio */
+    /* Width calculation: (90% × 1.236) × (16/9) ≈ 198% */
+    body .card--project .project-media-track>div.project-layer.project-layer--wide {
+        width: calc(90% * 1.236 * 16 / 9) !important;
+        height: auto !important;
+        aspect-ratio: 16 / 9 !important;
+        flex: 0 0 auto !important;
+        align-self: center !important;
+    }
 }
 
 .project-layer {
@@ -105,7 +116,8 @@
     opacity: 0;
     transform: translate(0, 0) scale(1);
     /* Default: Fast transition for Opening/Hover */
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0s;
+    /* Add left to transition variables */
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), left 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0s;
     pointer-events: none;
     /* Make click go through to card if hidden/behind */
 }
@@ -167,13 +179,19 @@ body.is-project-expanded .theme-toggle {
 body.is-project-expanded .card--project.is-active .project-layer {
     opacity: 1;
     /* Translate = index * (100% + 4px gap) */
-    transform: translate(calc(var(--layer-index) * (100% + 4px)), 0) scale(1);
+    /* Switched to LEFT for consistent percentage basis (Container Width) */
+    left: calc(var(--layer-offset-index) * (100% + 4px));
+    transform: translate(0, 0) scale(1);
+
+    /* Width = width-mult * 100% + (width-mult - 1) * 4px */
+    width: calc(var(--layer-width-mult) * 100% + (var(--layer-width-mult) - 1) * 4px);
+
     z-index: 1;
 }
 
 /* Closing State: Delay opacity change */
 .card--project.is-closing .project-layer {
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0s 0.8s;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), left 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0s 0.8s;
 }
 
 /* Close Button (X) */

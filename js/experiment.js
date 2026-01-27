@@ -91,40 +91,112 @@ document.addEventListener('DOMContentLoaded', async () => {
     let activeExpandedCard = null;
     let currentScrollX = 0;
 
-    function setupProjectCard(card) {
+    async function setupProjectCard(card) {
         const imageContainer = card.querySelector('.card__image');
-        if (!imageContainer) return;
+        const folder = card.dataset.folder;
+        if (!imageContainer || !folder) return;
+
+        try {
+            const res = await fetch(`/api/folder-assets?folder=${encodeURIComponent(folder)}`);
+            const assets = await res.json();
+
+            if (!assets || assets.length === 0) return;
+
+            // 1. Setup Main Media (First Asset)
+            const mainAsset = assets[0];
+            const isWide = mainAsset.filename.startsWith('-w');
+
+            // Toggle Wide Class
+            if (isWide) {
+                card.classList.add('card--wide');
+            } else {
+                card.classList.remove('card--wide');
+            }
+
+            // Mark as project to enable layer CSS
+            card.classList.add('card--project');
+
+            // Update Main Media Source
+            // Remove existing content
+            imageContainer.innerHTML = '';
+
+            let mainMediaEl;
+            if (mainAsset.isVideo) {
+                mainMediaEl = document.createElement('video');
+                mainMediaEl.src = mainAsset.path;
+                mainMediaEl.autoplay = true;
+                mainMediaEl.loop = true;
+                mainMediaEl.muted = true;
+                mainMediaEl.playsInline = true;
+            } else {
+                mainMediaEl = document.createElement('img');
+                mainMediaEl.src = mainAsset.path;
+                mainMediaEl.alt = mainAsset.filename;
+            }
+            imageContainer.appendChild(mainMediaEl);
+
+            // 2. Create Layers (Remaining Assets)
+            const layerAssets = assets.slice(1);
+            createLayers(layerAssets);
+
+            // 3. Activate Interaction (Click to Expand)
+            activateCardInteraction();
+
+        } catch (e) {
+            console.error('Error setting up project card:', e);
+        }
 
         // Function to create layers
-        const createLayers = (assets = []) => {
-            if (assets.length === 0) return; // REMOVE GREY BOXES: Only create if we have real assets
+        function createLayers(assets = []) {
+            if (assets.length === 0) return;
 
             // Add track class to container
             imageContainer.classList.add('project-media-track');
 
             const numLayers = assets.length;
+            let currentOffsetIndex = 1; // Start at 1 because index 0 is the main image
 
             for (let i = 1; i <= numLayers; i++) {
                 const layer = document.createElement('div');
+                // Use 1-indexed class for existing styling hooks, but we'll rely more on dynamic vars now
                 layer.className = `project-layer project-layer--${i}`;
-                layer.style.setProperty('--layer-index', i);
+
+                // Get asset for this layer (assets[0] is main image, so layer 1 is asset[0] if we were doing that?)
+                // Wait, original logic: const layerAssets = assets.slice(1); passed to createLayers.
+                // So assets arg here is actually just the layers.
+                // Asset for this layer:
+                const asset = assets[i - 1];
+
+                const isWide = asset.filename && asset.filename.includes('-w');
+                const widthMult = isWide ? 2 : 1;
+
+                // Set CSS variables for positioning
+                layer.style.setProperty('--layer-offset-index', currentOffsetIndex);
+                layer.style.setProperty('--layer-width-mult', widthMult);
+
+                // Increment offset for next item
+                currentOffsetIndex += widthMult;
+
+                if (isWide) {
+                    layer.classList.add('project-layer--wide');
+                    // CSS handles mobile styling via .project-layer--wide class
+                }
 
                 const imageRadius = getComputedStyle(imageContainer).borderRadius;
                 layer.style.borderRadius = imageRadius;
                 layer.style.zIndex = `-${i}`; // Stack backwards
 
-                // Size and Position
-                // Size and Position
                 // Position strictly behind the image (relative to container now)
-                layer.style.top = '0';
-                layer.style.left = '0';
-                layer.style.width = '100%';
+                // Use CSS for top/left default (left: 0, top: 0 in .project-layer)
+                // layer.style.top = '0';
+                // layer.style.left = '0';
+
+                // Width will be handled by CSS using the multiplier var, but fallback/base:
+                // layer.style.width = '100%'; 
+                // We'll let CSS handle width based on multiplier
+
                 layer.style.height = '100%';
 
-                // Background/Content
-                // Use real asset
-                // Note: Arrays are 0-indexed, layers 1-indexed (for class)
-                const asset = assets[i - 1];
                 layer.style.background = 'var(--bg-page)'; // theme-aware base
                 layer.style.overflow = 'hidden';
 
@@ -155,35 +227,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Re-observe for size changes (resize observer already setup below)
             const layers = card.querySelectorAll('.project-layer');
             layers.forEach(l => {
-                l.style.height = `${imageContainer.offsetHeight}px`;
+                if (window.innerWidth > 768) {
+                    l.style.height = `${imageContainer.offsetHeight}px`;
+                } else {
+                    l.style.height = '';
+                }
             });
         };
 
         // Initialize layers and activate card behaviors
-        if (!card.querySelector('.project-layer')) {
-            if (card.dataset.folder) {
-                // Fetch real assets
-                fetch(`/api/folder-assets?folder=${card.dataset.folder}`)
-                    .then(r => r.json())
-                    .then(assets => {
-                        if (assets && assets.length > 0) {
-                            // ACTIVATE CARD: Add class and behavior only if content exists
-                            card.classList.add('card--project');
-                            createLayers(assets);
-                            activateCardInteraction();
-                        } else {
-                            // If no images found, card remains a simple static card
-                            card.style.cursor = 'default';
-                        }
-                    })
-                    .catch(e => {
-                        console.error(e);
-                        card.style.cursor = 'default';
-                    });
-            }
+        // (Dynamic assets are now handled in the async block above)
+
+        // Setup ResizeObserver for layer sizing
+        if (card.querySelector('.project-media-track') || card.dataset.folder) {
 
             const observer = new ResizeObserver(() => {
                 const layers = card.querySelectorAll('.project-layer');
+                // On mobile, let CSS handle height (align-self: stretch) to allow aspect-ratio to drive width
+                if (window.innerWidth <= 768) {
+                    layers.forEach(l => l.style.height = '');
+                    return;
+                }
                 layers.forEach(l => {
                     l.style.height = `${imageContainer.offsetHeight}px`;
                 });
@@ -476,9 +540,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         const cardWidth = activeExpandedCard.offsetWidth;
         const padding = parseFloat(style.paddingTop) || 20;
         const layers = activeExpandedCard.querySelectorAll('.project-layer');
-        const numLayers = layers.length || 6;
-        const layerGap = 4;
-        const totalContentWidth = (numLayers * (cardWidth + layerGap)) + cardWidth - padding;
+        // Calculate total width based on cumulative offsets and widths
+        // (Assuming logic: index * offset + width)
+        // Last layer's end position:
+        let totalContentWidth = 0;
+        if (layers.length > 0) {
+            const lastLayer = layers[layers.length - 1];
+            const layerIndex = parseFloat(lastLayer.style.getPropertyValue('--layer-offset-index')) || layers.length;
+            const widthMult = parseFloat(lastLayer.style.getPropertyValue('--layer-width-mult')) || 1;
+
+            // Each unit is (cardWidth + layerGap)
+            // Width of this layer: widthMult * (cardWidth + layerGap) - layerGap? No, simpler:
+            // Let's rely on the visual logic:
+            // Translate X = offsetIndex * (cardWidth + gap)
+            // Width = widthMult * cardWidth + (widthMult - 1) * gap
+
+            const layerGap = 4;
+            const unitSize = cardWidth + layerGap;
+
+            // End of last layer relative to start
+            const lastLayerEnd = (layerIndex * unitSize) + (widthMult * cardWidth + (widthMult - 1) * layerGap);
+            totalContentWidth = lastLayerEnd - padding; // Approximate padding adjustment
+        } else {
+            totalContentWidth = cardWidth - padding;
+        }
+
         const viewportWidth = window.innerWidth;
         const targetRightMargin = 40;
         let minScrollX = viewportWidth - targetRightMargin - startLeft - totalContentWidth;
@@ -581,12 +667,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         const cardWidth = activeExpandedCard.offsetWidth;
         const padding = parseFloat(style.paddingTop) || 20; // fallback
 
-        // Dynamic layer count
+        // Dynamic layer count and width
         const layers = activeExpandedCard.querySelectorAll('.project-layer');
-        const numLayers = layers.length || 6;
 
         const layerGap = 4;
-        const totalContentWidth = (numLayers * (cardWidth + layerGap)) + cardWidth - padding;
+        let totalContentWidth = 0;
+
+        if (layers.length > 0) {
+            const lastLayer = layers[layers.length - 1];
+            const layerIndex = parseFloat(lastLayer.style.getPropertyValue('--layer-offset-index')) || layers.length;
+            const widthMult = parseFloat(lastLayer.style.getPropertyValue('--layer-width-mult')) || 1;
+
+            const unitSize = cardWidth + layerGap;
+
+            // End of last layer relative to start
+            // TranslateX is based on index * unitSize
+            // Width is widthMult * cardWidth + gap adjustment?
+            // Actually let's align with CSS exactly:
+            // transform: translate(calc(var(--layer-offset-index) * (100% + 4px)), 0)
+            // width: calc(var(--layer-width-mult) * 100% + (var(--layer-width-mult) - 1) * 4px);
+
+            const endPos = (layerIndex * unitSize) + (widthMult * cardWidth + (widthMult - 1) * layerGap);
+            totalContentWidth = endPos - padding;
+        } else {
+            totalContentWidth = cardWidth - padding;
+        }
 
         const viewportWidth = window.innerWidth;
         const targetRightMargin = 40;

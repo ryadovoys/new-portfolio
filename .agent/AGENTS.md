@@ -22,10 +22,22 @@ To create a "magical" interface that not only showcases Sergey's work (Visa, Glo
 
 ### Key Features
 -   **Bento Grid Layout**: A dynamic, responsive grid for showcasing work and tools.
+-   **Mobile Inline Reels**: Project cards (folders) feature horizontal scrolling directly in the mobile feed.
+-   **Immersive Project Expansion**: Full-height (window - 120px) card expansion on desktop with fluid FLIP animations.
 -   **The Brain**: A central hub for context ingestion (URLs, PDFs, Images).
 -   **Magic Assets**: Automatic generation of high-quality assets (GIFs from PDFs).
 
-## 3. Skills Catalog
+## 3. Sandboxes & Prototyping
+
+### 🧪 UI Experiments (`experiment.html`)
+The staging ground for high-fidelity UI interactions and physics-based animations.
+*   **Files**: `experiment.html`, `css/experiment.css`, `js/experiment.js`.
+*   **Active Prototypes**: 
+    *   **Physics Scroll**: Desktop/Mobile unified gesture handling (Momentum, Tension).
+    *   **Proportional Scaling**: Image-first scaling logic for project viewing.
+    *   **Micro-interactions**: Hover-peek layers and animated close (X) button.
+
+## 4. Skills Catalog
 These are specialized capabilities available to the agent. Refer to the specific `SKILL.md` for detailed instructions.
 
 ### 🎥 PDF to GIF Converter
@@ -36,4 +48,4 @@ These are specialized capabilities available to the agent. Refer to the specific
 
 ---
 
-*Verified and Active as of Jan 2026. This document should be updated as new skills are added.*
+*Verified and Active as of Jan 2026. This document is the source of truth for agent behavior and project state. Update it after every major iteration.*
