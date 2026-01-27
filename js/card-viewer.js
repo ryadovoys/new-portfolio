@@ -265,7 +265,14 @@ class CardViewer {
 
             const imageRadius = getComputedStyle(container).borderRadius;
             layer.style.borderRadius = imageRadius;
-            layer.style.zIndex = `-${i}`;
+            layer.style.zIndex = `${1 - i}`; // Layer 1 -> z-index 0, Layer 2 -> z-index -1, etc. Wait, let's re-think.
+            // Main media is z-index 2.
+            // We want layers to be 1, 0, -1... but they must be ABOVE the background.
+            // If background is implicitly z-index -1, then 1 and 0 are fine.
+            layer.style.zIndex = 1; // Actually, all layers can be z-index 1, as they are offset horizontally anyway.
+            // No, they overlap each other. Layer 1 should be on top of Layer 2.
+            layer.style.zIndex = 1 - (i - 1);
+
             layer.style.height = '100%';
             layer.style.background = 'var(--bg-page)';
             layer.style.overflow = 'hidden';
