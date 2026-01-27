@@ -186,4 +186,37 @@ function copyDir(src, dest) {
     }
 });
 
+// 6. Generate JSON API Files for Static Hosting
+const IMAGES_DIR = path.join(ROOT_DIR, 'assets', 'images');
+const API_DIR = path.join(DIST_DIR, 'api', 'folder-assets');
+
+if (fs.existsSync(IMAGES_DIR)) {
+    fs.mkdirSync(API_DIR, { recursive: true });
+
+    const entries = fs.readdirSync(IMAGES_DIR, { withFileTypes: true });
+    entries.forEach(entry => {
+        if (entry.isDirectory()) {
+            const folderName = entry.name;
+            const folderPath = path.join(IMAGES_DIR, folderName);
+            try {
+                const files = fs.readdirSync(folderPath);
+                const assets = files
+                    .filter(f => /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(f))
+                    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+                    .map(f => ({
+                        filename: f,
+                        path: `/assets/images/${folderName}/${f}`,
+                        isVideo: /\.(mp4|webm|mov)$/i.test(f)
+                    }));
+
+                // Write JSON file
+                fs.writeFileSync(path.join(API_DIR, `${folderName}.json`), JSON.stringify(assets));
+            } catch (err) {
+                console.error(`Error processing folder ${folderName}:`, err);
+            }
+        }
+    });
+    console.log('Generated Static APIs.');
+}
+
 console.log('Assets copied. Build complete.');

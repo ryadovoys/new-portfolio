@@ -713,7 +713,7 @@ class CardEditor {
 
     async loadFolderPreview(zone, folderPath, cardIndex) {
         try {
-            const res = await fetch(`/api/folder-assets?folder=${encodeURIComponent(folderPath)}`);
+            const res = await fetch(`/api/folder-assets/${encodeURIComponent(folderPath)}.json`);
             const assets = await res.json();
 
             zone.innerHTML = '';

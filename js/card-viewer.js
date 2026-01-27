@@ -176,7 +176,7 @@ class CardViewer {
         const closeButton = document.querySelector('.close-button');
 
         try {
-            const res = await fetch(`/api/folder-assets?folder=${encodeURIComponent(folder)}`);
+            const res = await fetch(`/api/folder-assets/${encodeURIComponent(folder)}.json`);
             const assets = await res.json();
 
             if (!assets || assets.length === 0) return;
