@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const grid = document.querySelector('.card-grid');
-    const backButton = document.querySelector('.back-button');
+    const closeButton = document.querySelector('.close-button');
 
-    if (!grid || !backButton) return;
+    if (!grid || !closeButton) return;
 
     // Fetch and render cards
     try {
@@ -99,6 +99,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const createLayers = (assets = []) => {
             if (assets.length === 0) return; // REMOVE GREY BOXES: Only create if we have real assets
 
+            // Add track class to container
+            imageContainer.classList.add('project-media-track');
+
             const numLayers = assets.length;
 
             for (let i = 1; i <= numLayers; i++) {
@@ -111,20 +114,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 layer.style.zIndex = `-${i}`; // Stack backwards
 
                 // Size and Position
-                const cardStyle = getComputedStyle(card);
-                const padding = cardStyle.paddingTop;
-
-                // Position strictly behind the image
-                layer.style.top = padding;
-                layer.style.left = padding;
-                layer.style.width = `calc(100% - (${padding} * 2))`;
-                layer.style.height = `${imageContainer.offsetHeight}px`;
+                // Size and Position
+                // Position strictly behind the image (relative to container now)
+                layer.style.top = '0';
+                layer.style.left = '0';
+                layer.style.width = '100%';
+                layer.style.height = '100%';
 
                 // Background/Content
                 // Use real asset
                 // Note: Arrays are 0-indexed, layers 1-indexed (for class)
                 const asset = assets[i - 1];
-                layer.style.background = '#fff'; // base
+                layer.style.background = 'var(--bg-page)'; // theme-aware base
                 layer.style.overflow = 'hidden';
 
                 // Create image or video
@@ -148,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     layer.appendChild(img);
                 }
 
-                card.appendChild(layer);
+                imageContainer.appendChild(layer);
             }
 
             // Re-observe for size changes (resize observer already setup below)
@@ -193,6 +194,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         function activateCardInteraction() {
             // Click to expand
             card.addEventListener('click', (e) => {
+                // Disable expansion on mobile for projects with layers (prioritize scroll)
+                if (window.innerWidth <= 768 && card.querySelectorAll('.project-layer').length > 0) {
+                    return;
+                }
+
                 e.stopPropagation();
 
                 if (!document.body.classList.contains('is-project-expanded')) {
@@ -254,8 +260,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // Back button (still there for explicit escape)
-        backButton.addEventListener('click', (e) => {
+        // Close button (X)
+        closeButton.addEventListener('click', (e) => {
             e.stopPropagation();
             closeExpanded();
         });
@@ -290,6 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 card.style.transform = 'translate(0, 0)';
 
                 document.body.classList.remove('is-project-expanded');
+                card.classList.add('is-closing'); // Enable delayed opacity transition
                 card.classList.remove('is-active');
 
                 activeExpandedCard = null;
@@ -314,6 +321,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                     placeholder.remove();
                     card.removeEventListener('transitionend', cleanup);
+                    card.classList.remove('is-closing');
                 }, { once: true });
             } else {
                 // Fallback if no placeholder
@@ -342,6 +350,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.addEventListener('touchstart', handleTouchStart, { passive: false });
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('touchend', handleTouchEnd);
+
+    let lastTouchX = 0;
+    let lastTouchTime = 0;
+    let velocity = 0;
+    let momentumId = null;
 
     function handleWheel(e) {
         if (!activeExpandedCard || !document.body.classList.contains('is-project-expanded')) return;
@@ -378,19 +391,95 @@ document.addEventListener('DOMContentLoaded', async () => {
         initialScrollX = currentScrollX;
         isScrollGestureStartedAtZero = (currentScrollX === 0);
 
+        lastTouchX = touchStartX;
+        lastTouchTime = Date.now();
+        velocity = 0;
+        cancelMomentum();
+
         // Remove transition for direct control
         activeExpandedCard.style.transition = 'none';
     }
 
     function handleTouchEnd(e) {
         if (!activeExpandedCard || !document.body.classList.contains('is-project-expanded')) return;
-        checkSnapback();
+        isTouchActive = false;
+
+        if (Math.abs(velocity) > 0.5) {
+            startMomentum();
+        } else {
+            checkSnapback();
+        }
+    }
+
+    function cancelMomentum() {
+        if (momentumId) {
+            cancelAnimationFrame(momentumId);
+            momentumId = null;
+        }
+    }
+
+    function startMomentum() {
+        cancelMomentum();
+
+        const friction = 0.95;
+
+        function animate() {
+            if (Math.abs(velocity) < 0.1) return;
+
+            velocity *= friction;
+            currentScrollX += (velocity * 16);
+
+            const limits = getScrollLimits();
+            if (currentScrollX > 0) {
+                currentScrollX = 0;
+                velocity = 0;
+            } else if (currentScrollX < limits.min) {
+                currentScrollX = limits.min;
+                velocity = 0;
+            }
+
+            activeExpandedCard.style.transform = `translateY(-50%) translateX(${currentScrollX}px)`;
+
+            if (Math.abs(velocity) >= 0.1) {
+                momentumId = requestAnimationFrame(animate);
+            }
+        }
+
+        momentumId = requestAnimationFrame(animate);
+    }
+
+    function getScrollLimits() {
+        const style = getComputedStyle(activeExpandedCard);
+        const startLeft = parseFloat(activeExpandedCard.style.left) || 0;
+        const cardWidth = activeExpandedCard.offsetWidth;
+        const padding = parseFloat(style.paddingTop) || 20;
+        const layers = activeExpandedCard.querySelectorAll('.project-layer');
+        const numLayers = layers.length || 6;
+        const layerGap = 4;
+        const totalContentWidth = (numLayers * (cardWidth + layerGap)) + cardWidth - padding;
+        const viewportWidth = window.innerWidth;
+        const targetRightMargin = 40;
+        let minScrollX = viewportWidth - targetRightMargin - startLeft - totalContentWidth;
+        if (minScrollX > 0) minScrollX = 0;
+        return { min: minScrollX, max: 0 };
     }
 
     function checkSnapback() {
-        // Not needed for start boundary anymore as we have immediate close.
-        // Keeping it for potential future end-of-project rubber banding if needed.
         if (!activeExpandedCard) return;
+
+        // If we are in the "overscroll" zone (positive scrollX) but not closed
+        if (currentScrollX > 0) {
+            // Linear/Clean stop: No spring bounce
+            activeExpandedCard.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+            currentScrollX = 0;
+            activeExpandedCard.style.transform = `translateY(-50%) translateX(0px)`;
+
+            setTimeout(() => {
+                if (activeExpandedCard && currentScrollX === 0) {
+                    activeExpandedCard.style.transition = 'none';
+                }
+            }, 500);
+        }
     }
 
     function handleTouchMove(e) {
@@ -402,40 +491,42 @@ document.addEventListener('DOMContentLoaded', async () => {
         const deltaX = touchStartX - touchX;
         const deltaY = touchStartY - touchY;
 
-        // If predominantly horizontal swipe, handle it
-        // On mobile, "scrolling down" is swiping UP. 
-        // We want horizontal swipe.
+        // Velocity calculation for momentum
+        const currentTime = Date.now();
+        const timeDelta = currentTime - lastTouchTime;
+        if (timeDelta > 0) {
+            velocity = (touchX - lastTouchX) / timeDelta;
+        }
+        lastTouchX = touchX;
+        lastTouchTime = currentTime;
+
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             e.preventDefault();
-            // In touch, moving finger LEFT (positive deltaX) means scrolling content RIGHT (viewing more) -> subtract from X
-            // Moving finger RIGHT (negative deltaX) means scrolling BACK -> add to X
-            // Our currentScrollX is negative for "forward", positive for "back".
-            // So: finger left (deltaX positive) -> should DECREASE ScrollX (more negative).
-            // finger right (deltaX < 0) -> should INCREASE ScrollX (towards 0).
-            // So: newScroll = current - delta
 
-            // Logic handled in updateScroll uses "delta" to subtract.
-            // If delta is positive (wheel down), we subtract -> go negative -> forward.
-            // Finger left = deltaX positive. We want forward. So subtract.
-            // Matches wheel logic.
-
-            // Touch sensitivity usually 1:1, maybe slightly boosted
             const touchSpeed = 1.2;
             let targetScrollX = initialScrollX - (deltaX * touchSpeed);
 
-            // PHYSICAL STOP: If we are scrolling back to the start, catch it at 0
+            // 1. PHYSICAL STOP: Catch returning scrolls at 0 (Ignore momentum/flick here)
             if (initialScrollX < 0 && targetScrollX > 0) {
                 targetScrollX = 0;
             }
 
-            // 2. IMMEDIATE CLOSE: If gesture starts at 0 and moves back
-            if (currentScrollX === 0 && targetScrollX > 0) {
-                if (isScrollGestureStartedAtZero && activeCloseFunction) {
-                    activeCloseFunction();
-                    return;
+            // 2. MOBILE TENSION: Restore resistance and closing thresholds for touch
+            if (targetScrollX > 0) {
+                if (isScrollGestureStartedAtZero) {
+                    const overscrollDelta = targetScrollX - Math.max(0, initialScrollX);
+                    targetScrollX = Math.max(0, initialScrollX) + (overscrollDelta * 0.15);
+
+                    // Threshold to close on mobile: 100px
+                    if (targetScrollX > 100) {
+                        if (activeCloseFunction) {
+                            activeCloseFunction();
+                            return;
+                        }
+                    }
+                } else {
+                    targetScrollX = 0;
                 }
-                // If not allowed to close yet, keep at 0
-                targetScrollX = 0;
             }
 
             currentScrollX = targetScrollX;
@@ -446,23 +537,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     function updateScroll(delta) {
         const prevScrollX = currentScrollX;
 
-        // 1. IMMEDIATE CLOSE: If at 0 and scrolling back
-        if (currentScrollX === 0 && delta < 0) {
-            if (isScrollGestureStartedAtZero && activeCloseFunction) {
-                activeCloseFunction();
-                return;
-            }
-        }
-
-        // 2. Normal displacement
+        // Normal displacement
         currentScrollX -= delta;
 
-        // 3. PHYSICAL STOP: Catch returning scroll at 0
+        // PHYSICAL STOP: Catch returning scroll at 0
         if (prevScrollX < 0 && currentScrollX > 0) {
             currentScrollX = 0;
         }
 
-        // 4. Ensure we never drift into positive unless it's a close trigger (handled above)
+        // Clamp to 0 (No scroll-to-exit for desktop/trackpad)
         if (currentScrollX > 0) currentScrollX = 0;
 
         applyScrollClamp();

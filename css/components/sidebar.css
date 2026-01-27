@@ -231,18 +231,22 @@
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {
-        width: 100%;
+        width: auto;
+        /* Allow negative margins to expand beyond container */
         position: sticky;
         top: 0;
         gap: 0;
         background: var(--bg-page);
-        padding: var(--space-4) 0;
+        padding: var(--space-4);
+        /* Add padding back for internal content */
+        margin-left: calc(var(--space-4) * -1);
+        /* Pull to screen edge */
+        margin-right: calc(var(--space-4) * -1);
+        /* Pull to screen edge */
         margin-top: calc(var(--space-8) * -1);
-        /* Counteract layout padding if needed, but sticky usually needs distinct container */
         border-bottom: 1px solid transparent;
         transition: border-color 0.3s ease;
         z-index: 1000;
-        /* High z-index to stay on top */
     }
 
     /* Add border/shadow when stuck if we want? User just said sticky white bg. */

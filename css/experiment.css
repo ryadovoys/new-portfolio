@@ -8,6 +8,90 @@
     /* Override base card overflow so layers peek out */
 }
 
+/* Track for media (mapped to .card__image) */
+.project-media-track {
+    position: relative;
+    width: 100%;
+    /* Default (Desktop): Allow layers to peek out */
+    overflow: visible;
+}
+
+/* Ensure main image is on top of layers on desktop and has radius */
+.card--project .project-media-track>img,
+.card--project .project-media-track>video {
+    position: relative;
+    z-index: 2;
+    background: inherit;
+    border-radius: var(--card-image-radius);
+    /* Apply radius directly since overflow is visible */
+}
+
+/* Mobile: Inline Horizontal Scroll */
+@media (max-width: 768px) {
+    .card--project .project-media-track {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 10px;
+        padding-right: 10%;
+        /* Peek next item */
+        margin: 0 -20px;
+        /* Negative margin to offset card padding */
+        padding-left: 20px;
+        /* Restore padding start */
+        width: calc(100% + 40px);
+        /* Full width of screen */
+        scrollbar-width: none;
+        /* Hide scrollbar */
+        align-items: center;
+        /* Center items vertically */
+        background: transparent !important;
+        /* Transparent to show images */
+        aspect-ratio: auto !important;
+        /* Allow height to collapse to content */
+        height: auto !important;
+        z-index: 20;
+    }
+
+    .card--project .project-media-track::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Items in track (Main img + Layers) */
+    .card--project .project-media-track>* {
+        flex-shrink: 0;
+        width: 90% !important;
+        /* Force 90% width */
+        height: auto !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        scroll-snap-align: center;
+        border-radius: var(--radius-lg);
+        scroll-snap-align: center;
+        border-radius: var(--radius-lg);
+        opacity: 1 !important;
+        /* Always visible */
+        /* Always visible */
+        object-fit: cover;
+        transform: none !important;
+        z-index: auto !important;
+    }
+
+    /* Apply specific aspect ratios to items since container is now auto */
+    .card--project:not(.card--wide) .project-media-track>* {
+        aspect-ratio: 1 / 1.236 !important;
+    }
+
+    .card--project.card--wide .project-media-track>* {
+        aspect-ratio: 16 / 9 !important;
+    }
+
+    .card--project.card--wide .project-media-track>* {
+        aspect-ratio: 16 / 9 !important;
+    }
+}
+
 .project-layer {
     position: absolute;
     top: 0;
@@ -16,36 +100,39 @@
     /* top/left set by JS to match padding */
     border-radius: var(--radius-lg);
     box-shadow: none;
-    z-index: -1;
+    z-index: 1;
+    /* Be behind main image (z-2) but above card bg */
     opacity: 0;
     transform: translate(0, 0) scale(1);
-    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Default: Fast transition for Opening/Hover */
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0s;
     pointer-events: none;
     /* Make click go through to card if hidden/behind */
 }
 
 /* Hover: Show only first 2 layers slightly offset */
-.card--project:hover .project-layer--1 {
-    opacity: 1;
-    transform: translate(20px, 0) scale(1);
-}
+@media (hover: hover) {
+    .card--project:hover .project-layer--1 {
+        opacity: 1;
+        transform: translate(20px, 0) scale(1);
+    }
 
-.card--project:hover .project-layer--2 {
-    opacity: 1;
-    transform: translate(40px, 0) scale(1);
+    .card--project:hover .project-layer--2 {
+        opacity: 1;
+        transform: translate(40px, 0) scale(1);
+    }
 }
 
 /* Expanded State */
 body.is-project-expanded {
     overflow-y: hidden;
     overflow-x: auto;
-    background-color: #fff;
-    /* Force white background */
+    background-color: var(--bg-page);
+    /* Force theme background */
 }
 
 body.is-project-expanded .card-grid>.card:not(.is-active),
 body.is-project-expanded .sidebar,
-body.is-project-expanded .back-button,
 body.is-project-expanded .theme-toggle {
     opacity: 0 !important;
     visibility: hidden;
@@ -84,24 +171,37 @@ body.is-project-expanded .card--project.is-active .project-layer {
     z-index: 1;
 }
 
-/* Back Button */
-.back-button {
+/* Closing State: Delay opacity change */
+.card--project.is-closing .project-layer {
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0s 0.8s;
+}
+
+/* Close Button (X) */
+.close-button {
     position: fixed;
-    top: 20px;
-    left: 20px;
+    top: 30px;
+    right: 30px;
     z-index: 200;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
-    background: var(--color-bg-primary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-full);
-    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-weight: 500;
-    box-shadow: var(--shadow-md);
+    justify-content: center;
     color: var(--color-text-primary);
+    /* Large hit area */
+    width: 40px;
+    height: 40px;
+}
+
+body.is-project-expanded .close-button {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease 0.3s;
+    /* Delay to appear after expand */
 }
