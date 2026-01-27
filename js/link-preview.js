@@ -87,26 +87,24 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updatePosition = (e) => {
-        // Offset from cursor
-        const offsetX = 20;
-        const offsetY = 20;
-
-        let x = e.clientX + offsetX;
-        let y = e.clientY + offsetY;
-
-        // Boundary checks (keep on screen)
+        const gap = 20;
+        const margin = 16;
         const rect = tooltip.getBoundingClientRect();
-        const winWidth = window.innerWidth;
-        const winHeight = window.innerHeight;
 
-        // Flip left if too close to right edge
-        if (x + rect.width > winWidth) {
-            x = e.clientX - rect.width - offsetX;
+        // Center horizontally
+        let x = e.clientX - rect.width / 2;
+        // Position below by default
+        let y = e.clientY + gap;
+
+        // Horizontal boundaries
+        if (x < margin) x = margin;
+        if (x + rect.width > window.innerWidth - margin) {
+            x = window.innerWidth - rect.width - margin;
         }
 
-        // Flip up if too close to bottom
-        if (y + rect.height > winHeight) {
-            y = e.clientY - rect.height - offsetY;
+        // Vertical boundaries (Flip if hits bottom)
+        if (y + rect.height > window.innerHeight - margin) {
+            y = e.clientY - rect.height - gap; // Flip to above pointer
         }
 
         tooltip.style.left = `${x}px`;
