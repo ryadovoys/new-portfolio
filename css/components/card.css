@@ -12,6 +12,8 @@
     padding: var(--card-padding);
     height: 100%;
     min-width: 0;
+    overflow: hidden;
+    /* Ensure content stays within border radius */
 }
 
 /* Wide card variant */
@@ -34,7 +36,9 @@
     aspect-ratio: 16 / 9;
 }
 
-.card__image img {
+.card__image img,
+.card__image video,
+.card__image .carousel__track {
     width: 100%;
     height: 100%;
     object-fit: cover;

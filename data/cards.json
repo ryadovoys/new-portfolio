@@ -5,7 +5,8 @@
     "tag": "Personal",
     "width": "regular",
     "media": "/assets/images/1-hello-rotation.gif",
-    "mediaType": "image"
+    "mediaType": "image",
+    "folder": "random"
   },
   {
     "title": "Visa Website (2022–2025)",

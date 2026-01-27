@@ -1,0 +1,107 @@
+/* CSS for the experiment: Hiding Layers, Hover behavior, Click expansion */
+.card--project {
+    position: relative;
+    z-index: 10;
+    transition: all 0.3s ease;
+    overflow: visible;
+    cursor: pointer;
+    /* Override base card overflow so layers peek out */
+}
+
+.project-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* width/height set by JS to match image */
+    /* top/left set by JS to match padding */
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+    z-index: -1;
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    /* Make click go through to card if hidden/behind */
+}
+
+/* Hover: Show only first 2 layers slightly offset */
+.card--project:hover .project-layer--1 {
+    opacity: 1;
+    transform: translate(20px, 0) scale(1);
+}
+
+.card--project:hover .project-layer--2 {
+    opacity: 1;
+    transform: translate(40px, 0) scale(1);
+}
+
+/* Expanded State */
+body.is-project-expanded {
+    overflow-y: hidden;
+    overflow-x: auto;
+    background-color: #fff;
+    /* Force white background */
+}
+
+body.is-project-expanded .card-grid>.card:not(.is-active),
+body.is-project-expanded .sidebar,
+body.is-project-expanded .back-button,
+body.is-project-expanded .theme-toggle {
+    opacity: 0 !important;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+
+/* Also hide Back button if we want PURE white? User said "nothing except cards". 
+   Let's ensure everything else fades out. */
+
+.card--project.is-active {
+    /* z-index set by JS inline during animation, but keep here for static state */
+    z-index: 1000 !important;
+    cursor: default;
+    /* Other properties driven by JS for FLIP */
+    overflow: visible !important;
+    /* Allow layers to slide out */
+}
+
+.card--placeholder {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.card--project.is-active .card__content {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* When active, layers move to the right using index calculation */
+body.is-project-expanded .card--project.is-active .project-layer {
+    opacity: 1;
+    /* Translate = index * (100% + 4px gap) */
+    transform: translate(calc(var(--layer-index) * (100% + 4px)), 0) scale(1);
+    z-index: 1;
+}
+
+/* Back Button */
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    padding: 8px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    box-shadow: var(--shadow-md);
+    color: var(--color-text-primary);
+}

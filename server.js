@@ -133,6 +133,41 @@ app.get('/api/assets', (req, res) => {
   }
 });
 
+// Get assets from a specific folder
+app.get('/api/folder-assets', (req, res) => {
+  const folderName = req.query.folder;
+  if (!folderName) {
+    return res.status(400).json({ error: 'Folder name required' });
+  }
+
+  const folderPath = path.join(imagesDir, folderName);
+
+  // Security check: ensure path is within imagesDir
+  if (!folderPath.startsWith(imagesDir)) {
+    return res.status(403).json({ error: 'Invalid folder path' });
+  }
+
+  if (!fs.existsSync(folderPath)) {
+    return res.json([]); // Return empty if folder doesn't exist yet
+  }
+
+  try {
+    const files = fs.readdirSync(folderPath);
+    const assets = files
+      .filter(f => /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(f))
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })) // Natural sort (1, 2, 10)
+      .map(f => ({
+        filename: f,
+        path: `/assets/images/${folderName}/${f}`,
+        isVideo: /\.(mp4|webm|mov)$/i.test(f)
+      }));
+    res.json(assets);
+  } catch (error) {
+    console.error('Error reading folder assets:', error);
+    res.status(500).json({ error: 'Failed to read folder assets' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Portfolio server running at http://localhost:${PORT}`);
 });

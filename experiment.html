@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sergey Ryadovoy — Design Leader</title>
+  <meta name="description"
+    content="Design leader with 15 years of experience in brand design, digital products, code, and AI. VP of Experience Design at Digitas.">
+
+  <!-- Google Fonts (Google Sans Flex) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components/sidebar.css">
+  <link rel="stylesheet" href="css/components/card.css">
+  <link rel="stylesheet" href="css/components/theme-toggle.css">
+  <link rel="stylesheet" href="css/components/link-preview.css">
+  <link rel="stylesheet" href="css/experiment.css">
+</head>
+
+<body>
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <svg class="theme-toggle__icon theme-toggle__icon--sun" width="20" height="20" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5" />
+      <path
+        d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+    </svg>
+    <svg class="theme-toggle__icon theme-toggle__icon--moon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  </button>
+
+  <div class="page">
+    <button class="back-button">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Back
+    </button>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Mobile Header (Logo + Toggle) -->
+      <div class="sidebar__header">
+        <!-- Logo -->
+        <div class="sidebar__logo">
+          <svg class="sidebar__logo-mark" width="45" height="24" viewBox="0 0 45 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="16.8" y="14.3999" width="4" height="5.6" fill="currentColor" />
+            <rect y="16" width="4" height="4" fill="currentColor" />
+            <rect x="16.8" y="4" width="4" height="4" fill="currentColor" />
+            <rect x="24.8" y="4" width="4" height="20" fill="currentColor" />
+            <rect y="4" width="4" height="6.4" fill="currentColor" />
+            <rect x="40.8" y="4" width="4" height="12" fill="currentColor" />
+            <rect x="40.8" y="20" width="4" height="4" fill="currentColor" />
+            <rect x="32.8" y="16" width="8" height="4" fill="currentColor" />
+            <rect x="28.8" width="12" height="4" fill="currentColor" />
+            <rect x="4" y="20" width="12.8" height="4" fill="currentColor" />
+            <rect x="4" y="10.3999" width="12.8" height="4" fill="currentColor" />
+            <rect x="4" width="12.8" height="4" fill="currentColor" />
+          </svg>
+        </div>
+
+        <!-- Menu Toggle -->
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <svg class="menu-toggle__icon menu-toggle__icon--menu" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+          <svg class="menu-toggle__icon menu-toggle__icon--close" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Sidebar Content (Drawer) -->
+      <div class="sidebar__content">
+        <!-- Navigation -->
+        <nav class="sidebar__nav">
+          <a href="mailto:ryadovoys@gmail.com" class="sidebar__nav-link sidebar__nav-link--mail">Let's catch up</a>
+          <a href="assets/ryadovoy-resume.pdf" class="sidebar__nav-link sidebar__nav-link--resume"
+            target="_blank">Download Resume</a>
+          <a href="https://www.linkedin.com/in/sergeyryadovoy/" class="sidebar__nav-link sidebar__nav-link--linkedin"
+            target="_blank">Explore
+            LinkedIn</a>
+        </nav>
+      </div>
+
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Card Grid -->
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <!-- Card 1: Visa -->
+        <!-- Card 1: Visa Experiment -->
+        <div class="card card--project" data-category="professional">
+
+
+          <!-- Add Card -->
+
+        </div>
+    </main>
+  </div>
+
+  <!-- Mobile Nav Backdrop -->
+  <div class="sidebar-backdrop"></div>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+
+  <!-- Scripts -->
+  <script src="js/animations.js"></script>
+  <script src="js/theme-toggle.js"></script>
+  <script src="js/mobile-nav.js"></script>
+  <script src="js/link-preview.js"></script>
+  <script src="js/experiment.js"></script>
+</body>
+
+</html>
