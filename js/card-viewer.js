@@ -199,6 +199,9 @@ class CardViewer {
                 card.classList.remove('card--wide');
             }
 
+            // Preserve controls for editor
+            const existingControls = imageContainer.querySelector('.card__controls');
+
             card.classList.add('card--project');
             imageContainer.innerHTML = '';
 
@@ -220,6 +223,11 @@ class CardViewer {
             // Create Layers
             const layerAssets = assets.slice(1);
             this.createLayers(card, imageContainer, layerAssets);
+
+            // Re-append controls if preserved
+            if (existingControls) {
+                imageContainer.appendChild(existingControls);
+            }
 
             // Setup ResizeObserver
             const observer = new ResizeObserver(() => {

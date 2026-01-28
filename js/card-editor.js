@@ -16,9 +16,9 @@ class CardEditor {
         this.initSortable();
 
         // Initialize project card interactions after cards are loaded
-        if (window.cardViewer && typeof window.cardViewer.setupProjectCards === 'function') {
-            window.cardViewer.setupProjectCards();
-        }
+        // if (window.cardViewer && typeof window.cardViewer.setupProjectCards === 'function') {
+        //     window.cardViewer.setupProjectCards();
+        // }
     }
 
     initSortable() {
