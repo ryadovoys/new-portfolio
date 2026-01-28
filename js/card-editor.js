@@ -273,7 +273,7 @@ class CardEditor {
     clearCardMedia(e) {
         e.stopPropagation();
         const index = parseInt(e.currentTarget.dataset.cardIndex);
-        const zone = e.currentTarget.parentElement;
+        const zone = e.currentTarget.closest('.card__image');
         const card = this.cards[index];
 
         if (!card) return;
