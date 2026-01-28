@@ -133,6 +133,7 @@
    /* Links */
    --link-color: var(--color-neutral-900);
    --link-hover: var(--color-neutral-600);
+   --link-muted: var(--color-neutral-400);
 
    /* Component: Card */
    --card-bg: transparent;
@@ -197,6 +198,7 @@
    /* Links */
    --link-color: var(--color-white);
    --link-hover: var(--color-neutral-400);
+   --link-muted: var(--color-neutral-600);
 
    /* Theme Toggle */
    --toggle-bg: var(--color-yellow-900);

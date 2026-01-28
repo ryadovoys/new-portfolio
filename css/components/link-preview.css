@@ -5,12 +5,12 @@
     pointer-events: none;
     background: rgba(20, 20, 20, 0.95);
     backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     width: 280px;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     opacity: 0;
     transform: translateY(10px) scale(0.98);
     transition: opacity 0.2s ease, transform 0.2s ease;
@@ -27,8 +27,8 @@
     width: 100%;
     aspect-ratio: 4 / 3;
     background: #000;
+    background: #000;
     overflow: hidden;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .link-preview__image {
@@ -49,7 +49,7 @@
     margin: 0;
     line-height: 1.4;
     font-family: 'IBM Plex Sans', sans-serif;
-    
+
     /* Truncate to 2 lines */
     display: -webkit-box;
     -webkit-line-clamp: 2;

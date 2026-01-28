@@ -44,6 +44,19 @@
     object-fit: cover;
 }
 
+/* Wide project cards should show full image (thumbnail) without cropping */
+.card--wide.card--project .card__image {
+    aspect-ratio: 16 / 9 !important;
+}
+
+.card--wide.card--project .card__image img,
+.card--wide.card--project .card__image video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+}
+
 /* Placeholder for animation/video */
 .card__image--placeholder {
     display: flex;
@@ -153,8 +166,18 @@
 .card__description {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
-    color: var(--text-primary);
+    color: var(--text-secondary);
     line-height: var(--line-height-normal);
+}
+
+.card__description a {
+    color: var(--link-color);
+    text-decoration-color: var(--link-color);
+}
+
+.card__description a:hover {
+    color: var(--link-hover);
+
 }
 
 /* Sortable drag states */

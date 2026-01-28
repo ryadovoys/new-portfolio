@@ -734,7 +734,7 @@ class CardEditor {
         if (card.element) {
             card.element.dataset.folder = folder.path;
             card.element.classList.add('card--project');
-            card.element.classList.remove('card--wide'); // Reset wide unless folder dictates otherwise
+
         } else {
             console.error('Card element missing');
             return;

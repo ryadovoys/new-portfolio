@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
         "assets/Peace Sans.zip": {
             title: "Peace Sans Free Font",
             image: "assets/images/peace-sans-link.jpg"
+        },
+        "https://www.amway.com/": {
+            title: "Amway Official Website",
+            image: "assets/images/amway-link.jpg"
         }
     };
 

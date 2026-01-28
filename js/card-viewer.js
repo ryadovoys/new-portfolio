@@ -190,7 +190,10 @@ class CardViewer {
             const mainAsset = assets[0];
             const isWide = mainAsset.filename.startsWith('-w');
 
-            if (isWide) {
+            // Allow card to stay wide if it was manually added as wide, OR if the first image dictates it
+            const shouldBeWide = card.classList.contains('card--wide') || isWide;
+
+            if (shouldBeWide) {
                 card.classList.add('card--wide');
             } else {
                 card.classList.remove('card--wide');
