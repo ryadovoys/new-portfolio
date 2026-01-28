@@ -142,6 +142,10 @@
    --card-padding: 0;
    --card-gap: 10px;
 
+   /* Component: Link Preview */
+   --bg-preview: rgba(255, 255, 255, 0.95);
+   --radius-preview: 8px;
+
    /* Component: Tag - Default (SKILL = purple) */
    --tag-bg: var(--color-purple-200);
    --tag-text: var(--color-purple-800);
@@ -188,6 +192,7 @@
    --bg-card: var(--color-neutral-900);
    --bg-card-image: var(--color-neutral-900);
    --bg-overlay: rgba(255, 255, 255, 0.1);
+   --bg-preview: rgba(20, 20, 20, 0.95);
 
    /* Text */
    --text-primary: var(--color-white);

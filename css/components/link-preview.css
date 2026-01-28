@@ -3,11 +3,11 @@
     position: fixed;
     z-index: 9999;
     pointer-events: none;
-    background: rgba(20, 20, 20, 0.95);
+    background: var(--bg-preview);
     backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-radius: 12px;
+    border-radius: var(--radius-preview);
     width: 280px;
     overflow: hidden;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
@@ -45,7 +45,7 @@
 .link-preview__title {
     font-size: 13px;
     font-weight: 500;
-    color: #fff;
+    color: var(--text-primary);
     margin: 0;
     line-height: 1.4;
     font-family: 'IBM Plex Sans', sans-serif;
@@ -59,7 +59,7 @@
 
 .link-preview__domain {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-secondary);
     margin-top: 4px;
     display: block;
 }

@@ -102,70 +102,61 @@
     align-items: center;
 }
 
-.sidebar__nav-link::before {
-    content: '+';
+/* Cursor Dot */
+.nav-cursor {
+    position: absolute;
+    left: 0;
+    /* Aligned with left edge of nav */
+    width: 6px;
+    /* Dot size */
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--text-primary);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-50%);
+    /* Center vertically on the coordinate */
+    transition: top 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease;
+    z-index: 10;
+}
+
+.sidebar__nav {
+    position: relative;
+    /* Context for cursor positioning */
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+    width: fit-content;
+    /* Ensure container is only as wide as the links */
+}
+
+.sidebar__nav-link {
+    font-size: var(--font-size-sm);
+    color: var(--link-color);
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 0;
-    height: 20px;
-    margin-right: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    opacity: 0;
-    border-radius: var(--radius-sm);
-    transition: width 0.3s ease, margin-right 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
-    flex-shrink: 0;
+    position: relative;
+    /* Transition for the text push */
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), color 0.3s ease;
+    transform-origin: left center;
 }
 
-.sidebar__nav-link:hover::before {
-    width: 20px;
-    margin-right: 12px;
-    opacity: 1;
-    background-color: var(--color-neutral-100);
+/* Active state (pushed by cursor) */
+.sidebar__nav-link.active {
+    transform: translateX(16px);
+    /* Push text to the right */
+    color: var(--text-primary);
 }
 
-[data-theme="dark"] .sidebar__nav-link:hover::before {
-    background-color: var(--color-neutral-800);
+.sidebar__nav-link:hover {
+    color: var(--text-primary);
 }
 
-/* Specific LinkedIn icon override */
-.sidebar__nav-link--linkedin::before {
-    content: '';
-    background-image: url('../../assets/LinkedIn_icon.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.sidebar__nav-link--linkedin:hover::before {
-    opacity: 1;
-}
-
-/* Specific Mail icon override */
-.sidebar__nav-link--mail::before {
-    content: '';
-    background-image: url('../../assets/mail-2020-03-26.webp');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.sidebar__nav-link--mail:hover::before {
-    opacity: 1;
-}
-
-/* Specific Resume icon override */
-.sidebar__nav-link--resume::before {
-    content: '';
-    background-image: url('../../assets/03c03b9252728796b26f5128a8e700b4.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.sidebar__nav-link--resume:hover::before {
-    opacity: 1;
+/* Remove old pseudo-elements */
+.sidebar__nav-link::before {
+    display: none;
 }
 
 /* Introduction */
