@@ -1,5 +1,5 @@
 /* =================================================================
-   THEME TOGGLE
+   THEME TOGGLE (PLANETARY ORBIT VARIANT)
    Fixed bottom-left button for switching light/dark mode
    ================================================================= */
 
@@ -9,60 +9,135 @@
     left: var(--page-padding);
     width: 44px;
     height: 44px;
-    border: none;
-    border-radius: 50%;
-    background: var(--toggle-bg);
-    color: var(--toggle-icon);
+    border: 1px solid var(--color-neutral-200);
+    /* Orbit path ring */
+    background: transparent;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease, transform 0.2s ease;
     z-index: 100;
+    padding: 0;
+    border-radius: 50%;
+    transition: border-color 0.6s ease, transform 0.2s ease;
 }
 
 .theme-toggle:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
+    border-color: var(--color-neutral-400);
 }
 
 .theme-toggle:active {
     transform: scale(0.95);
 }
 
-/* Icon visibility based on theme */
-.theme-toggle__icon {
+/* The Center Body (Sun <-> Dark Hole/Moon) */
+.orbit-center {
     position: absolute;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background: var(--color-neutral-900);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: none;
+    transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease;
 }
 
-/* Light theme: show moon icon (click to go dark) */
-[data-theme="light"] .theme-toggle__icon--sun,
-:root:not([data-theme]) .theme-toggle__icon--sun {
-    opacity: 0;
-    transform: rotate(-90deg);
+/* The Arm holding the Planet */
+.orbit-arm {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    /* Spans full width of container */
+    height: 100%;
+    background: transparent;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+    transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Elastic/Overshoot feel */
+    pointer-events: none;
 }
 
-[data-theme="light"] .theme-toggle__icon--moon,
-:root:not([data-theme]) .theme-toggle__icon--moon {
-    opacity: 1;
-    transform: rotate(0);
+/* The Orbiting Planet */
+.orbit-planet {
+    position: absolute;
+    right: -3px;
+    /* Offset so center aligns with border (path) */
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    background: var(--text-primary);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0 2px var(--bg-page);
+    /* Halo to separate from track if needed */
+    transition: background-color 0.6s;
 }
 
-/* Dark theme: show sun icon (click to go light) */
-[data-theme="dark"] .theme-toggle__icon--moon {
-    opacity: 0;
-    transform: rotate(90deg);
+/* 
+ * STATE LOGIC
+ * Light Mode: Center = Sun (Orange). Planet position = 0deg.
+ * Dark Mode: Center = Dark. Planet position = 180deg.
+ */
+
+[data-theme="dark"] .theme-toggle {
+    border-color: var(--color-neutral-800);
 }
 
-[data-theme="dark"] .theme-toggle__icon--sun {
-    opacity: 1;
-    transform: rotate(0);
+[data-theme="dark"] .orbit-center {
+    background: var(--color-neutral-100);
+    border-color: transparent;
+    /* Becomes pale/white like moon or dark star? */
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 }
 
-/* Responsive - adjust position on mobile */
+/* [data-theme="dark"] .orbit-arm removed to allow JS continuous rotation */
+
+/* Responsive */
 @media (max-width: 768px) {
     .theme-toggle {
         bottom: var(--space-6);
         left: var(--space-6);
+        background: var(--bg-page);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] .theme-toggle {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        border-color: var(--color-neutral-800);
+    }
+}
+
+/* Tooltip Label */
+.theme-toggle-label {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%) translateX(10px);
+    margin-left: 12px;
+    /* background: var(--bg-card); */
+    padding: 6px 12px;
+    /* border-radius: 8px; */
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
+    pointer-events: none;
+    /* border: 1px solid var(--color-neutral-200); */
+}
+
+.theme-toggle:hover .theme-toggle-label {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+}
+
+@media (max-width: 768px) {
+    .theme-toggle-label {
+        display: none;
     }
 }

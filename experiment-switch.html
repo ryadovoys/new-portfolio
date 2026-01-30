@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment: Theme Switcher - Set 2</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+
+  <style>
+    /* Inline styles for Set 2 */
+    :root {
+      --transition-speed: 0.5s;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1), color 0.6s;
+      font-family: var(--font-family-sans);
+    }
+
+    /* Tabs Navigation */
+    .tabs {
+      display: flex;
+      overflow-x: auto;
+      padding: 20px;
+      gap: 10px;
+      border-bottom: 1px solid var(--color-neutral-200);
+      background: var(--bg-page);
+      flex-shrink: 0;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--color-neutral-200);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .tab-btn:hover {
+      background: var(--color-neutral-100);
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      background: var(--text-primary);
+      color: var(--bg-page);
+      border-color: var(--text-primary);
+    }
+
+    [data-theme="dark"] .tab-btn {
+      border-color: var(--color-neutral-800);
+    }
+
+    [data-theme="dark"] .tab-btn:hover {
+      background: var(--color-neutral-800);
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .variant-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      width: 100%;
+      height: 100%;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .variant-container.active {
+      display: flex;
+    }
+
+    .variant-label {
+      position: absolute;
+      bottom: 40px;
+      font-size: 14px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+
+    /* -----------------------------------------------------------
+       V11: Elastic Snap
+       ----------------------------------------------------------- */
+    .switch-elastic {
+      width: 80px;
+      height: 40px;
+      background: var(--color-neutral-200);
+      border-radius: 40px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .elastic-knob {
+      width: 32px;
+      height: 32px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      transition: transform 0.5s cubic-bezier(0.5, 1.5, 0.5, 1), width 0.2s, background 0.3s;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .switch-elastic:active .elastic-knob {
+      width: 40px;
+      /* Stretch while clicking */
+    }
+
+    [data-active="true"] .switch-elastic {
+      background: var(--color-purple-700);
+    }
+
+    [data-active="true"] .elastic-knob {
+      transform: translateX(40px);
+      background: #fff;
+    }
+
+
+    /* -----------------------------------------------------------
+       V12: Liquid Lamp (Metaballs)
+       ----------------------------------------------------------- */
+    .liquid-wrapper {
+      filter: url(#gooey2);
+      width: 100px;
+      height: 50px;
+      position: relative;
+      cursor: pointer;
+      background: var(--color-neutral-200);
+      border-radius: 30px;
+    }
+
+    .liquid-ball {
+      width: 34px;
+      height: 34px;
+      background: var(--text-primary);
+      border-radius: 50%;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      transition: transform 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    }
+
+    .liquid-ball-2 {
+      width: 34px;
+      height: 34px;
+      background: var(--text-primary);
+      border-radius: 50%;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      transform: scale(0);
+      transition: transform 0.5s ease;
+    }
+
+    [data-active="true"] .liquid-ball {
+      transform: translateX(50px);
+    }
+
+    .liquid-wrapper:hover .liquid-ball-2 {
+      transform: scale(0.8) translateX(10px);
+    }
+
+
+    /* -----------------------------------------------------------
+       V13: Mechanical Iris
+       ----------------------------------------------------------- */
+    .switch-iris {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--color-neutral-200);
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      border: 4px solid var(--color-neutral-200);
+    }
+
+    .iris-blade {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--color-neutral-900);
+      clip-path: polygon(0 0, 100% 0, 50% 50%);
+      transform-origin: 50% 50%;
+      transition: transform 0.5s ease;
+    }
+
+    .iris-blade:nth-child(1) {
+      transform: rotate(0deg) scale(0);
+    }
+
+    .iris-blade:nth-child(2) {
+      transform: rotate(60deg) scale(0);
+    }
+
+    .iris-blade:nth-child(3) {
+      transform: rotate(120deg) scale(0);
+    }
+
+    .iris-blade:nth-child(4) {
+      transform: rotate(180deg) scale(0);
+    }
+
+    .iris-blade:nth-child(5) {
+      transform: rotate(240deg) scale(0);
+    }
+
+    .iris-blade:nth-child(6) {
+      transform: rotate(300deg) scale(0);
+    }
+
+    .iris-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      background: #FFD700;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      transition: background 0.5s;
+    }
+
+    [data-active="true"] .iris-blade {
+      /* They close in */
+    }
+
+    [data-active="true"] .iris-blade:nth-child(1) {
+      transform: rotate(0deg) scale(1.5);
+    }
+
+    [data-active="true"] .iris-blade:nth-child(2) {
+      transform: rotate(60deg) scale(1.5);
+    }
+
+    [data-active="true"] .iris-blade:nth-child(3) {
+      transform: rotate(120deg) scale(1.5);
+    }
+
+    [data-active="true"] .iris-blade:nth-child(4) {
+      transform: rotate(180deg) scale(1.5);
+    }
+
+    [data-active="true"] .iris-blade:nth-child(5) {
+      transform: rotate(240deg) scale(1.5);
+    }
+
+    [data-active="true"] .iris-blade:nth-child(6) {
+      transform: rotate(300deg) scale(1.5);
+    }
+
+    [data-active="true"] .iris-center {
+      background: #fff;
+    }
+
+
+    /* -----------------------------------------------------------
+       V14: Hanging Pull Cord
+       ----------------------------------------------------------- */
+    .switch-pull {
+      position: relative;
+      width: 4px;
+      height: 100px;
+      background: var(--color-neutral-400);
+      cursor: grabbing;
+      transform-origin: top center;
+      transition: height 0.2s;
+    }
+
+    .pull-knob {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--text-primary);
+    }
+
+    .switch-pull:active {
+      height: 120px;
+    }
+
+    .bulb-status {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 40px;
+      opacity: 0.2;
+      transition: opacity 0.2s, text-shadow 0.2s;
+    }
+
+    [data-active="false"] .switch-pull .bulb-status {
+      opacity: 1;
+      text-shadow: 0 0 20px #FFD700;
+      color: #FFD700;
+    }
+
+
+    /* -----------------------------------------------------------
+       V15: Neon Tube
+       ----------------------------------------------------------- */
+    .switch-neon {
+      font-family: monospace;
+      font-size: 32px;
+      color: #333;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 10px 20px;
+      border: 2px solid #333;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    [data-active="true"] .switch-neon {
+      color: #fff;
+      border-color: #fff;
+      text-shadow: 0 0 5px #fff, 0 0 10px #ff00de, 0 0 20px #ff00de, 0 0 40px #ff00de;
+      box-shadow: 0 0 10px #ff00de;
+      background: #000;
+    }
+
+
+    /* -----------------------------------------------------------
+       V16: Pixel Sorter
+       ----------------------------------------------------------- */
+    .switch-pixel {
+      width: 60px;
+      height: 60px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      cursor: pointer;
+    }
+
+    .pixel {
+      background: var(--text-primary);
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    [data-active="true"] .pixel:nth-child(odd) {
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    [data-active="true"] .pixel:nth-child(even) {
+      border-radius: 50%;
+      background: var(--color-purple-500);
+    }
+
+    /* Random delays */
+    .pixel:nth-child(1) {
+      transition-delay: 0.05s;
+    }
+
+    .pixel:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+
+    .pixel:nth-child(3) {
+      transition-delay: 0.15s;
+    }
+
+    .pixel:nth-child(4) {
+      transition-delay: 0.02s;
+    }
+
+    .pixel:nth-child(5) {
+      transition-delay: 0.2s;
+    }
+
+
+    /* -----------------------------------------------------------
+       V17: Sliding Panels (Art Deco)
+       ----------------------------------------------------------- */
+    .switch-deco {
+      width: 80px;
+      height: 40px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--text-primary);
+      cursor: pointer;
+    }
+
+    .panel {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      background: var(--text-primary);
+      transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+      z-index: 1;
+    }
+
+    .panel-left {
+      left: 0;
+      transform: translateY(100%);
+    }
+
+    .panel-right {
+      right: 0;
+      transform: translateY(-100%);
+    }
+
+    .deco-text {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      z-index: 0;
+    }
+
+    [data-active="true"] .panel-left {
+      transform: translateY(0);
+    }
+
+    [data-active="true"] .panel-right {
+      transform: translateY(0);
+    }
+
+    [data-active="true"] .deco-text {
+      color: var(--bg-page);
+      z-index: 2;
+      /* Text over panels? No, text is behind panels usually, but here panels become bg */
+      mix-blend-mode: difference;
+    }
+
+
+    /* -----------------------------------------------------------
+       V18: Planetary Orbit
+       ----------------------------------------------------------- */
+    .switch-orbit {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 1px solid var(--color-neutral-200);
+    }
+
+    .sun-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      background: #FF9500;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px rgba(255, 149, 0, 0.5);
+    }
+
+    .planet-arm {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 60px;
+      height: 2px;
+      background: transparent;
+      transform: translate(-50%, -50%) rotate(0deg);
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .planet {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      background: var(--text-primary);
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+
+    [data-active="true"] .planet-arm {
+      transform: translate(-50%, -50%) rotate(180deg);
+    }
+
+    [data-active="true"] .sun-center {
+      background: #333;
+      box-shadow: none;
+    }
+
+
+    /* -----------------------------------------------------------
+       V19: Haptic/Clay Press (Neumorphism V2)
+       ----------------------------------------------------------- */
+    .switch-clay {
+      width: 60px;
+      height: 60px;
+      background: var(--bg-page);
+      border-radius: 16px;
+      box-shadow:
+        8px 8px 16px rgba(0, 0, 0, 0.1),
+        -8px -8px 16px rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    [data-theme="dark"] .switch-clay {
+      box-shadow:
+        5px 5px 10px rgba(0, 0, 0, 0.5),
+        -5px -5px 10px rgba(255, 255, 255, 0.05);
+    }
+
+    .clay-icon {
+      font-size: 24px;
+      color: var(--text-primary);
+      transition: transform 0.2s;
+    }
+
+    [data-active="true"] .switch-clay {
+      transform: scale(0.95);
+      box-shadow:
+        inset 4px 4px 8px rgba(0, 0, 0, 0.1),
+        inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+    }
+
+    [data-theme="dark"][data-active="true"] .switch-clay {
+      box-shadow:
+        inset 4px 4px 8px rgba(0, 0, 0, 0.5),
+        inset -4px -4px 8px rgba(255, 255, 255, 0.05);
+    }
+
+
+    /* -----------------------------------------------------------
+       V20: Curtain Reveal
+       ----------------------------------------------------------- */
+    .switch-curtain {
+      width: 80px;
+      height: 50px;
+      position: relative;
+      overflow: hidden;
+      background: #111;
+      cursor: pointer;
+      border: 2px solid var(--text-primary);
+    }
+
+    .curtain {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      background: #f0f0f0;
+      /* Curtain color */
+      transition: transform 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+      z-index: 2;
+    }
+
+    .curtain-left {
+      left: 0;
+      transform-origin: left;
+    }
+
+    .curtain-right {
+      right: 0;
+      transform-origin: right;
+    }
+
+    .stage-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      z-index: 1;
+    }
+
+    [data-active="true"] .curtain-left {
+      transform: scaleX(0.1);
+    }
+
+    [data-active="true"] .curtain-right {
+      transform: scaleX(0.1);
+    }
+
+
+    /* Back link */
+    .back-home {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 14px;
+      padding: 8px 16px;
+      border: 1px solid var(--color-neutral-200);
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+
+    .back-home:hover {
+      background: var(--color-neutral-100);
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+
+<body>
+
+  <a href="index.html" class="back-home">← Back to Portfolio</a>
+
+  <div class="tabs" id="tabs-container">
+    <button class="tab-btn active" data-target="v11">Elastic Snap</button>
+    <button class="tab-btn" data-target="v12">Liquid Lamp</button>
+    <button class="tab-btn" data-target="v13">Mech Iris</button>
+    <button class="tab-btn" data-target="v14">Pull Cord</button>
+    <button class="tab-btn" data-target="v15">Neon Tube</button>
+    <button class="tab-btn" data-target="v16">Pixel Sort</button>
+    <button class="tab-btn" data-target="v17">Sliding Panels</button>
+    <button class="tab-btn" data-target="v18">Planetary</button>
+    <button class="tab-btn" data-target="v19">Clay Press</button>
+    <button class="tab-btn" data-target="v20">Curtains</button>
+  </div>
+
+  <div class="content-area">
+
+    <!-- V11: Elastic -->
+    <div class="variant-container active" id="v11">
+      <div class="switch-elastic" onclick="toggleTheme(this)">
+        <div class="elastic-knob"></div>
+      </div>
+      <div class="variant-label">Elastic Rubber</div>
+    </div>
+
+    <!-- V12: Liquid -->
+    <div class="variant-container" id="v12">
+      <div class="liquid-wrapper" onclick="toggleTheme(this)">
+        <div class="liquid-ball"></div>
+        <div class="liquid-ball-2"></div>
+      </div>
+      <div class="variant-label">Metaball Fusion</div>
+    </div>
+
+    <!-- V13: Iris -->
+    <div class="variant-container" id="v13">
+      <div class="switch-iris" onclick="toggleTheme(this)">
+        <div class="iris-center"></div>
+        <div class="iris-blade"></div>
+        <div class="iris-blade"></div>
+        <div class="iris-blade"></div>
+        <div class="iris-blade"></div>
+        <div class="iris-blade"></div>
+        <div class="iris-blade"></div>
+      </div>
+      <div class="variant-label">Mechanical Iris</div>
+    </div>
+
+    <!-- V14: Pull -->
+    <div class="variant-container" id="v14">
+      <!-- Bulb visual -->
+      <div class="switch-pull" onclick="toggleTheme(this)">
+        <div class="bulb-status">💡</div>
+        <div class="pull-knob"></div>
+      </div>
+      <div class="variant-label">Pull Cord</div>
+    </div>
+
+    <!-- V15: Neon -->
+    <div class="variant-container" id="v15">
+      <div class="switch-neon" onclick="toggleTheme(this)">
+        NIGHT
+      </div>
+      <div class="variant-label">Neon Flickering</div>
+    </div>
+
+    <!-- V16: Pixel -->
+    <div class="variant-container" id="v16">
+      <div class="switch-pixel" onclick="toggleTheme(this)">
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+      </div>
+      <div class="variant-label">Pixel Disintegrate</div>
+    </div>
+
+    <!-- V17: Panels -->
+    <div class="variant-container" id="v17">
+      <div class="switch-deco" onclick="toggleTheme(this)">
+        <div class="deco-text">MODE</div>
+        <div class="panel panel-left"></div>
+        <div class="panel panel-right"></div>
+      </div>
+      <div class="variant-label">Art Deco Slides</div>
+    </div>
+
+    <!-- V18: Orbit -->
+    <div class="variant-container" id="v18">
+      <div class="switch-orbit" onclick="toggleTheme(this)">
+        <div class="sun-center"></div>
+        <div class="planet-arm">
+          <div class="planet"></div>
+        </div>
+      </div>
+      <div class="variant-label">Planetary Orbit</div>
+    </div>
+
+    <!-- V19: Clay -->
+    <div class="variant-container" id="v19">
+      <div class="switch-clay" onclick="toggleTheme(this)">
+        <div class="clay-icon">●</div>
+      </div>
+      <div class="variant-label">Claymorphism Press</div>
+    </div>
+
+    <!-- V20: Curtain -->
+    <div class="variant-container" id="v20">
+      <div class="switch-curtain" onclick="toggleTheme(this)">
+        <div class="stage-content">🎭</div>
+        <div class="curtain curtain-left"></div>
+        <div class="curtain curtain-right"></div>
+      </div>
+      <div class="variant-label">Theatrical Curtain</div>
+    </div>
+
+  </div>
+
+  <!-- SVG Filter for Liquid Effect -->
+  <svg style="position: absolute; width: 0; height: 0;">
+    <defs>
+      <filter id="gooey2">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+      </filter>
+    </defs>
+  </svg>
+
+  <script>
+    // Tab Logic
+    const tabs = document.querySelectorAll('.tab-btn');
+    const containers = document.querySelectorAll('.variant-container');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all
+        tabs.forEach(t => t.classList.remove('active'));
+        containers.forEach(c => c.classList.remove('active'));
+
+        // Add to clicked
+        tab.classList.add('active');
+        const targetId = tab.dataset.target;
+        const target = document.getElementById(targetId);
+        if (target) target.classList.add('active');
+      });
+    });
+
+    // Theme Logic
+    function toggleTheme(element) {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+
+      // Update DOM
+      document.documentElement.setAttribute('data-theme', newTheme);
+
+      // Update visual state of all toggles
+      const isActive = newTheme === 'dark'; // Or logic dependent on switch type
+
+      document.querySelectorAll('.switch-elastic, .liquid-wrapper, .switch-iris, .switch-pull, .switch-neon, .switch-pixel, .switch-deco, .switch-orbit, .switch-clay, .switch-curtain').forEach(el => {
+
+        // Special logic for specific switches if needed, but generic data-active works for CSS
+        if (el.classList.contains('switch-pull')) {
+          // Logic for pull cord is momentary usually, but here we keep state?
+          // css logic is [data-active="false"] for light bulb ON.
+          // If dark mode (isActive=true), bulb is OFF (dark).
+          el.setAttribute('data-active', isActive);
+        } else {
+          el.setAttribute('data-active', isActive);
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

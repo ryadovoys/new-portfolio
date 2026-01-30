@@ -27,42 +27,6 @@
     "folder": null
   },
   {
-    "title": "Global brands",
-    "description": "Worked with many global brands across my career. Visa, Delta, Amway, Mondelez, L'Oreal, RaceTrac, and more. Everything from websites and apps to global campaigns. Every project taught me something new about working at scale.",
-    "tag": "Experience",
-    "width": "regular",
-    "media": "/assets/images/visa-cover-2.gif",
-    "mediaType": "image",
-    "folder": null
-  },
-  {
-    "title": "Product design",
-    "description": "Led product design for Visa's global digital presence, directed redesigns for Amway, RaceTrac, Delta. Websites, apps, dashboards, design systems. Always thinking about how it looks and how it actually works.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/CleanShot 2026-01-23 at 12.20.51.gif",
-    "mediaType": "image",
-    "folder": null
-  },
-  {
-    "title": "Amway Website",
-    "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products. <a href='https://www.amway.com/' target='_blank'>Visit website</a>",
-    "tag": "Project",
-    "width": "wide",
-    "media": "/assets/images/7-upload-1.gif",
-    "mediaType": "image",
-    "folder": null
-  },
-  {
-    "title": "Design systems",
-    "description": "Built design systems for Visa, RaceTrac, Amway, and more. Components, tokens, variables, documentation. I love organizing, structuring, and making sure every small piece fits into the bigger picture.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/design-system.jpg",
-    "mediaType": "image",
-    "folder": null
-  },
-  {
     "title": "Conversational AI",
     "description": "Text became the main way we talk to AI. I design conversational interfaces that deal with LLM quirks—context limits, latency, when the model gets things wrong. The goal is making these interactions feel natural, not robotic.",
     "tag": "Experience",
@@ -72,21 +36,30 @@
     "folder": null
   },
   {
-    "title": "AI workflows",
-    "description": "Figuring out how design and AI actually work together. Claude Code, Cursor, Antigravity, MCP tools—using AI across research, ideation, prototyping, designing and code.",
+    "title": "Global brands",
+    "description": "Worked with many global brands across my career. Visa, Delta, Amway, Mondelez, L'Oreal, RaceTrac, and more. Everything from websites and apps to global campaigns. Every project taught me something new about working at scale.",
     "tag": "Experience",
     "width": "regular",
-    "media": "/assets/images/workflows.jpg",
+    "media": "/assets/images/visa-cover-2.gif",
     "mediaType": "image",
     "folder": null
   },
   {
-    "title": "AI Prototyping",
-    "description": "From detailed prototypes in Figma to quick iterations with Antigravity and Claude Code. I always look for ways to make quick prototypes that help teams make decisions faster, especially when working with larger groups.",
+    "title": "Prototyping",
+    "description": "From detailed prototypes in Figma to interactive prototype in HTML, Javascript. Building, iterating and brainstorming with AI and building quick prototypes, and using detailed Figma prototypes to make it look as close as the real product. I use CLI and IDE like Antigravity and Claude Code for code, and Figma prototypes and Figma makes for prototyping in Figma.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/images/ai-prototyping.jpg",
+    "media": "/assets/images/AI fluency.jpg",
     "mediaType": "image",
+    "folder": null
+  },
+  {
+    "title": "Mindcomplete",
+    "description": "AI-powered writing assistant that completes your thoughts in real-time. Mindcomplete helps you write faster and more fluidly by predicting and suggesting how to continue your paragraphs. Simply pause while typing, and AI will suggest a natural continuation matching your tone and style. <a href='https://www.figma.com/community/plugin/1593731353807484611/mindcomplete' target='_blank'>Try it in Figma!</a>",
+    "tag": "Experiment",
+    "width": "wide",
+    "media": "/assets/images/mindcomplete-hero-1.mp4",
+    "mediaType": "video",
     "folder": null
   },
   {
@@ -99,20 +72,20 @@
     "folder": "generative-media"
   },
   {
-    "title": "Mindcomplete",
-    "description": "AI-powered writing assistant that completes your thoughts in real-time. Mindcomplete helps you write faster and more fluidly by predicting and suggesting how to continue your paragraphs. Simply pause while typing, and AI will suggest a natural continuation matching your tone and style. <a href='https://www.figma.com/community/plugin/1593731353807484611/mindcomplete' target='_blank'>Try it in Figma!</a>",
-    "tag": "Experiment",
-    "width": "wide",
-    "media": "/assets/images/mindcomplete-hero-1.mp4",
-    "mediaType": "video",
+    "title": "Design systems",
+    "description": "Built design systems for Visa, RaceTrac, Amway, and more. Components, tokens, variables, documentation. I love organizing, structuring, and making sure every small piece fits into the bigger picture.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/design-system.jpg",
+    "mediaType": "image",
     "folder": null
   },
   {
-    "title": "36 days of type",
-    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
-    "tag": "Experiment",
-    "width": "wide",
-    "media": "/assets/images/1-36-days-of-type-project-card.gif",
+    "title": "Motion design",
+    "description": "Figma prototyping tools for quick motion examples, After Effects and Cavalry for complex motion assets. I love working with motion and always keep my skills up to date.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/Apr-21-2022 08-45-01.gif",
     "mediaType": "image",
     "folder": null
   },
@@ -122,33 +95,6 @@
     "tag": "Experience",
     "width": "regular",
     "media": "/assets/images/8-friends.jpg",
-    "mediaType": "image",
-    "folder": null
-  },
-  {
-    "title": "Logo design",
-    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/Image-590bb1b1-a148-4566-a6f2-eaa6aaca32be.gif",
-    "mediaType": "image",
-    "folder": null
-  },
-  {
-    "title": "Branding and identity design",
-    "description": "Brand identity work across 15 years, from startups to federal brands. Logo systems, visual identities, brand guidelines. Foundation that shaped how I think about consistency and systems.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/3-video-1.mp4",
-    "mediaType": "video",
-    "folder": null
-  },
-  {
-    "title": "Motion design",
-    "description": "Figma prototyping tools for quick motion examples, After Effects and Cavalry for complex motion assets. I love working with motion and always keep my skills up to date.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/Apr-21-2022 08-45-01.gif",
     "mediaType": "image",
     "folder": null
   },
@@ -167,6 +113,60 @@
     "tag": "Experience",
     "width": "regular",
     "media": "/assets/images/the_magic_of_code.gif",
+    "mediaType": "image",
+    "folder": null
+  },
+  {
+    "title": "AI workflows",
+    "description": "Figuring out how design and AI actually work together. Claude Code, Cursor, Antigravity, MCP tools—using AI across research, ideation, prototyping, designing and code.",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/images/workflows.jpg",
+    "mediaType": "image",
+    "folder": null
+  },
+  {
+    "title": "Branding and identity design",
+    "description": "Brand identity work across 15 years, from startups to federal brands. Logo systems, visual identities, brand guidelines. Foundation that shaped how I think about consistency and systems.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/3-video-1.mp4",
+    "mediaType": "video",
+    "folder": null
+  },
+  {
+    "title": "Product design",
+    "description": "Led product design for Visa's global digital presence, directed redesigns for Amway, RaceTrac, Delta. Websites, apps, dashboards, design systems. Always thinking about how it looks and how it actually works.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/CleanShot 2026-01-23 at 12.20.51.gif",
+    "mediaType": "image",
+    "folder": null
+  },
+  {
+    "title": "Amway Website",
+    "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products. Visit website",
+    "tag": "Project",
+    "width": "wide",
+    "media": "/assets/images/7-upload-1.gif",
+    "mediaType": "image",
+    "folder": null
+  },
+  {
+    "title": "36 days of type",
+    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
+    "tag": "Experiment",
+    "width": "wide",
+    "media": "/assets/images/1-36-days-of-type-project-card.gif",
+    "mediaType": "image",
+    "folder": null
+  },
+  {
+    "title": "Logo design",
+    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/Image-590bb1b1-a148-4566-a6f2-eaa6aaca32be.gif",
     "mediaType": "image",
     "folder": null
   },

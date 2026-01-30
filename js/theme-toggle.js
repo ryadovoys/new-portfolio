@@ -6,33 +6,58 @@
 (function () {
     const toggle = document.getElementById('themeToggle');
     const root = document.documentElement;
+    const orbitArm = document.querySelector('.orbit-arm');
 
     // Check for saved preference or system preference
     const savedTheme = localStorage.getItem('theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    // Set initial theme
+    let currentTheme = 'light';
     if (savedTheme) {
-        root.setAttribute('data-theme', savedTheme);
+        currentTheme = savedTheme;
     } else if (systemPrefersDark) {
-        root.setAttribute('data-theme', 'dark');
-    } else {
-        root.setAttribute('data-theme', 'light');
+        currentTheme = 'dark';
+    }
+
+    // Initialize state
+    root.setAttribute('data-theme', currentTheme);
+
+    // Set initial rotation (-90 for light/top, 90 for dark/bottom)
+    // We keep track of total rotation to ensure it always goes forward (clockwise)
+    let currentRotation = currentTheme === 'dark' ? 90 : -90;
+    if (orbitArm) {
+        orbitArm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
     }
 
     // Toggle theme on click
     toggle.addEventListener('click', () => {
-        const currentTheme = root.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        const isDark = root.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
 
         root.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
+
+        // Continuous clockwise rotation
+        currentRotation += 180;
+        if (orbitArm) {
+            orbitArm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+        }
     });
 
     // Listen for system preference changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (!localStorage.getItem('theme')) {
-            root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+            const newSystemTheme = e.matches ? 'dark' : 'light';
+            root.setAttribute('data-theme', newSystemTheme);
+
+            // Sync rotation to system change if user hasn't overridden
+            // We just ensure it snaps to the "correct" orientation relative to 0 or 180 mod 360?
+            // Or just animate to the nearest valid state.
+            // For simplicity, let's just match the theme state distantly.
+            currentRotation = newSystemTheme === 'dark' ? 90 : -90;
+            if (orbitArm) {
+                orbitArm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+            }
         }
     });
 })();

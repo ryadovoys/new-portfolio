@@ -402,6 +402,19 @@ class CardEditor {
         this.saveCards();
     }
 
+    toggleCardWidth(e) {
+        e.stopPropagation();
+        const index = parseInt(e.currentTarget.dataset.cardIndex);
+        const card = this.cards[index];
+        if (!card) return;
+
+        // Toggle class
+        card.element.classList.toggle('card--wide');
+
+        // Save
+        this.saveCards();
+    }
+
     duplicateCard(e) {
         e.stopPropagation();
         const index = parseInt(e.currentTarget.dataset.cardIndex);
@@ -1140,7 +1153,17 @@ class CardEditor {
         deleteBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
         deleteBtn.addEventListener('click', (e) => this.clearCardMedia(e)); // Reuse clear logic for delete action
 
+        // Resize Button
+        const resizeBtn = document.createElement('button');
+        resizeBtn.className = 'card__control-btn';
+        resizeBtn.dataset.action = 'resize';
+        resizeBtn.dataset.cardIndex = cardIndex;
+        resizeBtn.title = 'Toggle Width';
+        resizeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"/></svg>`;
+        resizeBtn.addEventListener('click', (e) => this.toggleCardWidth(e));
+
         controls.appendChild(duplicateBtn);
+        controls.appendChild(resizeBtn);
         controls.appendChild(deleteBtn);
 
         zone.appendChild(controls);
