@@ -281,6 +281,14 @@ class CardViewer {
             // Activate Click to Expand
             this.activateCardInteraction(card, imageContainer, closeButton);
 
+            // Initial Randomization
+            this.randomizeLayerInitialState(card);
+
+            // Re-randomize on hover
+            card.addEventListener('mouseenter', () => {
+                this.randomizeLayerHover(card);
+            });
+
         } catch (e) {
             console.error('Error setting up project card:', e);
         }
@@ -351,6 +359,33 @@ class CardViewer {
             } else {
                 l.style.height = '';
             }
+        });
+    }
+
+    randomizeLayerInitialState(card) {
+        const layers = card.querySelectorAll('.project-layer');
+        layers.forEach(layer => {
+            const initialRotation = (Math.random() * 10) - 5; // -5 to +5
+            layer.style.setProperty('--initial-rotation', `${initialRotation}deg`);
+        });
+    }
+
+    randomizeLayerHover(card) {
+        const layers = card.querySelectorAll('.project-layer');
+        layers.forEach(layer => {
+            // Direction: 180 degree upward arc (from 0 to PI)
+            // But we want it to move AWAY from center or just randomly upwards
+            const angle = Math.random() * Math.PI; // 0 to 180 degrees in radians
+            const distance = 20 + Math.random() * 10; // 20-30px
+
+            const x = Math.cos(angle) * distance;
+            const y = -Math.sin(angle) * distance; // Negative Y is UP
+
+            const rotation = (Math.random() * 10) - 5; // -5 to +5
+
+            layer.style.setProperty('--hover-x', `${x}px`);
+            layer.style.setProperty('--hover-y', `${y}px`);
+            layer.style.setProperty('--hover-rotation', `${rotation}deg`);
         });
     }
 
