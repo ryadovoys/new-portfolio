@@ -1,12 +1,14 @@
 /* =================================================================
    THEME TOGGLE
-   Handles theme switching and persistence
+   Handles theme switching and persistence across multiple buttons
    ================================================================= */
 
 (function () {
-    const toggle = document.getElementById('themeToggle');
+    const toggles = document.querySelectorAll('.theme-toggle');
     const root = document.documentElement;
-    const orbitArm = document.querySelector('.orbit-arm');
+    // We update arms individually per button structure
+
+    if (toggles.length === 0) return;
 
     // Check for saved preference or system preference
     const savedTheme = localStorage.getItem('theme');
@@ -22,15 +24,27 @@
     // Initialize state
     root.setAttribute('data-theme', currentTheme);
 
-    // Set initial rotation (0 for light/right, 180 for dark/left)
-    // We keep track of total rotation to ensure it always goes forward (clockwise)
+    // Initial rotation state
+    // We track rotation per button? Or globally?
+    // Globally makes sense for sync, but visual continuity might be per button?
+    // Let's use one global 'rotation' value and apply to all arms.
     let currentRotation = currentTheme === 'dark' ? 180 : 0;
-    if (orbitArm) {
-        orbitArm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+
+    function updateRotation() {
+        // Apply to all arms found within toggles
+        toggles.forEach(btn => {
+            const arm = btn.querySelector('.orbit-arm');
+            if (arm) {
+                arm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+            }
+        });
     }
 
-    // Toggle theme on click
-    toggle.addEventListener('click', () => {
+    // Apply strict initial state
+    updateRotation();
+
+    // Toggle theme function
+    function toggleTheme() {
         const isDark = root.getAttribute('data-theme') === 'dark';
         const newTheme = isDark ? 'light' : 'dark';
 
@@ -39,9 +53,12 @@
 
         // Continuous clockwise rotation
         currentRotation += 180;
-        if (orbitArm) {
-            orbitArm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
-        }
+        updateRotation();
+    }
+
+    // Bind click to all buttons
+    toggles.forEach(btn => {
+        btn.addEventListener('click', toggleTheme);
     });
 
     // Listen for system preference changes
@@ -50,14 +67,11 @@
             const newSystemTheme = e.matches ? 'dark' : 'light';
             root.setAttribute('data-theme', newSystemTheme);
 
-            // Sync rotation to system change if user hasn't overridden
-            // We just ensure it snaps to the "correct" orientation relative to 0 or 180 mod 360?
-            // Or just animate to the nearest valid state.
-            // For simplicity, let's just match the theme state distantly.
             currentRotation = newSystemTheme === 'dark' ? 180 : 0;
-            if (orbitArm) {
-                orbitArm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
-            }
+            updateRotation();
         }
     });
+
+    // Expose toggle function if needed by other scripts (e.g. keyboard shortcuts)
+    window.toggleThemeGlobal = toggleTheme;
 })();
