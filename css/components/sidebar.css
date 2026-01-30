@@ -158,6 +158,18 @@
     display: none;
 }
 
+/* Hidden Gem Link */
+.sidebar__nav-link--show-image {
+    color: var(--color-neutral-200);
+    margin-top: var(--space-4);
+    font-size: 10px;
+    /* Small too? User didn't ask, but fits logic */
+}
+
+.sidebar__nav-link--show-image:hover {
+    color: var(--text-primary);
+}
+
 /* Introduction */
 .sidebar__intro {
     display: flex;

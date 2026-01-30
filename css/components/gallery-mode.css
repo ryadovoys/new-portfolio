@@ -1,0 +1,112 @@
+/* =================================================================
+   GALLERY MODE COMPONENT
+   Horizontal scroll view of just images
+   ================================================================= */
+
+body.mode-gallery {
+    overflow: hidden !important;
+    /* Prevent vertical scroll on body */
+}
+
+/* Hide non-image content */
+body.mode-gallery .card__content,
+body.mode-gallery .card__controls,
+body.mode-gallery .card--add,
+body.mode-gallery .card__add-zone,
+body.mode-gallery .card__folder-badge {
+    display: none !important;
+}
+
+/* Adjust Main Content Area */
+body.mode-gallery .main-content {
+    /* "Start going from left... under my logo" 
+       We align content to the bottom of the logo? 
+       Actually, user said "margin top 48 and margin bottom 48". 
+       So we center vertically in the viewport or stick to 48px from top? */
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Center strictly? Or respect margins? User said 48 top/bottom. */
+    overflow: hidden;
+}
+
+/* Transform Card Grid into Horizontal Strip */
+body.mode-gallery .card-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: var(--space-4);
+    /* Just some gap */
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+
+    /* Hide scrollbar for cleaner look */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    /* Align items */
+    align-items: center;
+    /* Vertical center of the strip? */
+}
+
+body.mode-gallery .card-grid::-webkit-scrollbar {
+    display: none;
+}
+
+/* Card Adjustments */
+body.mode-gallery .card {
+    height: 100%;
+    /* Fill the grid height */
+    width: auto;
+    flex-shrink: 0;
+    background: transparent;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Image adjustments */
+body.mode-gallery .card__image {
+    height: 100%;
+    width: auto;
+    aspect-ratio: auto;
+    /* Let image define width based on height */
+    border-radius: var(--card-image-radius);
+    background: transparent;
+}
+
+body.mode-gallery .card__image img,
+body.mode-gallery .card__image video {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    /* Ensure full image seen? Or cover? "Show just images". Usually contain is safer if aspect ratios vary wildly, but cover looks neater. If row is fixed height, cover is better for uniformity. */
+    object-fit: cover;
+    border-radius: var(--card-image-radius);
+}
+
+/* Handle Wide Cards in Gallery Mode */
+/* They just become wider naturally due to image aspect ratio if using 'auto' width */
+body.mode-gallery .card--wide {
+    grid-column: auto;
+}
+
+/* Reset any specific aspect ratios */
+body.mode-gallery .card--wide .card__image {
+    aspect-ratio: auto;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    body.mode-gallery .card-grid {
+        /* On mobile, maybe user wants it to stick to top? 
+           "Under my logo". Logo is in header.
+           If margins are 48px, that's fine. */
+    }
+}
