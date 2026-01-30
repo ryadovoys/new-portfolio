@@ -29,7 +29,7 @@
 }
 
 .sidebar__logo-mark {
-    height: 32px;
+    height: 24px;
     width: auto;
     color: var(--text-primary);
 }
@@ -108,7 +108,6 @@
     left: 0;
     /* Aligned with left edge of nav */
     width: 6px;
-    /* Dot size */
     height: 6px;
     border-radius: 50%;
     background-color: var(--text-primary);
@@ -258,26 +257,47 @@
     .sidebar__content {
         position: fixed;
         top: 0;
-        right: 0;
-        bottom: 0;
-        width: 80%;
+        left: 0;
+        width: 100%;
+        bottom: auto;
+        /* Auto height */
+        /* Auto height */
         background: var(--bg-page);
-        /* Explicitly background color */
-        padding: var(--space-15) var(--space-6) var(--space-6);
+        padding: 80px var(--space-6) 24px 50%;
+        /* Top, Right, Bottom, Left (50% axis) */
 
-        transform: translateX(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1001;
+        transform: translateY(-100%);
+        /* Slide from top */
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+        z-index: 999;
         /* Behind header but above page */
+
+        display: flex;
+        flex-direction: column;
         justify-content: flex-start;
+        align-items: flex-start;
         padding-top: 80px;
         /* Space for header */
-        align-items: flex-start;
-        /* Left align links */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
     .sidebar--open .sidebar__content {
-        transform: translateX(0);
+        transform: translateY(0);
+    }
+
+    /* Masking background for Header */
+    .sidebar__header::before {
+        content: '';
+        position: absolute;
+        top: calc(var(--space-4) * -1);
+        left: calc(var(--space-4) * -1);
+        right: calc(var(--space-4) * -1);
+        bottom: -20px;
+        background: var(--bg-page);
+        z-index: -1;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        /* Optional: Separation */
     }
 
     /* Links alignment */
@@ -293,7 +313,7 @@
         position: fixed;
         inset: 0;
         background: rgba(0, 0, 0, 0.5);
-        z-index: 999;
+        z-index: 998;
         /* Below sidebar */
         opacity: 0;
         pointer-events: none;

@@ -22,9 +22,9 @@
     // Initialize state
     root.setAttribute('data-theme', currentTheme);
 
-    // Set initial rotation (-90 for light/top, 90 for dark/bottom)
+    // Set initial rotation (0 for light/right, 180 for dark/left)
     // We keep track of total rotation to ensure it always goes forward (clockwise)
-    let currentRotation = currentTheme === 'dark' ? 90 : -90;
+    let currentRotation = currentTheme === 'dark' ? 180 : 0;
     if (orbitArm) {
         orbitArm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
     }
@@ -54,7 +54,7 @@
             // We just ensure it snaps to the "correct" orientation relative to 0 or 180 mod 360?
             // Or just animate to the nearest valid state.
             // For simplicity, let's just match the theme state distantly.
-            currentRotation = newSystemTheme === 'dark' ? 90 : -90;
+            currentRotation = newSystemTheme === 'dark' ? 180 : 0;
             if (orbitArm) {
                 orbitArm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
             }
