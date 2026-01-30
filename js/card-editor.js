@@ -19,6 +19,36 @@ class CardEditor {
         // if (window.cardViewer && typeof window.cardViewer.setupProjectCards === 'function') {
         //     window.cardViewer.setupProjectCards();
         // }
+
+        this.forceMuteAll();
+    }
+
+    forceMuteAll() {
+        const handleVideo = (v) => {
+            v.muted = true;
+            v.setAttribute('muted', '');
+        };
+
+        // Mute existing
+        document.querySelectorAll('video').forEach(handleVideo);
+
+        // Watch for new
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeName === 'VIDEO') {
+                        handleVideo(node);
+                    } else if (node.querySelectorAll) {
+                        node.querySelectorAll('video').forEach(handleVideo);
+                    }
+                });
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     }
 
     initSortable() {

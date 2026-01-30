@@ -26,6 +26,35 @@ class CardViewer {
         this.setupCarousels();
         this.setupProjectCards();
         this.bindGlobalEvents();
+        this.forceMuteAll();
+    }
+
+    forceMuteAll() {
+        const handleVideo = (v) => {
+            v.muted = true;
+            v.setAttribute('muted', '');
+        };
+
+        // Mute existing
+        document.querySelectorAll('video').forEach(handleVideo);
+
+        // Watch for new
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeName === 'VIDEO') {
+                        handleVideo(node);
+                    } else if (node.querySelectorAll) {
+                        node.querySelectorAll('video').forEach(handleVideo);
+                    }
+                });
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     }
 
     // =================================================================
@@ -147,12 +176,18 @@ class CardViewer {
         track.style.transform = `translateX(-${index * slideWidth}px)`;
         zone.dataset.currentSlide = index;
 
-        track.querySelectorAll('video').forEach(v => v.pause());
+        track.querySelectorAll('video').forEach(v => {
+            v.pause();
+            v.muted = true;
+        });
 
         const activeSlide = track.children[index];
         if (activeSlide) {
             const video = activeSlide.querySelector('video');
-            if (video) video.play().catch(() => { });
+            if (video) {
+                video.muted = true;
+                video.play().catch(() => { });
+            }
         }
     }
 
@@ -212,6 +247,7 @@ class CardViewer {
                 mainMediaEl.autoplay = true;
                 mainMediaEl.loop = true;
                 mainMediaEl.muted = true;
+                mainMediaEl.setAttribute('muted', '');
                 mainMediaEl.playsInline = true;
             } else {
                 mainMediaEl = document.createElement('img');
@@ -289,6 +325,7 @@ class CardViewer {
                 vid.autoplay = true;
                 vid.loop = true;
                 vid.muted = true;
+                vid.setAttribute('muted', '');
                 vid.playsInline = true;
                 vid.style.width = '100%';
                 vid.style.height = '100%';
