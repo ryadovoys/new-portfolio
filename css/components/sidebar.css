@@ -160,14 +160,14 @@
 
 /* Hidden Gem Link */
 .sidebar__nav-link--show-image {
-    color: var(--color-neutral-200);
+    opacity: 0.15;
+    /* Very faded */
     margin-top: var(--space-4);
-    font-size: 10px;
-    /* Small too? User didn't ask, but fits logic */
+    transition: opacity 0.3s ease;
 }
 
 .sidebar__nav-link--show-image:hover {
-    color: var(--text-primary);
+    opacity: 1;
 }
 
 /* Introduction */
