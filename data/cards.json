@@ -135,15 +135,6 @@
     "folder": null
   },
   {
-    "title": "Product design",
-    "description": "Led product design for Visa's global digital presence, directed redesigns for Amway, RaceTrac, Delta. Websites, apps, dashboards, design systems. Always thinking about how it looks and how it actually works.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/CleanShot 2026-01-23 at 12.20.51.gif",
-    "mediaType": "image",
-    "folder": null
-  },
-  {
     "title": "Amway Website",
     "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products. Visit website",
     "tag": "Project",
@@ -153,11 +144,11 @@
     "folder": null
   },
   {
-    "title": "36 days of type",
-    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
-    "tag": "Experiment",
-    "width": "wide",
-    "media": "/assets/images/1-36-days-of-type-project-card.gif",
+    "title": "Product design",
+    "description": "Led product design for Visa's global digital presence, directed redesigns for Amway, RaceTrac, Delta. Websites, apps, dashboards, design systems. Always thinking about how it looks and how it actually works.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/CleanShot 2026-01-23 at 12.20.51.gif",
     "mediaType": "image",
     "folder": null
   },
@@ -171,11 +162,11 @@
     "folder": null
   },
   {
-    "title": "Packaging design",
-    "description": "Packaging taught me to think about the physical world. Materials, production, how things look on a shelf. Work featured in Dieline and Packaging of the World.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/images/upload-1766444315366-4.webp",
+    "title": "36 days of type",
+    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
+    "tag": "Experiment",
+    "width": "wide",
+    "media": "/assets/images/1-36-days-of-type-project-card.gif",
     "mediaType": "image",
     "folder": null
   },
@@ -185,6 +176,15 @@
     "tag": "Project",
     "width": "regular",
     "media": "/assets/images/peace-sans.jpg",
+    "mediaType": "image",
+    "folder": null
+  },
+  {
+    "title": "Packaging design",
+    "description": "Packaging taught me to think about the physical world. Materials, production, how things look on a shelf. Work featured in Dieline and Packaging of the World.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/images/upload-1766444315366-4.webp",
     "mediaType": "image",
     "folder": null
   }
