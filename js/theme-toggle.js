@@ -30,18 +30,28 @@
     // Let's use one global 'rotation' value and apply to all arms.
     let currentRotation = currentTheme === 'dark' ? 180 : 0;
 
-    function updateRotation() {
+    function updateUI() {
+        const theme = root.getAttribute('data-theme');
+        const nextText = theme === 'dark' ? 'Day' : 'Night';
+
         // Apply to all arms found within toggles
         toggles.forEach(btn => {
+            // Rotate Arm
             const arm = btn.querySelector('.orbit-arm');
             if (arm) {
                 arm.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+            }
+
+            // Update Label
+            const label = btn.querySelector('.theme-toggle-label');
+            if (label) {
+                label.textContent = nextText;
             }
         });
     }
 
     // Apply strict initial state
-    updateRotation();
+    updateUI();
 
     // Toggle theme function
     function toggleTheme() {
@@ -53,7 +63,7 @@
 
         // Continuous clockwise rotation
         currentRotation += 180;
-        updateRotation();
+        updateUI();
     }
 
     // Bind click to all buttons
@@ -68,7 +78,7 @@
             root.setAttribute('data-theme', newSystemTheme);
 
             currentRotation = newSystemTheme === 'dark' ? 180 : 0;
-            updateRotation();
+            updateUI();
         }
     });
 
