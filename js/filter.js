@@ -1,5 +1,6 @@
 // Filter Controller
 // Handles filtering of cards based on tags
+// NOTE: UI (Choose category) is currently removed from index.html but logic is kept for future use.
 
 class FilterController {
     constructor() {

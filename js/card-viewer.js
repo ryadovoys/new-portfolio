@@ -365,27 +365,40 @@ class CardViewer {
     randomizeLayerInitialState(card) {
         const layers = card.querySelectorAll('.project-layer');
         layers.forEach(layer => {
-            const initialRotation = (Math.random() * 10) - 5; // -5 to +5
+            const initialRotation = (Math.random() * 6) - 3; // -3 to +3
             layer.style.setProperty('--initial-rotation', `${initialRotation}deg`);
         });
     }
 
     randomizeLayerHover(card) {
         const layers = card.querySelectorAll('.project-layer');
-        layers.forEach(layer => {
-            // Direction: 180 degree upward arc (from 0 to PI)
-            // But we want it to move AWAY from center or just randomly upwards
-            const angle = Math.random() * Math.PI; // 0 to 180 degrees in radians
-            const distance = 20 + Math.random() * 10; // 20-30px
+        // Randomly pick starting side for the first layer: 0 for leftish, 1 for rightish
+        let side = Math.random() < 0.5 ? 0 : 1;
+
+        layers.forEach((layer) => {
+            // angle ranges (in radians):
+            // Leftish-up: ~100 to 160 degrees (1.7 to 2.8 rad)
+            // Rightish-up: ~20 to 80 degrees (0.35 to 1.4 rad)
+            let angle;
+            if (side === 0) {
+                angle = 1.7 + (Math.random() * 1.1);
+            } else {
+                angle = 0.35 + (Math.random() * 1.05);
+            }
+
+            const distance = 28 + Math.random() * 11; // 30-45px
 
             const x = Math.cos(angle) * distance;
             const y = -Math.sin(angle) * distance; // Negative Y is UP
 
-            const rotation = (Math.random() * 10) - 5; // -5 to +5
+            const rotation = (Math.random() * 6) - 3; // -3 to +3
 
             layer.style.setProperty('--hover-x', `${x}px`);
             layer.style.setProperty('--hover-y', `${y}px`);
             layer.style.setProperty('--hover-rotation', `${rotation}deg`);
+
+            // Flip side for the next layer
+            side = 1 - side;
         });
     }
 

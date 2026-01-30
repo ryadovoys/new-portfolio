@@ -49,7 +49,7 @@
     "description": "From detailed prototypes in Figma to interactive prototype in HTML, Javascript. Building, iterating and brainstorming with AI and building quick prototypes, and using detailed Figma prototypes to make it look as close as the real product. I use CLI and IDE like Antigravity and Claude Code for code, and Figma prototypes and Figma makes for prototyping in Figma.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/images/AI fluency.jpg",
+    "media": "/assets/images/CleanShot 2026-01-23 at 12.20.51.gif",
     "mediaType": "image",
     "folder": null
   },
@@ -108,15 +108,6 @@
     "folder": null
   },
   {
-    "title": "Public talks",
-    "description": "I've given several public talks about AI and design. Sharing experiments, tools, and interesting ways designers can use AI in their work.",
-    "tag": "Experience",
-    "width": "regular",
-    "media": "/assets/images/the_magic_of_code.gif",
-    "mediaType": "image",
-    "folder": null
-  },
-  {
     "title": "AI workflows",
     "description": "Figuring out how design and AI actually work together. Claude Code, Cursor, Antigravity, MCP tools—using AI across research, ideation, prototyping, designing and code.",
     "tag": "Experience",
@@ -135,6 +126,15 @@
     "folder": null
   },
   {
+    "title": "Public talks",
+    "description": "I've given several public talks about AI and design. Sharing experiments, tools, and interesting ways designers can use AI in their work.",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/images/the_magic_of_code.gif",
+    "mediaType": "image",
+    "folder": null
+  },
+  {
     "title": "Amway Website",
     "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products. Visit website",
     "tag": "Project",
@@ -144,11 +144,11 @@
     "folder": null
   },
   {
-    "title": "Product design",
+    "title": "UI UX design",
     "description": "Led product design for Visa's global digital presence, directed redesigns for Amway, RaceTrac, Delta. Websites, apps, dashboards, design systems. Always thinking about how it looks and how it actually works.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/images/CleanShot 2026-01-23 at 12.20.51.gif",
+    "media": "/assets/images/design-system.jpg",
     "mediaType": "image",
     "folder": null
   },
