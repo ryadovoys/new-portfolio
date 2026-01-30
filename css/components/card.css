@@ -388,5 +388,8 @@
 .card__add-btn svg {
     width: 16px;
     height: 16px;
-    stroke-width: 3;
-}
+
+    /* Filtered Out State */
+    .card.is-filtered-out {
+        display: none !important;
+    }
