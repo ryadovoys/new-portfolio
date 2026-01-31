@@ -106,6 +106,7 @@ function generateCardHTML(card, index) {
                 ${tagHTML}
             </div>
             <p class="card__description" data-card-index="${index}">${card.description || ''}</p>
+            ${card.link ? `<a href="${card.link.url}" class="card__link" ${card.link.attributes || ''}>${card.link.text}</a>` : ''}
         </div>
     </div>
     `;
