@@ -342,8 +342,8 @@
         bottom: -20px;
         background: var(--bg-page);
         z-index: -1;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        /* Optional: Separation */
+        box-shadow: none;
+        /* User requested no shadow */
     }
 
     /* Links alignment */
@@ -351,7 +351,8 @@
     .sidebar__intro,
     .sidebar__contact {
         width: 100%;
-        align-items: flex-start;
+        align-items: center;
+        /* User requested center alignment */
     }
 
     /* Backdrop */
