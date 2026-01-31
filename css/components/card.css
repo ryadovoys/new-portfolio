@@ -199,6 +199,22 @@
 
 }
 
+.card__link {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--link-color);
+    text-decoration: none;
+    align-self: flex-start;
+    /* Don't stretch */
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.card__link:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
 /* Sortable drag states */
 .card--ghost {
     opacity: 0.4;

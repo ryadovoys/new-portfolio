@@ -137,6 +137,7 @@ class CardEditor {
               <span class="card__tag">${data.tag || ''}</span>
             </div>
             <p class="card__description">${data.description || 'Click to edit description text.'}</p>
+            ${data.link ? `<a href="${data.link.url}" class="card__link" ${data.link.attributes || ''}>${data.link.text}</a>` : ''}
           </div>
         `;
 
@@ -151,6 +152,7 @@ class CardEditor {
             id: index,
             title: data.title || '',
             description: data.description || '',
+            link: data.link || null,
             tag: data.tag || '',
             media: data.media || null,
             mediaType: data.mediaType || null,

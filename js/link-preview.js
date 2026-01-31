@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         "https://www.amway.com/": {
             title: "Amway Official Website",
             image: "assets/images/amway-link.jpg"
+        },
+        "assets/sergey-ryadovoy-context.md": {
+            title: "This is a file that you can download or copy and paste into your favorite AI tool to ask questions about me.",
+            image: null
         }
     };
 
@@ -32,13 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="link-preview__content">
             <h4 class="link-preview__title"></h4>
+            <p class="link-preview__description"></p>
             <span class="link-preview__domain"></span>
         </div>
     `;
     document.body.appendChild(tooltip);
 
+    const previewImageContainer = tooltip.querySelector('.link-preview__image-container');
     const previewImage = tooltip.querySelector('.link-preview__image');
     const previewTitle = tooltip.querySelector('.link-preview__title');
+    const previewDescription = tooltip.querySelector('.link-preview__description');
     const previewDomain = tooltip.querySelector('.link-preview__domain');
 
     // 3. Hover Logic
@@ -77,8 +84,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!data) return; // Only show for known links
 
         // Populate Data
-        previewImage.src = data.image;
+        if (data.image) {
+            previewImage.src = data.image;
+            previewImageContainer.style.display = 'block';
+        } else {
+            previewImageContainer.style.display = 'none';
+        }
+
         previewTitle.textContent = data.title;
+
+        if (data.description) {
+            previewDescription.textContent = data.description;
+            previewDescription.style.display = 'block';
+        } else {
+            previewDescription.style.display = 'none';
+        }
+
         previewDomain.textContent = getDomain(url);
 
         // Show
