@@ -34,8 +34,12 @@
     margin-bottom: var(--space-12);
 }
 
+/* 
+   Previously used fixed width columns + fluid gaps at 1440px+.
+   Disabled to allow proportional scaling of wide cards via 1fr.
+*/
+/*
 @media (min-width: 1440px) {
-
     .card-grid,
     .card-grid--featured {
         grid-template-columns: repeat(3, 286px);
@@ -45,7 +49,6 @@
 }
 
 @media (min-width: 1728px) {
-
     .card-grid,
     .card-grid--featured {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -54,6 +57,11 @@
         justify-content: normal;
     }
 }
+*/
+
+/* Optional: Add a max-width constraint if cards get too huge? 
+   For now, we let them scale (1fr) as requested. 
+*/
 
 /* Responsive */
 @media (max-width: 1024px) {

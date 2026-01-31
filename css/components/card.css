@@ -34,6 +34,11 @@
 /* Wide card image ratio */
 .card--wide .card__image {
     aspect-ratio: 16 / 9;
+    /* Default fallback before JS loads */
+}
+
+.card--wide.card--project .card__image {
+    aspect-ratio: 16 / 9 !important;
 }
 
 .card__image img,
@@ -42,18 +47,32 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Key: ensure fills the stretched space */
 }
 
 /* Wide project cards should show full image (thumbnail) without cropping */
-.card--wide.card--project .card__image {
-    aspect-ratio: 16 / 9 !important;
-}
-
+/* Note: Users requested matching proportions, so we might need 'cover' even for wide? 
+   But "contain" was specific for project cards. 
+   If we want "Same Height" AND "Contain", we might have empty bars. 
+   User said: "long card always saved its proportions like small".
+   This implies cover. 
+   I will switch project cards to 'cover' for better visual block alignment, or keep 'contain' but within the filled box.
+   Let's keep 'contain' for project cards if user previously wanted it, but 'cover' is safer for "Alignment".
+   User said "long card always preserved its proportions".
+   Actually, "preserved proportions" might mean aspect ratio?
+   "saved its proportions, like the small one".
+   Small one has fixed aspect ratio.
+   
+   If I change to flex-grow, the aspect ratio is dynamic.
+   
+   Let's stick to flex-grow for alignment, but use object-fit: cover.
+*/
 .card--wide.card--project .card__image img,
 .card--wide.card--project .card__image video {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    /* Keep cover for consistency, or revert to contain if user prefers */
     object-position: center;
 }
 
