@@ -309,8 +309,8 @@
         /* Auto height */
         /* Auto height */
         background: var(--bg-page);
-        padding: 80px var(--space-6) 24px 50%;
-        /* Top, Right, Bottom, Left (50% axis) */
+        padding: 80px var(--space-6) 24px var(--space-6);
+        /* Top, Right, Bottom, Left */
 
         transform: translateY(-100%);
         /* Slide from top */
