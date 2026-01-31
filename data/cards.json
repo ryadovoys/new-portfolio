@@ -63,15 +63,6 @@
     "folder": null
   },
   {
-    "title": "Generative Media",
-    "description": "I work with a bunch of generative tools: Google Nano Banana Pro, Midjourney, Visual Electric, Qwen for images; Kling, Wan, Sora for video. Workflows range from apps like Higgsfield to custom pipelines in ComfyUI and Weavy.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": null,
-    "mediaType": null,
-    "folder": "generative-media"
-  },
-  {
     "title": "Design systems",
     "description": "Built design systems for Visa, RaceTrac, Amway, and more. Components, tokens, variables, documentation. I love organizing, structuring, and making sure every small piece fits into the bigger picture.",
     "tag": "Skill",
@@ -79,6 +70,15 @@
     "media": "/assets/images/design-system.jpg",
     "mediaType": "image",
     "folder": null
+  },
+  {
+    "title": "Generative Media",
+    "description": "I work with a bunch of generative tools: Google Nano Banana Pro, Midjourney, Visual Electric, Qwen for images; Kling, Wan, Sora for video. Workflows range from apps like Higgsfield to custom pipelines in ComfyUI and Weavy.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": null,
+    "mediaType": null,
+    "folder": "generative-media"
   },
   {
     "title": "Motion design",

@@ -142,6 +142,9 @@
    --card-padding: 0;
    --card-gap: 10px;
 
+   /* Component: Divider */
+   --color-divider: rgba(0, 0, 0, 0.08);
+
    /* Component: Link Preview */
    --bg-preview: rgba(255, 255, 255, 0.95);
    --radius-preview: 8px;
@@ -193,6 +196,9 @@
    --bg-card-image: var(--color-neutral-900);
    --bg-overlay: rgba(255, 255, 255, 0.1);
    --bg-preview: rgba(20, 20, 20, 0.95);
+
+   /* Component: Divider */
+   --color-divider: rgba(255, 255, 255, 0.1);
 
    /* Text */
    --text-primary: var(--color-white);

@@ -92,8 +92,8 @@ class CardEditor {
             const grid = document.querySelector('.card-grid');
             const placeholder = document.getElementById('addCardPlaceholder');
 
-            // Remove all .card elements that are NOT the placeholder
-            const existingCards = grid.querySelectorAll('.card:not(#addCardPlaceholder)');
+            // Remove all .card elements that are NOT the placeholder AND NOT the maze card
+            const existingCards = grid.querySelectorAll('.card:not(#addCardPlaceholder):not(.card--maze)');
             existingCards.forEach(card => card.remove());
 
             this.cards = [];
@@ -141,7 +141,9 @@ class CardEditor {
         `;
 
         // Insert into DOM
-        grid.insertBefore(cardEl, placeholder);
+        const mazeCard = grid.querySelector('.card--maze');
+        const refNode = mazeCard || placeholder;
+        grid.insertBefore(cardEl, refNode);
 
         // Store in memory
         this.cards.push({

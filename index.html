@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="css/components/card-project.css">
   <link rel="stylesheet" href="css/components/theme-toggle.css">
   <link rel="stylesheet" href="css/components/link-preview.css">
+  <link rel="stylesheet" href="css/components/maze-feature.css">
 
 </head>
 
@@ -131,6 +132,20 @@
             </svg>
             <span>LinkedIn</span>
           </a>
+
+          <!--
+          <div class="nav-divider"></div>
+
+          <a href="#" class="sidebar__nav-link sidebar__nav-link--escape" id="escapeGameLink">
+            <svg class="sidebar__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5">
+              <path d="M15 3h6v6"></path>
+              <path d="M10 14L21 3"></path>
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            </svg>
+            <span>Escape game</span>
+          </a>
+          -->
 
           <!-- Category Filter - Temporarily removed from UI, may return later -->
           <!-- 
@@ -306,6 +321,11 @@
           </div>
         </div>
 
+        <!-- Maze Card -->
+        <div class="card card--maze">
+          <button class="dont-push-btn">Don't Push It</button>
+        </div>
+
         <!-- Add Card -->
         <div class="card card--add" id="addCardPlaceholder">
           <div class="card-add__options">
@@ -353,6 +373,7 @@
   <script src="js/link-preview.js"></script>
   <script src="js/nav-cursor.js"></script>
   <script src="js/filter.js"></script>
+  <script src="js/maze-feature.js"></script>
 
 </body>
 

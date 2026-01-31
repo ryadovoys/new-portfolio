@@ -40,7 +40,7 @@
     .card-grid--featured {
         grid-template-columns: repeat(3, 286px);
         justify-content: space-between;
-        row-gap: calc(50vw - 659px);
+        row-gap: calc(25vw - 299px);
     }
 }
 
@@ -50,7 +50,7 @@
     .card-grid--featured {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         column-gap: 205px;
-        row-gap: 205px;
+        row-gap: 133px;
         justify-content: normal;
     }
 }

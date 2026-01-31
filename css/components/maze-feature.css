@@ -1,0 +1,258 @@
+/* Maze Feature Styles */
+
+/* The Card Trigger */
+.card--maze {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  /* Override default card hover if needed, or keep it standard */
+}
+
+.dont-push-btn {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.dont-push-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 15px 30px rgba(255, 0, 0, 0.4);
+}
+
+.dont-push-btn:active {
+  transform: scale(0.95);
+}
+
+/* The Overlay */
+.maze-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #111;
+  /* Force Dark Background */
+  z-index: 9999;
+  cursor: none;
+  /* Hide native cursor */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  display: none;
+  /* Hidden by default */
+}
+
+.maze-overlay.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  display: block;
+}
+
+/* Canvas for the Maze */
+#mazeCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Virtual Cursor */
+#virtualCursor {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  /* White cursor default */
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10001;
+  /* box-shadow removed for clean pixel look */
+  transition: none;
+  display: none;
+}
+
+/* Exit Button target area */
+.maze-exit-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background-color: transparent;
+  /* No background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: none;
+  z-index: 10000;
+  border: none;
+  /* No border */
+}
+
+.maze-exit-btn svg {
+  width: 48px;
+  /* Larger icon */
+  height: 48px;
+  color: #fff;
+  /* White X */
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.maze-exit-btn:hover svg {
+  opacity: 1;
+  transform: scale(1.1);
+  /* Subtle hover effect */
+}
+
+/* Esc Hint */
+.maze-esc-hint {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: var(--text-muted, #999);
+  font-family: 'Google Sans Flex', sans-serif;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 10000;
+  opacity: 0.8;
+  display: none;
+  /* Hidden by default */
+}
+
+.maze-esc-key {
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+
+
+/* ---- NEW UI FOR INTRO & SELECTION ---- */
+
+/* Container for centered UI elements */
+.maze-ui-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 600px;
+  z-index: 10002;
+  text-align: center;
+  /* pointer-events: none; */
+  /* We want clicks for skipping intro */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.maze-intro-msg {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  /* White text */
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  cursor: pointer;
+  /* Suggest clickable */
+}
+
+.maze-intro-msg.is-visible {
+  opacity: 1;
+}
+
+.maze-char-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 32px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.maze-char-select.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.maze-overlay.state-selection {
+  cursor: default;
+  /* Restore cursor for selection */
+}
+
+.char-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.char-btn:hover {
+  transform: scale(1.1);
+}
+
+.char-dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.char-img {
+  width: 96px;
+  /* 48px * 2 */
+  height: 128px;
+  /* 64px * 2 */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  image-rendering: pixelated;
+  /* Essential */
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.6));
+  /* Increased shadow */
+}
+
+.char-label {
+  font-family: 'Google Sans Flex', sans-serif;
+  font-size: 16px;
+  /* Increased from 14px */
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
