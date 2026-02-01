@@ -309,7 +309,7 @@
         /* Auto height */
         /* Auto height */
         background: var(--bg-page);
-        padding: 100px var(--space-4) 40px var(--space-4);
+        padding: 100px var(--space-4) var(--space-9) var(--space-4);
         /* Top, Right, Bottom, Left */
 
         transform: translateY(-100%);
