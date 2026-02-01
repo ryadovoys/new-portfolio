@@ -6,9 +6,6 @@
  */
 
 (function () {
-    // OpenRouter API configuration
-    const OPENROUTER_API_KEY = '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';
-    const MODEL = 'arcee-ai/trinity-large-preview:free';
 
     // State
     let isActive = false;
@@ -121,28 +118,14 @@ I'm Sergey — VP of Experience Design at Digitas, with 15+ years in design. I w
         inputText = '';
 
         try {
-            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            const response = await fetch('/api/ai-chat', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                    'HTTP-Referer': window.location.origin,
-                    'X-Title': 'Sergey Ryadovoy Digital Twin'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: MODEL,
-                    messages: [
-                        {
-                            role: 'system',
-                            content: SYSTEM_PROMPT
-                        },
-                        {
-                            role: 'user',
-                            content: question
-                        }
-
-                    ],
-                    max_tokens: 150
+                    message: question,
+                    systemPrompt: SYSTEM_PROMPT
                 })
             });
 

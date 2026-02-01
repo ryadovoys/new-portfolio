@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+require('dotenv').config();
 
 const app = express();
 const PORT = 3000;
@@ -229,6 +230,50 @@ app.get('/api/folder-assets/:folderName.json', (req, res) => {
   } catch (error) {
     console.error('Error reading folder assets:', error);
     res.status(500).json({ error: 'Failed to read folder assets' });
+  }
+});
+
+// AI Chat proxy endpoint (keeps API key server-side)
+app.post('/api/ai-chat', async (req, res) => {
+  const { message, systemPrompt } = req.body;
+
+  if (!message) {
+    return res.status(400).json({ error: 'Message required' });
+  }
+
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'API key not configured' });
+  }
+
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': 'https://ryadovoy.com',
+        'X-Title': 'Sergey Ryadovoy Digital Twin'
+      },
+      body: JSON.stringify({
+        model: 'arcee-ai/trinity-large-preview:free',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        max_tokens: 150
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('AI Chat error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
