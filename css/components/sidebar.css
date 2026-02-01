@@ -351,8 +351,8 @@
     .sidebar__intro,
     .sidebar__contact {
         width: 100%;
-        align-items: center;
-        /* User requested center alignment */
+        align-items: flex-start;
+        /* Aligned to the left as requested */
     }
 
     /* Backdrop */
