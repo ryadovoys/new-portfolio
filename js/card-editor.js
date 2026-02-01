@@ -1483,7 +1483,8 @@ class CardEditor {
                 card.element.classList.contains('card--invisible') ? 'invisible' : 'regular',
             media: card.media,
             mediaType: card.mediaType,
-            folder: card.folder
+            folder: card.folder,
+            link: card.link || null
         }));
 
         try {

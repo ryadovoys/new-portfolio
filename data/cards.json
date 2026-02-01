@@ -20,6 +20,11 @@
   {
     "title": "Digitas AI",
     "description": "For the past few years, I've been deeply involved in building AI tools. From developing modern design and management workflows in Claude Code to designing interfaces and working closely with developer teams. One of those projects is Digitas internal AI agentic platform that we're currently working on.",
+    "link": {
+      "text": "Learn more",
+      "url": "https://www.digitas.com/en-us/pressroom/digitas-unveils-new-generative-ai-platform-digitas-ai",
+      "attributes": "target='_blank'"
+    },
     "tag": "Project",
     "width": "regular",
     "media": "/assets/images/Animation-WebsiteAsset.gif",
@@ -56,6 +61,11 @@
   {
     "title": "Mindcomplete",
     "description": "AI-powered writing assistant that completes your thoughts in real-time. Mindcomplete helps you write faster and more fluidly by predicting and suggesting how to continue your paragraphs. Simply pause while typing, and AI will suggest a natural continuation matching your tone and style.",
+    "link": {
+      "text": "Try it in Figma!",
+      "url": "https://www.figma.com/community/plugin/1593731353807484611/mindcomplete",
+      "attributes": "target='_blank'"
+    },
     "tag": "Experiment",
     "width": "wide",
     "media": "/assets/images/mindcomplete-hero-1.mp4",
@@ -101,6 +111,11 @@
   {
     "title": "Journely",
     "description": "What if conversational UI wasn't about typing, but writing? I created Journely as an experiment to find natural ways to use AI in everyday life. It transforms journaling on iPad by blending handwriting with conversational intelligence.",
+    "link": {
+      "text": "Download on iPad",
+      "url": "https://apps.apple.com/us/app/journely/id6744461713",
+      "attributes": "target='_blank'"
+    },
     "tag": "Project",
     "width": "wide",
     "media": "/assets/images/journely.jpg",
@@ -137,6 +152,11 @@
   {
     "title": "Amway Website",
     "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products.",
+    "link": {
+      "text": "Visit website",
+      "url": "https://www.amway.com/",
+      "attributes": "target='_blank'"
+    },
     "tag": "Project",
     "width": "wide",
     "media": "/assets/images/7-upload-1.gif",
@@ -173,6 +193,11 @@
   {
     "title": "Peace Sans Free Font",
     "description": "Peace Sans is a free display font I designed. It reached 500K+ downloads and became one of the most popular free fonts on Behance. I wanted to give something back to the design community.",
+    "link": {
+      "text": "Download Peace Sans",
+      "url": "assets/Peace Sans.zip",
+      "attributes": "download"
+    },
     "tag": "Project",
     "width": "regular",
     "media": "/assets/images/peace-sans.jpg",
