@@ -112,10 +112,23 @@
         position: relative;
         bottom: auto;
         left: auto;
+        width: 32px;
+        height: 32px;
         border: 1px solid var(--color-neutral-200);
         background: var(--bg-page);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         margin-right: 0;
+    }
+
+    .theme-toggle--mobile .orbit-center {
+        width: 8px;
+        height: 8px;
+    }
+
+    .theme-toggle--mobile .orbit-planet {
+        width: 4px;
+        height: 4px;
+        right: -2px;
     }
 
     [data-theme="dark"] .theme-toggle--mobile {
