@@ -1,0 +1,47 @@
+export default async function handler(req, res) {
+    // Only allow POST
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const { message, systemPrompt } = req.body;
+
+    if (!message) {
+        return res.status(400).json({ error: 'Message required' });
+    }
+
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) {
+        return res.status(500).json({ error: 'API key not configured' });
+    }
+
+    try {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`,
+                'HTTP-Referer': 'https://ryadovoy.com',
+                'X-Title': 'Sergey Ryadovoy Digital Twin'
+            },
+            body: JSON.stringify({
+                model: 'arcee-ai/trinity-large-preview:free',
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: message }
+                ],
+                max_tokens: 150
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.status(200).json(data);
+    } catch (error) {
+        console.error('AI Chat error:', error);
+        res.status(500).json({ error: error.message });
+    }
+}

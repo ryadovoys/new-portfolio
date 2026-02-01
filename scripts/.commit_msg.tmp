@@ -1,3 +1,3 @@
-chore: clean up scripts and add env config
-- Remove unused .commit_msg.tmp file
-- Require dotenv in save.js for env vars
+feat: Add AI chat API endpoint
+- Implement POST handler for OpenRouter chat completions
+- Remove temporary commit message file (chore)
