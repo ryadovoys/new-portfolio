@@ -1,1 +1,5 @@
-feat: update project contents (AI generation failed)
+refactor: improve AI commit msg generation with model fallbacks
+
+- Switch to iterating multiple free AI models for reliability
+- Add fallback logic and detailed error logging for each model attempt
+- Remove temporary commit message file in cleanup (chore)

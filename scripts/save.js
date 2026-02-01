@@ -35,32 +35,51 @@ ${status}
 GIT DIFF:
 ${diff}`;
 
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                'HTTP-Referer': 'https://github.com/ryadovoys/portfolio',
-                'X-Title': 'Portfolio Save Script'
-            },
-            body: JSON.stringify({
-                model: 'meta-llama/llama-3.1-8b-instruct:free',
-                messages: [{ role: 'user', content: prompt }]
-            })
-        });
+        const models = [
+            'tngtech/deepseek-r1t2-chimera:free',
+            'google/gemini-2.0-pro-exp-02-05:free',
+            'google/gemini-2.0-flash-exp:free',
+            'meta-llama/llama-3.3-70b-instruct:free'
+        ];
 
-        const data = await response.json();
+        let response;
+        let data;
+        let lastError;
 
-        if (!response.ok) {
-            throw new Error(`API Error (${response.status}): ${JSON.stringify(data)}`);
+        for (const model of models) {
+            try {
+                console.log(`🤖 Attempting to use model: ${model}...`);
+                response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                        'HTTP-Referer': 'https://github.com/ryadovoys/portfolio',
+                        'X-Title': 'Portfolio Save Script'
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [{ role: 'user', content: prompt }]
+                    })
+                });
+
+                data = await response.json();
+
+                if (response.ok && data.choices && data.choices[0]) {
+                    console.log(`✅ Success with ${model}`);
+                    const message = data.choices[0].message.content.trim();
+                    return message;
+                } else {
+                    lastError = data.error?.message || response.statusText || 'Unknown error';
+                    console.warn(`⚠️  Model ${model} failed: ${lastError}`);
+                }
+            } catch (err) {
+                lastError = err.message;
+                console.warn(`⚠️  Connection to ${model} failed: ${lastError}`);
+            }
         }
 
-        if (!data.choices || !data.choices[0]) {
-            throw new Error(`Unexpected API response structure: ${JSON.stringify(data)}`);
-        }
-
-        const message = data.choices[0].message.content.trim();
-        return message;
+        throw new Error(`All free models failed. Last error: ${lastError}`);
 
     } catch (error) {
         console.error('❌ AI analysis failed:', error.message);
