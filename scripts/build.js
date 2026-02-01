@@ -187,6 +187,12 @@ function copyDir(src, dest) {
     }
 });
 
+// Copy assets-grid.html if exists
+const assetsGridSrc = path.join(ROOT_DIR, 'assets-grid.html');
+if (fs.existsSync(assetsGridSrc)) {
+    fs.copyFileSync(assetsGridSrc, path.join(DIST_DIR, 'assets-grid.html'));
+}
+
 // 6. Generate JSON API Files for Static Hosting
 const IMAGES_DIR = path.join(ROOT_DIR, 'assets', 'images');
 const API_DIR = path.join(DIST_DIR, 'api', 'folder-assets');

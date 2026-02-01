@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Assets Grid</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 60px;
+            background-color: #000;
+            color: #fff;
+            font-family: sans-serif;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --grid-gap: 60px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: var(--grid-gap);
+            width: 100%;
+        }
+
+        .asset-item {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1.5 / 1;
+            /* Match Figma visual proportions */
+            background: #434343;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .asset-item:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .asset-item img,
+        .asset-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .asset-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ccc;
+            font-size: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .asset-item:hover .asset-label {
+            opacity: 1;
+        }
+
+        /* Loading state */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loading" class="loading">Loading assets...</div>
+    <div id="grid" class="grid"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const grid = document.getElementById('grid');
+            const loading = document.getElementById('loading');
+            const allAssets = [];
+
+            try {
+                // 1. Fetch root assets
+                const rootAssetsRes = await fetch('/api/assets');
+                const rootAssets = await rootAssetsRes.json();
+                allAssets.push(...rootAssets);
+
+                // 2. Fetch folders
+                const foldersRes = await fetch('/api/folders');
+                const folders = await foldersRes.json();
+
+                // 3. Threaded fetch for all folder contents
+                const folderPromises = folders.map(async (folder) => {
+                    if (!folder.path) return;
+                    try {
+                        const folderAssetsRes = await fetch(`/api/folder-assets?folder=${encodeURIComponent(folder.path)}`);
+                        const folderAssets = await folderAssetsRes.json();
+                        // Add folder name to asset for context if needed, or just push
+                        allAssets.push(...folderAssets);
+                    } catch (err) {
+                        console.error(`Failed to fetch assets for folder ${folder.path}:`, err);
+                    }
+                });
+
+                await Promise.all(folderPromises);
+
+                // 4. Render Layout
+                renderGrid(allAssets.sort((a, b) => a.filename.localeCompare(b.filename)));
+                loading.style.display = 'none';
+
+            } catch (error) {
+                console.error('Master fetch failed:', error);
+                loading.textContent = 'Error loading assets. Check console.';
+            }
+
+            function renderGrid(assets) {
+                grid.innerHTML = '';
+                assets.forEach(asset => {
+                    const item = document.createElement('div');
+                    item.className = 'asset-item';
+
+                    let mediaEl;
+                    if (asset.isVideo) {
+                        mediaEl = document.createElement('video');
+                        mediaEl.src = asset.path;
+                        mediaEl.muted = true;
+                        mediaEl.loop = true;
+
+                        // Play on hover
+                        item.addEventListener('mouseenter', () => mediaEl.play().catch(() => { }));
+                        item.addEventListener('mouseleave', () => {
+                            mediaEl.pause();
+                            mediaEl.currentTime = 0;
+                        });
+
+                    } else {
+                        mediaEl = document.createElement('img');
+                        mediaEl.src = asset.path;
+                        mediaEl.loading = 'lazy';
+                    }
+
+                    const label = document.createElement('div');
+                    label.className = 'asset-label';
+                    label.textContent = asset.filename;
+
+                    item.appendChild(mediaEl);
+                    item.appendChild(label);
+                    grid.appendChild(item);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
