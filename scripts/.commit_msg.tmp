@@ -1,5 +1,6 @@
-feat: add local save option
+feat: Add AI chat interface
 
-a
-- Remove temporary commit message file (chore)
-- Skip git push when 'local' flag is present
+- Update agent workflow preferences in docs
+- Add CSS for chat overlay and tokens
+- Refactor cards data structure
+- Remove obsolete experiment files

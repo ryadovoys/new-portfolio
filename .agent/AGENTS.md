@@ -46,6 +46,9 @@ These are specialized capabilities available to the agent. Refer to the specific
 *   **Usage**: "Make a GIF from this PDF", "Convert `deck.pdf` to a small card GIF".
 *   **Key Parameters**: Dimensions, Duration, Margins, Radius.
 
+## 5. Agent Workflow Preferences
+- **Walkthrough Artifacts**: Skip automatic creation/opening of `walkthrough.md` at the end of tasks unless explicitly requested by the user.
+
 ---
 
-*Verified and Active as of Jan 2026. This document is the source of truth for agent behavior and project state. Update it after every major iteration.*
+*Verified and Active as of Feb 2026. This document is the source of truth for agent behavior and project state. Update it after every major iteration.*
