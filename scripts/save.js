@@ -104,10 +104,15 @@ async function run() {
         execSync(`git commit -F "${tempMsgFile}"`);
         fs.unlinkSync(tempMsgFile);
 
-        console.log('🚀 Pushing to origin...');
-        execSync('git push origin main');
+        const isLocal = process.argv.includes('local');
 
-        console.log('\n✅ Successfully saved and pushed!');
+        if (isLocal) {
+            console.log('\n✅ Successfully saved locally (push skipped).');
+        } else {
+            console.log('🚀 Pushing to origin...');
+            execSync('git push origin main');
+            console.log('\n✅ Successfully saved and pushed!');
+        }
 
     } catch (error) {
         console.error('\n❌ Error during save:', error.message);

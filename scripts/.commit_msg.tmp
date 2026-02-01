@@ -1,5 +1,5 @@
-refactor: improve AI commit msg generation with model fallbacks
+feat: add local save option
 
-- Switch to iterating multiple free AI models for reliability
-- Add fallback logic and detailed error logging for each model attempt
-- Remove temporary commit message file in cleanup (chore)
+a
+- Remove temporary commit message file (chore)
+- Skip git push when 'local' flag is present
