@@ -56,13 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Helper to get domain
     const getDomain = (url) => {
         try {
-            // For relative assets, use the site domain as shown in the image
-            if (url.includes('assets/')) return 'ryadovoy.com';
-            
-            const domain = new URL(url).hostname.replace('www.', '');
-            return domain || 'ryadovoy.com';
+            return new URL(url).hostname.replace('www.', '');
         } catch (e) {
-            return 'ryadovoy.com';
+            return '';
         }
     };
 
@@ -108,65 +104,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Show
         tooltip.classList.add('is-visible');
-        updatePosition(e, target);
+        updatePosition(e);
     };
 
     const hideTooltip = () => {
         tooltip.classList.remove('is-visible');
     };
 
-    const updatePosition = (e, target = null) => {
-        const gap = 24; // Distance from link
+    const updatePosition = (e) => {
+        const gap = 20;
         const margin = 16;
         const rect = tooltip.getBoundingClientRect();
-        
-        let x, y;
 
-        // Check if the hovered element is a sidebar link (or inside one)
-        const sidebarLink = target?.closest('.sidebar__nav-link');
-
-        if (sidebarLink && window.innerWidth > 768) {
-            // Sidebar specific positioning
-            const linkRect = sidebarLink.getBoundingClientRect();
-            
-            // Align to the right of the link highlight
-            x = linkRect.right + gap;
-            
-            // Align vertically with the link text/highlight
-            // Image shows it slightly offset downwards
-            y = linkRect.top - 8;
-
-            // Stop following mouse for anchored links
-            rafId && cancelAnimationFrame(rafId);
-        } else {
-            // Default behavior for other links: center horizontally relative to mouse/link
-            x = e.clientX - rect.width / 2;
-            y = e.clientY + 20;
-        }
+        // Align left side to pointer
+        let x = e.clientX;
+        // Position below by default
+        let y = e.clientY + gap;
 
         // Horizontal boundaries
         if (x < margin) x = margin;
         if (x + rect.width > window.innerWidth - margin) {
             x = window.innerWidth - rect.width - margin;
-            
-            // If it hits right edge and it's a sidebar link, maybe show on left?
-            // But usually sidebar is on the far left, so this is unlikely.
         }
 
         // Vertical boundaries (Flip if hits bottom)
         if (y + rect.height > window.innerHeight - margin) {
-            y = window.innerHeight - rect.height - margin;
-            
-            // If it's a sidebar link and it's hitting the bottom, we might want to 
-            // align its bottom with the link's bottom instead of just clamping.
-            if (sidebarLink && window.innerWidth > 768) {
-                const linkRect = sidebarLink.getBoundingClientRect();
-                y = linkRect.bottom - rect.height + 8;
-            }
+            y = e.clientY - rect.height - gap; // Flip to above pointer
         }
-        
-        // Ensure it doesn't go off the top
-        if (y < margin) y = margin;
 
         tooltip.style.left = `${x}px`;
         tooltip.style.top = `${y}px`;
@@ -176,30 +140,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('mouseover', (e) => {
         const link = e.target.closest('a');
         if (link) {
-            const url = link.getAttribute('href'); // Use getAttribute to get raw value
+            // Check if it's a real link with href
+            const url = link.href;
             if (url) {
-                showTooltip(e, url, link);
+                showTooltip(e, url);
             }
         }
     });
 
     document.body.addEventListener('mouseout', (e) => {
         const link = e.target.closest('a');
-        if (link) {
+        // Only hide if we are actually leaving the link element
+        if (link && !link.contains(e.relatedTarget)) {
             hideTooltip();
         }
     });
 
     document.body.addEventListener('mousemove', (e) => {
         if (tooltip.classList.contains('is-visible')) {
-            const link = e.target.closest('a');
-            const isSidebarLink = link?.closest('.sidebar__nav-link');
-            
-            // Only follow mouse if NOT a sidebar link
-            if (!isSidebarLink || window.innerWidth <= 768) {
-                if (rafId) cancelAnimationFrame(rafId);
-                rafId = requestAnimationFrame(() => updatePosition(e, link));
-            }
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => updatePosition(e));
         }
     });
 });
