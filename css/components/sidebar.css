@@ -309,7 +309,7 @@
         /* Auto height */
         /* Auto height */
         background: var(--bg-page);
-        padding: 80px var(--space-6) 24px var(--space-6);
+        padding: 120px var(--space-6) 24px var(--space-6);
         /* Top, Right, Bottom, Left */
 
         transform: translateY(-100%);
@@ -323,7 +323,7 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
-        padding-top: 80px;
+        padding-top: 120px;
         /* Space for header */
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
