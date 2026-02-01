@@ -44,12 +44,21 @@ ${diff}`;
                 'X-Title': 'Portfolio Save Script'
             },
             body: JSON.stringify({
-                model: 'meta-llama/llama-3.1-8b-instruct:free', // Use a stable free model
+                model: 'meta-llama/llama-3.1-8b-instruct:free',
                 messages: [{ role: 'user', content: prompt }]
             })
         });
 
         const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`API Error (${response.status}): ${JSON.stringify(data)}`);
+        }
+
+        if (!data.choices || !data.choices[0]) {
+            throw new Error(`Unexpected API response structure: ${JSON.stringify(data)}`);
+        }
+
         const message = data.choices[0].message.content.trim();
         return message;
 
