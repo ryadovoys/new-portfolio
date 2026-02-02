@@ -13,15 +13,7 @@
     let isLoading = false;
     let showingResponse = false;
 
-    // Load history from localStorage or start empty
-    let savedHistory = [];
-    try {
-        savedHistory = JSON.parse(localStorage.getItem('ai_chat_history') || '[]');
-    } catch (e) {
-        console.warn('Failed to load chat history', e);
-    }
-    let chatHistory = savedHistory;
-
+    let chatHistory = [];
     let suggestionIndex = -1;
 
     const SUGGESTED_QUESTIONS = [
@@ -92,7 +84,6 @@
 
         // Always render history (restored or new)
         renderHistory();
-        saveHistory();
 
         // Focus input after a short delay to ensure overlay is visible
         setTimeout(() => inputEl.focus(), 100);
@@ -109,18 +100,7 @@
         inputText = '';
         inputEl.value = '';
         inputEl.blur();
-        // Do NOT clear responseEl or chatHistory here to persist context
-        // responseEl.innerHTML = ''; 
-        // chatHistory = []; 
-    }
-
-    // Helper to save history
-    function saveHistory() {
-        try {
-            localStorage.setItem('ai_chat_history', JSON.stringify(chatHistory));
-        } catch (e) {
-            console.error('Failed to save chat history', e);
-        }
+        // Do NOT clear responseEl or chatHistory here to persist context until reload
     }
 
     // Render conversation history (terminal-style)
@@ -205,7 +185,6 @@
         // Add user message to history and render immediately
         chatHistory.push({ role: 'user', content: question });
         renderHistory();
-        saveHistory();
 
         // Show loading indicator after user message
 
@@ -242,14 +221,12 @@
             // Add assistant response to history and re-render
             chatHistory.push({ role: 'assistant', content: aiResponse });
             renderHistory();
-            saveHistory();
 
         } catch (error) {
             console.error('AI Chat error:', error);
             // Add error as assistant message
             chatHistory.push({ role: 'assistant', content: 'Error: ' + error.message });
             renderHistory();
-            saveHistory();
         }
 
         isLoading = false;

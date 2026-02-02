@@ -1,7 +1,6 @@
-feat: Persist chat history using localStorage
+refactor: Remove chat history persistence
 
-- Load chat history from localStorage on initialization
-- Save history after messages and error responses
-- Prevent history reset when chat closes
-- Add error handling for storage operations
-- Remove temporary commit message file
+- Remove localStorage history loading and saving
+- Delete saveHistory function and calls
+- Initialize chatHistory as empty array
+- Remove temporary commit message template
