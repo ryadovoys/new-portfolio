@@ -12,7 +12,16 @@
     let inputText = '';
     let isLoading = false;
     let showingResponse = false;
-    let chatHistory = [];
+
+    // Load history from localStorage or start empty
+    let savedHistory = [];
+    try {
+        savedHistory = JSON.parse(localStorage.getItem('ai_chat_history') || '[]');
+    } catch (e) {
+        console.warn('Failed to load chat history', e);
+    }
+    let chatHistory = savedHistory;
+
     let suggestionIndex = -1;
 
     const SUGGESTED_QUESTIONS = [
@@ -75,12 +84,15 @@
         overlay.classList.add('active');
         document.body.classList.add('ai-chat-active');
 
-        // Initial welcome message
+        // Initial welcome message (only if history is empty)
         if (chatHistory.length === 0) {
             const welcomeMsg = "Hello! I'm Sergey's cat Snow. He is out now, but I've been watching him work a lot, so if you want to know anything about him, please ask me and I'll try to do my best to help you. Meow.";
             chatHistory.push({ role: 'assistant', content: welcomeMsg });
-            renderHistory();
         }
+
+        // Always render history (restored or new)
+        renderHistory();
+        saveHistory();
 
         // Focus input after a short delay to ensure overlay is visible
         setTimeout(() => inputEl.focus(), 100);
@@ -97,8 +109,18 @@
         inputText = '';
         inputEl.value = '';
         inputEl.blur();
-        responseEl.innerHTML = '';
-        chatHistory = []; // Reset history on close
+        // Do NOT clear responseEl or chatHistory here to persist context
+        // responseEl.innerHTML = ''; 
+        // chatHistory = []; 
+    }
+
+    // Helper to save history
+    function saveHistory() {
+        try {
+            localStorage.setItem('ai_chat_history', JSON.stringify(chatHistory));
+        } catch (e) {
+            console.error('Failed to save chat history', e);
+        }
     }
 
     // Render conversation history (terminal-style)
@@ -171,6 +193,7 @@
         });
 
     // Send message to AI
+    // Send message
     async function sendMessage() {
         const question = inputEl.value.trim();
         if (!question || isLoading) return;
@@ -182,6 +205,9 @@
         // Add user message to history and render immediately
         chatHistory.push({ role: 'user', content: question });
         renderHistory();
+        saveHistory();
+
+        // Show loading indicator after user message
 
         // Show loading indicator after user message
         // Show loading indicator after user message
@@ -216,12 +242,14 @@
             // Add assistant response to history and re-render
             chatHistory.push({ role: 'assistant', content: aiResponse });
             renderHistory();
+            saveHistory();
 
         } catch (error) {
             console.error('AI Chat error:', error);
             // Add error as assistant message
             chatHistory.push({ role: 'assistant', content: 'Error: ' + error.message });
             renderHistory();
+            saveHistory();
         }
 
         isLoading = false;
