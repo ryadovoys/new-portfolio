@@ -1,7 +1,7 @@
-feat: Switch AI persona to Snow the Cat
+fix: Remove asterisk actions to prevent rendering breaks
 
-- Rewrite digital twin context to Snow the Cat's POV
-- Add terminal animation frames and cat asset
-- Update chat styling and behavior for new persona
-- Remove temporary commit message file
-- Add new context markdown file
+- Removed markdown asterisks around cat behaviors in docs
+- Updated instructions to avoid asterisks in responses
+- Adjusted response examples to use natural language
+- Modified CSS for chat component styling
+- Deleted temporary commit message file (chore)
