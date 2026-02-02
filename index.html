@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="css/components/link-preview.css">
   <link rel="stylesheet" href="css/components/maze-feature.css">
   <link rel="stylesheet" href="css/components/ai-chat.css">
+  <link rel="stylesheet" href="css/components/console-button.css">
 
 </head>
 
@@ -41,6 +42,12 @@
     <span class="theme-toggle-label">Rotate planets</span>
   </button>
 
+  <!-- Console Button (Top Left) -->
+  <button class="console-button" aria-label="Open AI Console">&gt;_</button>
+
+  <!-- Console Button (Mobile - Bottom Left) -->
+  <button class="console-button console-button--mobile" aria-label="Open AI Console">&gt;_</button>
+
   <!-- Close Button for Project Cards -->
   <button class="close-button" aria-label="Close project">
     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
@@ -54,7 +61,7 @@
     <aside class="sidebar">
       <!-- Mobile Header (Logo + Toggle) -->
       <div class="sidebar__header">
-        <!-- Logo -->
+        <!-- Logo + Console Button -->
         <div class="sidebar__logo">
           <svg class="sidebar__logo-mark" width="45" height="24" viewBox="0 0 45 24" fill="none"
             xmlns="http://www.w3.org/2000/svg">

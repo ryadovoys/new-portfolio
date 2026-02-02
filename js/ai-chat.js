@@ -278,4 +278,12 @@
         }
     });
 
+    // Console button click handler (both desktop and mobile)
+    const consoleButtons = document.querySelectorAll('.console-button');
+    consoleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            activate();
+        });
+    });
+
 })();

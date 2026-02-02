@@ -1,8 +1,7 @@
-refactor: Update vision and restructure context files
+feat: Add console button and adjust chat UI
 
-- Update core vision and design principles in AGENTS.md
-- Replace single GIF with multi-frame thinking animation
-- Rename background file and LinkedIn profile
-- Delete obsolete context files and temp script
-- Add new context documentation (v3)
-- Tweak AI chat UI components
+- Increase AI response max_tokens to 500
+- Reduce chat font sizes and adjust cursor height
+- Add responsive console button with styling
+- Connect console button to chat activation
+- Remove temporary commit message file

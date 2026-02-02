@@ -1,0 +1,62 @@
+/* Console Button - Top Left Corner */
+.console-button {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-neutral-100);
+    border: 1px solid var(--border-color);
+    color: var(--bg-page);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.console-button:hover {
+    background: var(--color-neutral-200);
+    border-color: var(--text-primary);
+}
+
+/* Light mode - dark button with light text */
+[data-theme="light"] .console-button {
+    background: var(--text-primary);
+    color: var(--bg-page);
+    border-color: var(--text-primary);
+}
+
+[data-theme="light"] .console-button:hover {
+    background: var(--text-secondary);
+}
+
+/* Hide mobile version on desktop */
+.console-button--mobile {
+    display: none;
+}
+
+/* Mobile positioning - bottom left, 48x48px */
+@media (max-width: 768px) {
+    .console-button:not(.console-button--mobile) {
+        display: none;
+    }
+
+    .console-button--mobile {
+        display: flex;
+        position: fixed;
+        top: auto;
+        bottom: var(--space-4);
+        left: var(--space-4);
+        width: 48px;
+        height: 48px;
+        font-size: 16px;
+        z-index: 1003;
+    }
+}

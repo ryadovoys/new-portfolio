@@ -71,8 +71,8 @@ body.ai-chat-active {
 }
 
 .ai-chat__text {
-    font-size: 60px;
-    line-height: 1;
+    font-size: 48px;
+    line-height: 1.2;
     letter-spacing: -1px;
     font-weight: 400;
     color: var(--text-primary);
@@ -115,7 +115,7 @@ body.ai-chat-active {
 .ai-chat__cursor {
     display: inline-block;
     width: 4px;
-    height: 72px;
+    height: 48px;
     background: var(--text-primary);
     margin-left: 4px;
     margin-top: 0;
@@ -172,7 +172,7 @@ body.ai-chat-active {
     }
 
     .ai-chat__text {
-        font-size: 48px;
+        font-size: 24px;
     }
 
     .ai-chat__cursor {
