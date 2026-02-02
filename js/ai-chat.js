@@ -23,6 +23,7 @@
             <span class="ai-chat__prompt">&gt;</span>
             <input type="text" class="ai-chat__input" placeholder="What's on your mind?" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
+        <a href="/assets/sergey-ryadovoy-digital-twin-context.md" download class="ai-chat__context-link">Download Sergey's Context</a>
     `;
     document.body.appendChild(overlay);
 
@@ -219,6 +220,12 @@
 
     // Document-level Escape to close (when showing response)
     document.addEventListener('keydown', (e) => {
+        if (e.code === 'Backquote') {
+            e.preventDefault();
+            isActive ? deactivate() : activate();
+            return;
+        }
+
         if (e.key === 'Escape' && isActive) {
             deactivate();
             return;

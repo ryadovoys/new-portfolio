@@ -1,6 +1,3 @@
-refactor: Migrate AI chat to Gemini API
-
-- Remove temporary commit message script
-- Switch from OpenRouter to Gemini API
-- Update message transformation and request handling
-- Add response mapping for frontend compatibility
+feat: Add context download link
+- Add styling for context download link in CSS
+- Insert link element in JavaScript overlay
