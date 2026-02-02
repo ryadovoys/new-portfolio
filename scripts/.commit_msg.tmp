@@ -1,4 +1,4 @@
-chore: Update context filename and clean up tmp file
+chore: Remove mobile console button
 
-- Rename Sergey's context file in download link
+- Remove mobile console button element and related comment
 - Delete temporary commit message file
