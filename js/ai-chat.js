@@ -39,6 +39,14 @@
         inputEl.value = '';
         overlay.classList.add('active');
         document.body.classList.add('ai-chat-active');
+
+        // Initial welcome message
+        if (chatHistory.length === 0) {
+            const welcomeMsg = "Hello! I'm Sergey's cat Snow. He is out now, but I've been watching him work a lot, so if you want to know anything about him, please ask me and I'll try to do my best to help you. Meow.";
+            chatHistory.push({ role: 'assistant', content: welcomeMsg });
+            renderHistory();
+        }
+
         // Focus input after a short delay to ensure overlay is visible
         setTimeout(() => inputEl.focus(), 100);
     }

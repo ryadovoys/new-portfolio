@@ -36,8 +36,31 @@ body.ai-chat-active {
 
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     gap: 34px;
+}
+
+/* Push content to bottom when short, allow scroll when long */
+.ai-chat__response-area::before {
+    content: '';
+    flex: 1;
+}
+
+/* Terminal-style scrollbar */
+.ai-chat__response-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ai-chat__response-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ai-chat__response-area::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.ai-chat__response-area::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
 
 /* Terminal-style conversation lines */
@@ -53,12 +76,17 @@ body.ai-chat-active {
     color: white;
 }
 
-/* Prompt symbol > */
-.ai-chat__line--user .ai-chat__prompt {
+/* Prompt symbol */
+.ai-chat__line .ai-chat__prompt {
     flex-shrink: 0;
     width: 24px;
     text-align: center;
     color: white;
+}
+
+/* Assistant prompt color */
+.ai-chat__line--assistant .ai-chat__prompt {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* Avatar wrapper */
@@ -72,10 +100,12 @@ body.ai-chat-active {
 }
 
 .ai-chat__avatar {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 4px;
+    vertical-align: middle;
 }
+
 
 /* Message content - fills remaining space */
 .ai-chat__content {
@@ -115,11 +145,10 @@ body.ai-chat-active {
     background-color: rgba(128, 128, 128, 0.2);
 }
 
-/* Loading indicator */
+/* Loading indicator - aligned with text (after icon + gap) */
 .ai-chat__loading {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
+    margin-left: 48px;
+    /* 24px icon + 24px gap */
 }
 
 .ai-chat__thinking {
@@ -147,6 +176,8 @@ body.ai-chat-active {
 /* Prompt symbol in input bar */
 .ai-chat__input-bar .ai-chat__prompt {
     flex-shrink: 0;
+    width: 24px;
+    text-align: center;
     color: white;
 }
 
