@@ -406,6 +406,9 @@ class CardViewer {
         const self = this;
 
         card.addEventListener('click', (e) => {
+            // Allow links to work normally
+            if (e.target.closest('a')) return;
+
             // Disable expansion on mobile for projects with layers
             if (window.innerWidth <= 768 && card.querySelectorAll('.project-layer').length > 0) {
                 return;
