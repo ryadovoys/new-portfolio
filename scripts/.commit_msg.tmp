@@ -1,4 +1,4 @@
-fix: Prevent card click from blocking link interactions
+feat: Improve sidebar email label clarity
 
-- Allow links within cards to function normally
+- Change 'Email' label to 'Send email' in sidebar
 - chore: Remove temporary commit message file
