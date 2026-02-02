@@ -13,10 +13,10 @@
 ## 2. Living Product Requirements Document (PRD)
 
 ### Vision
-To create a "magical" interface that not only showcases Sergey's work (Visa, Global Brands) but also acts as an extension of his mind ("The Brain"). The interface should feel alive, responsive, and premium.
+To create a "magical" interface that not only showcases Sergey's work (Visa, Global Brands) but also shows his skills, experience, projects, experiments. 
 
 ### Core Pillars
-1.  **Aesthetics First**: Vibrant colors, glassmorphism, smooth animations (GSAP), and "wow" moments. Never settle for basic or generic designs.
+1.  **Aesthetics First**: Smooth animations (GSAP), and modern swiss grid approach with a touch of craft design.
 2.  **Context Awareness**: The system should understand the user's workspace, files, and intent.
 3.  **Efficiency**: Reusable skills and automations to speed up workflows (e.g., asset generation).
 

@@ -18,11 +18,11 @@
     const overlay = document.createElement('div');
     overlay.className = 'ai-chat-overlay';
     overlay.innerHTML = `
+        <div class="ai-chat__hint">Enter to send · Esc to close</div>
         <div class="ai-chat__text-wrapper">
             <span class="ai-chat__text"></span><span class="ai-chat__cursor"></span>
         </div>
         <div class="ai-chat__history"></div>
-        <div class="ai-chat__hint">Enter to send · Esc to close</div>
     `;
     document.body.appendChild(overlay);
 
@@ -38,7 +38,6 @@
         inputText = '';
         showingResponse = false;
         textEl.textContent = '';
-        textEl.classList.remove('loading');
         cursorEl.style.display = 'inline-block';
         overlay.classList.add('active');
         document.body.classList.add('ai-chat-active');
@@ -54,15 +53,12 @@
         document.body.classList.remove('ai-chat-active');
         inputText = '';
         textEl.textContent = '';
-        textEl.classList.remove('loading');
         historyEl.innerHTML = '';
         chatHistory = []; // Reset history on close checking "session"
     }
 
-    // Clear response and start typing again
     function startTyping() {
         showingResponse = false;
-        textEl.classList.remove('loading');
         cursorEl.style.display = 'inline-block';
     }
 
@@ -86,6 +82,17 @@
         'logos': { type: 'image', src: '/assets/logo-design-collection-animated.gif' },
         'genmedia': { type: 'video', src: '/assets/generative-media/1-video.mp4' }
     };
+
+    // Thinking animations - random one is shown while AI is processing
+    const THINKING_ANIMATIONS = [
+        '/assets/thinking/1.gif',
+        '/assets/thinking/2.gif',
+        '/assets/thinking/3.gif',
+        '/assets/thinking/4.gif',
+        '/assets/thinking/5.gif',
+        '/assets/thinking/6.gif',
+        '/assets/thinking/7.gif'
+    ];
 
     // System prompt placeholder - will be fetched
     let SYSTEM_PROMPT = '';
@@ -136,9 +143,9 @@
         isLoading = true;
         showingResponse = true;
 
-        // Clear input and show loading
-        textEl.textContent = '';
-        textEl.classList.add('loading');
+        // Clear input and show random thinking animation
+        const randomAnim = THINKING_ANIMATIONS[Math.floor(Math.random() * THINKING_ANIMATIONS.length)];
+        textEl.innerHTML = `<img class="ai-chat__thinking" src="${randomAnim}" alt="thinking">`;
         cursorEl.style.display = 'none';
         inputText = '';
 
@@ -179,8 +186,6 @@
             chatHistory.push({ role: 'assistant', content: aiResponse });
             renderHistory();
 
-            textEl.classList.remove('loading');
-
             // 1. Parse Markdown links: [text](url) -> <a href="url" target="_blank">text</a>
             let formattedResponse = aiResponse
                 .replace(/</g, '&lt;') // Simple XSS prevention for non-link tags
@@ -203,7 +208,6 @@
 
         } catch (error) {
             console.error('AI Chat error:', error);
-            textEl.classList.remove('loading');
             textEl.textContent = 'Error: ' + error.message;
         }
 

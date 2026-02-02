@@ -1,7 +1,8 @@
-chore: Reorganize assets and update related code
+refactor: Update vision and restructure context files
 
-- Move unused images to archive directory
-- Rename project asset files for clarity
-- Add new thinking-animation.gif
-- Update card data, JS/CSS, and build scripts
-- Remove temporary commit message file
+- Update core vision and design principles in AGENTS.md
+- Replace single GIF with multi-frame thinking animation
+- Rename background file and LinkedIn profile
+- Delete obsolete context files and temp script
+- Add new context documentation (v3)
+- Tweak AI chat UI components

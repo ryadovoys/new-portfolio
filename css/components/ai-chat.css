@@ -39,18 +39,9 @@ body.ai-chat-active {
     flex-wrap: wrap;
 }
 
-/* Conversation history sidebar - 4th column */
+/* Conversation history sidebar - 4th column (hidden for now) */
 .ai-chat__history {
-    grid-column: 4;
-    grid-row: 1;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--text-secondary);
-    max-height: calc(100vh - 160px);
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
+    display: none;
 }
 
 .ai-chat__history-msg {
@@ -144,33 +135,19 @@ body.ai-chat-active {
     }
 }
 
-/* Loading indicator */
-.ai-chat__text.loading::after {
-    content: '';
+/* Thinking animation - inline random GIF */
+.ai-chat__thinking {
     display: inline-block;
-    width: 60px;
-    height: 60px;
-    background: url('/assets/thinking-animation.gif') no-repeat center;
-    background-size: contain;
+    height: 120px;
+    width: auto;
     vertical-align: middle;
-}
-
-@keyframes blink {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.3;
-    }
 }
 
 /* Hint text */
 .ai-chat__hint {
-    grid-column: 4;
-    align-self: end;
+    position: fixed;
+    bottom: var(--page-padding);
+    right: var(--page-padding);
     font-size: 14px;
     color: var(--text-primary);
     opacity: 0.3;
