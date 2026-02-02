@@ -13,17 +13,51 @@
     let isLoading = false;
     let showingResponse = false;
     let chatHistory = [];
+    let suggestionIndex = -1;
+
+    const SUGGESTED_QUESTIONS = [
+        "Who is Sergey?",
+        "What is your tech stack?",
+        "Show me your best projects.",
+        "Tell me about Digitas.",
+        "What is Journely?",
+        "How do you use AI in design?",
+        "Do you like fish?",
+        "How can I contact Sergey?",
+        "What is your design philosophy?",
+        "Show me mobile app designs.",
+        "Show me web design projects.",
+        "What awards have you won?",
+        "Tell me a joke.",
+        "Who is Snow the cat?",
+        "What is 'mindcomplete'?",
+        "Show me the VISA project.",
+        "What tools do you use daily?",
+        "Can you write code?",
+        "Tell me about your experience.",
+        "What are you working on now?"
+    ];
 
     // Create overlay elements
     const overlay = document.createElement('div');
     overlay.className = 'ai-chat-overlay';
     overlay.innerHTML = `
+        <div class="ai-chat__close-btn" aria-label="Close AI Chat">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
         <div class="ai-chat__response-area"></div>
         <div class="ai-chat__input-bar">
             <span class="ai-chat__prompt">&gt;</span>
             <input type="text" class="ai-chat__input" placeholder="What's on your mind?" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
-        <a href="/assets/sergey-ryadovoy-digital-twin-context.md" download class="ai-chat__context-link">Download Sergey's Context</a>
+        </div>
+        <div class="ai-chat__footer">
+            <a href="/assets/sergey-ryadovoy-digital-twin-context.md" download class="ai-chat__context-link">Download Sergey's Context</a>
+            <span class="ai-chat__hint">Press up or down key for suggestions</span>
+        </div>
     `;
     document.body.appendChild(overlay);
 
@@ -210,10 +244,32 @@
             return;
         }
 
-        // Backspace on empty input closes
         if (e.key === 'Backspace' && inputEl.value === '') {
             e.preventDefault();
             deactivate();
+            return;
+        }
+
+        // Arrow keys for suggestions
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            e.preventDefault();
+
+            // If starting fresh or index out of bounds, reset
+            if (suggestionIndex === -1) {
+                suggestionIndex = 0;
+            } else {
+                if (e.key === 'ArrowUp') {
+                    suggestionIndex = (suggestionIndex - 1 + SUGGESTED_QUESTIONS.length) % SUGGESTED_QUESTIONS.length;
+                } else {
+                    suggestionIndex = (suggestionIndex + 1) % SUGGESTED_QUESTIONS.length;
+                }
+            }
+
+            inputEl.value = SUGGESTED_QUESTIONS[suggestionIndex];
+            // Move cursor to end
+            setTimeout(() => {
+                inputEl.selectionStart = inputEl.selectionEnd = inputEl.value.length;
+            }, 0);
             return;
         }
     });
@@ -231,19 +287,7 @@
             return;
         }
 
-        // Start typing to activate (desktop only)
-        if (!isActive && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-            // Ignore if in input/textarea
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
-                return;
-            }
-            e.preventDefault();
-            activate();
-            // Add the typed character to input
-            setTimeout(() => {
-                inputEl.value = e.key;
-            }, 100);
-        }
+
     });
 
     // Click outside to close
@@ -253,12 +297,20 @@
         }
     });
 
-    // Console button click handler (both desktop and mobile)
-    const consoleButtons = document.querySelectorAll('.console-button');
-    consoleButtons.forEach(button => {
-        button.addEventListener('click', () => {
+    // Close button click handler
+    const closeBtn = overlay.querySelector('.ai-chat__close-btn');
+    closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent overlay click
+        deactivate();
+    });
+
+    // Global click handler for chat triggers (using delegation for dynamic content)
+    document.addEventListener('click', (e) => {
+        const trigger = e.target.closest('.console-button, .trigger-ai-chat, a[href="#chat"]');
+        if (trigger) {
+            e.preventDefault();
             activate();
-        });
+        }
     });
 
 })();

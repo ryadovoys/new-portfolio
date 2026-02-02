@@ -1,3 +1,7 @@
-feat: Add context download link
-- Add styling for context download link in CSS
-- Insert link element in JavaScript overlay
+feat: add close button and adjust AI chat styles
+
+19434770
+- Add close button with hover/active effects
+- Reduce padding and margins for tighter spacing
+- Refactor footer to include context link and hint
+- Update cards.json and index.html (misc)

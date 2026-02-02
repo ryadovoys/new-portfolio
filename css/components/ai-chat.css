@@ -28,11 +28,41 @@ body.ai-chat-active {
     opacity: 1;
 }
 
+/* Close Button */
+.ai-chat__close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    background: #111;
+    /* Matches overlay background */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: background 0.2s, transform 0.2s, opacity 0.2s;
+    z-index: 10;
+}
+
+.ai-chat__close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.ai-chat__close-btn:active {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(0.95);
+}
+
 /* Response area - scrollable, fills available space */
 .ai-chat__response-area {
     flex: 1;
     overflow-y: auto;
-    padding: 60px;
+    padding: 40px;
 
     display: flex;
     flex-direction: column;
@@ -66,7 +96,7 @@ body.ai-chat-active {
 /* Terminal-style conversation lines */
 .ai-chat__line {
     display: flex;
-    gap: 24px;
+    gap: 16px;
     align-items: flex-start;
 
     font-family: 'IBM Plex Mono', monospace;
@@ -162,9 +192,9 @@ body.ai-chat-active {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 24px;
-    margin: 0 60px 110px 60px;
-    /* 60px (link bottom) + 24px (link height) + 24px (gap) ≈ 108px -> 110px safe */
+    gap: 16px;
+    margin: 0 40px 90px 40px;
+    /* 40px (link bottom) + 24px (link height) + 24px (gap) ≈ 88px -> 90px safe */
     padding: 20px 0 20px 0;
 
     border-top: 1px solid rgba(255, 255, 255, 0.4);
@@ -206,58 +236,31 @@ body.ai-chat-active {
     color: rgba(255, 255, 255, 0.4);
 }
 
-/* Context download link */
-.ai-chat__context-link {
+/* Footer with link and hint */
+.ai-chat__footer {
     position: absolute;
-    bottom: 60px;
-    /* 72px margin - 12 offset approx? No. bottom of overlay is 0? */
-    /* Input bar has margin-bottom: 72px. */
-    /* Link should be 12px below the input FIELD (bottom border). */
-    /* The input bar handles layout. We should make link absolute relative to body or overlay? */
-    /* Overlay is flex column. Input bar is flex item. */
-    /* Easier if link is absolute inside overlay, bottom: something. */
-    /* Link should be 12px below that line. So at 72 - 12 - height? */
-    /* Let's set bottom: 40px and left: 60px + 24px gap + 24px prompt? */
-    /* Input start is at padding-left (0) + gap (24px) + prompt (24px). */
-    /* Actually input bar padding left is 0 (desktop). Gap is 24px. Prompt is 24px. */
-    /* Total offset from screen left = margin-left (60px) + gap (24px) + prompt (24px) = 108px. */
-    /* But standard text start is inside input. */
-    /* Link aligned to input text start? */
+    bottom: 40px;
+    left: 40px;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+}
 
-    /* Wait. User said "below input field". Input field is the text box. */
-    /* The line is the bottom border of .ai-chat__input-bar. */
-    /* Input bar bottom margin is 72px. This is space below the line. */
-    /* So the line is at y=72px from bottom. */
-    /* Link should be 12px below line -> y = 72 - 12 = 60px top of link? */
-    /* No, link top is at "line y + 12px"? No "below" usually means y_link > y_line + 12. */
-    /* Since y increases downwards, and bottom coordinate increases upwards: */
-    /* Line Y (from bottom) = 72px. */
-    /* Link Y (from bottom) = 72px - 12px - LinkHeight. */
-
+.ai-chat__context-link {
+    pointer-events: auto;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 18px;
     color: rgba(255, 255, 255, 0.4);
     text-decoration: none;
-
-    position: absolute;
-    /* 72px margin - 24px gap adjustment */
-    /* 72px is space below input border. Link text ~12px high? */
-    /* If bottom is 24px, the baseline is at 24px. */
-    /* Input border is at 72px. Gap = 72 - 24 - height (~20) = ~28? */
-    /* Previous was 36px. Gap was visually 12px? So 36px bottom = 12px gap? */
-    /* 36 [link] 48 [gap] 60 ?? No. */
-    /* Let's recalculate coordinate system visually. */
-    /* Bottom: 0 is screen bottom. */
-    /* Input border is at Y=72px. */
-    /* Previous Link Bottom: 36px. Link Height: ~24px (line-height). Link Top: ~60px? Gap = 12px. */
-    /* To increase Gap to 24px, Link Top should be 72 - 24 = 48px. */
-    /* Link Bottom = Link Top - Height = 48 - 24 = 24px. */
-    /* So bottom: 24px seems correct for 24px gap if line-height is 24px. */
-
-    left: 60px;
-    /* 60px margin */
-    pointer-events: auto;
     transition: color 0.2s;
+}
+
+.ai-chat__hint {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.2);
 }
 
 .ai-chat__context-link:hover {
@@ -276,6 +279,8 @@ body.ai-chat-active {
         font-size: 16px;
         gap: 16px;
     }
+
+    /* .ai-chat__close-btn uses default 12px/12px from desktop */
 
     .ai-chat__avatar-wrap,
     .ai-chat__line--user .ai-chat__prompt {
@@ -307,10 +312,18 @@ body.ai-chat-active {
         max-height: 250px;
     }
 
-    .ai-chat__context-link {
+    .ai-chat__footer {
         left: 20px;
+        right: 20px;
         bottom: 30px;
+    }
+
+    .ai-chat__context-link {
         font-size: 16px;
+    }
+
+    .ai-chat__hint {
+        display: none;
     }
 
     ```
