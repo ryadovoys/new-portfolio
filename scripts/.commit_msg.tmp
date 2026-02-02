@@ -1,4 +1,4 @@
-feat: Improve sidebar email label clarity
+chore: Update context filename and clean up tmp file
 
-- Change 'Email' label to 'Send email' in sidebar
-- chore: Remove temporary commit message file
+- Rename Sergey's context file in download link
+- Delete temporary commit message file

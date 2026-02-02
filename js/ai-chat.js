@@ -55,7 +55,7 @@
         </div>
         </div>
         <div class="ai-chat__footer">
-            <a href="/assets/sergey-ryadovoy-digital-twin-context.md" download class="ai-chat__context-link">Download Sergey's Context</a>
+            <a href="/assets/sergey-ryadovoy-context.md" download class="ai-chat__context-link">Download Sergey's Context</a>
             <span class="ai-chat__hint">Press up or down key for suggestions</span>
         </div>
     `;
