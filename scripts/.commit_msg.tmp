@@ -1,7 +1,4 @@
-feat: update AI chat message handling and context
+style: Adjust AI chat text font size
 
-- Refactor API to accept messages array instead of single message
-- Switch AI model from Trinity to Claude Sonnet
-- Add new digital twin context documentation
+- Change font-size from variable to fixed 60px
 - Remove temporary commit message file
-- Format context list items with bold styling
