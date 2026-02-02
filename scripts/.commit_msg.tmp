@@ -1,5 +1,7 @@
-chore: Update thinking GIFs and remove unused files
+feat: Add asset documentation and expand AI context
 
-- Updated animation assets (1.gif, 2.gif, 4.gif, 5.gif, 6.gif)
-- Removed unused JPG asset (2f70b5f...jpg)
-- Deleted temporary commit script file
+- Added ASSETS_SUMMARY.md for asset tracking
+- Expanded digital twin context with new asset keys
+- Added new thinking animation (8.gif)
+- Updated UI components and chatbot behavior
+- Removed obsolete files and temporary scripts

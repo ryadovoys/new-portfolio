@@ -154,6 +154,7 @@ body.ai-chat-active {
 .ai-chat__thinking {
     height: 80px;
     width: auto;
+    border-radius: 8px;
 }
 
 /* Input bar - fixed at bottom */

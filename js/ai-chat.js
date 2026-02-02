@@ -118,16 +118,7 @@
         'genmedia': { type: 'video', src: '/assets/generative-media/1-video.mp4' }
     };
 
-    // Thinking animations - random one is shown while AI is processing
-    const THINKING_ANIMATIONS = [
-        '/assets/thinking/1.gif',
-        '/assets/thinking/2.gif',
-        '/assets/thinking/3.gif',
-        '/assets/thinking/4.gif',
-        '/assets/thinking/5.gif',
-        '/assets/thinking/6.gif',
-        '/assets/thinking/7.gif'
-    ];
+
 
     // System prompt placeholder - will be fetched
     let SYSTEM_PROMPT = '';
@@ -158,8 +149,12 @@
         renderHistory();
 
         // Show loading indicator after user message
-        const randomAnim = THINKING_ANIMATIONS[Math.floor(Math.random() * THINKING_ANIMATIONS.length)];
-        responseEl.innerHTML += `<div class="ai-chat__loading"><img class="ai-chat__thinking" src="${randomAnim}" alt="thinking"></div>`;
+        // Show loading indicator after user message
+        const randomNum = Math.floor(Math.random() * 20) + 1;
+        // On error, increment number and try next (loops 1-20)
+        const onErrorScript = "let next = (parseInt(this.dataset.index) % 20) + 1; this.dataset.index = next; this.src = '/assets/thinking/' + next + '.gif';";
+
+        responseEl.innerHTML += `<div class="ai-chat__loading"><img class="ai-chat__thinking" src="/assets/thinking/${randomNum}.gif" data-index="${randomNum}" onerror="${onErrorScript}" alt="thinking"></div>`;
         responseEl.scrollTop = responseEl.scrollHeight;
 
         try {

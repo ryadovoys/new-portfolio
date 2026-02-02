@@ -258,7 +258,7 @@ app.post('/api/ai-chat', async (req, res) => {
       body: JSON.stringify({
         model: 'anthropic/claude-sonnet-4.5',
         messages: messages,
-        max_tokens: 150
+        max_tokens: 2000
       })
     });
 
