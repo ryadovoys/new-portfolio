@@ -18,19 +18,17 @@
     const overlay = document.createElement('div');
     overlay.className = 'ai-chat-overlay';
     overlay.innerHTML = `
-        <div class="ai-chat__hint">Enter to send · Esc to close</div>
-        <div class="ai-chat__text-wrapper">
-            <input type="text" class="ai-chat__input" placeholder="Start typing..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <div class="ai-chat__response"></div>
+        <div class="ai-chat__response-area"></div>
+        <div class="ai-chat__input-bar">
+            <span class="ai-chat__prompt">&gt;</span>
+            <input type="text" class="ai-chat__input" placeholder="What's on your mind?" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
-        <div class="ai-chat__history"></div>
     `;
     document.body.appendChild(overlay);
 
 
     const inputEl = overlay.querySelector('.ai-chat__input');
-    const responseEl = overlay.querySelector('.ai-chat__response');
-    const historyEl = overlay.querySelector('.ai-chat__history');
+    const responseEl = overlay.querySelector('.ai-chat__response-area');
 
     // Activate overlay (start typing)
     function activate() {
@@ -39,9 +37,6 @@
         inputText = '';
         showingResponse = false;
         inputEl.value = '';
-        inputEl.style.display = 'block';
-        responseEl.innerHTML = '';
-        responseEl.style.display = 'none';
         overlay.classList.add('active');
         document.body.classList.add('ai-chat-active');
         // Focus input after a short delay to ensure overlay is visible
@@ -60,16 +55,38 @@
         inputEl.value = '';
         inputEl.blur();
         responseEl.innerHTML = '';
-        historyEl.innerHTML = '';
-        chatHistory = []; // Reset history on close checking "session"
+        chatHistory = []; // Reset history on close
     }
 
-    function startTyping() {
-        showingResponse = false;
-        inputEl.style.display = 'block';
-        responseEl.style.display = 'none';
-        inputEl.value = '';
-        inputEl.focus();
+    // Render conversation history (terminal-style)
+    function renderHistory() {
+        let html = '';
+        chatHistory.forEach(msg => {
+            const isUser = msg.role === 'user';
+            let content = msg.content
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+            // Parse assets
+            content = content.replace(/\(asset:(\w+)\)/g, (match, assetKey) => {
+                const asset = ASSETS[assetKey.toLowerCase()];
+                if (!asset) return '';
+                if (asset.type === 'video') {
+                    return `<div class="ai-chat__media-block"><video src="${asset.src}" autoplay loop muted playsinline></video></div>`;
+                }
+                return `<div class="ai-chat__media-block"><img src="${asset.src}" alt="${assetKey}"></div>`;
+            });
+
+            if (isUser) {
+                html += `<div class="ai-chat__line ai-chat__line--user"><span class="ai-chat__prompt">&gt;</span><span class="ai-chat__content">${content}</span></div>`;
+            } else {
+                html += `<div class="ai-chat__line ai-chat__line--assistant"><span class="ai-chat__avatar-wrap"><img class="ai-chat__avatar" src="/assets/terminal-me.png" alt=""></span><span class="ai-chat__content">${content}</span></div>`;
+            }
+        });
+        responseEl.innerHTML = html;
+        // Auto-scroll to bottom
+        responseEl.scrollTop = responseEl.scrollHeight;
     }
 
     // Asset mapping - keys match context file instructions
@@ -119,32 +136,6 @@
             SYSTEM_PROMPT = `You are Sergey Ryadovoy's digital twin. You speak in first person. You are a Design VP at Digitas.`;
         });
 
-    // Render conversation history in sidebar
-    function renderHistory() {
-        historyEl.innerHTML = chatHistory.map(msg => {
-            const isUser = msg.role === 'user';
-            let content = msg.content
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-
-            // Parse assets for small thumbnails in history
-            content = content.replace(/\(asset:(\w+)\)/g, (match, assetKey) => {
-                const asset = ASSETS[assetKey.toLowerCase()];
-                if (!asset) return '';
-                if (asset.type === 'video') {
-                    return `<video class="ai-chat__history-video" src="${asset.src}" autoplay loop muted playsinline></video>`;
-                }
-                return `<img class="ai-chat__history-img" src="${asset.src}" alt="${assetKey}">`;
-            });
-
-            return `<div class="ai-chat__history-msg ai-chat__history-msg--${isUser ? 'user' : 'assistant'}">${content}</div>`;
-        }).join('');
-
-        // Scroll to bottom
-        historyEl.scrollTop = historyEl.scrollHeight;
-    }
-
     // Send message to AI
     async function sendMessage() {
         const question = inputEl.value.trim();
@@ -152,26 +143,16 @@
 
         inputText = question;
         isLoading = true;
-        showingResponse = true;
-
-        // Hide input, show response area with thinking animation
-        inputEl.style.display = 'none';
-        responseEl.style.display = 'block';
-        const randomAnim = THINKING_ANIMATIONS[Math.floor(Math.random() * THINKING_ANIMATIONS.length)];
-        responseEl.innerHTML = `<img class="ai-chat__thinking" src="${randomAnim}" alt="thinking">`;
         inputEl.value = '';
 
-        // Add user message to history
+        // Add user message to history and render immediately
         chatHistory.push({ role: 'user', content: question });
         renderHistory();
 
-        // Log payload to debug
-        console.log('Sending payload:', JSON.stringify({
-            messages: [
-                { role: 'system', content: SYSTEM_PROMPT },
-                ...chatHistory
-            ]
-        }));
+        // Show loading indicator after user message
+        const randomAnim = THINKING_ANIMATIONS[Math.floor(Math.random() * THINKING_ANIMATIONS.length)];
+        responseEl.innerHTML += `<div class="ai-chat__loading"><img class="ai-chat__thinking" src="${randomAnim}" alt="thinking"></div>`;
+        responseEl.scrollTop = responseEl.scrollHeight;
 
         try {
             const response = await fetch('/api/ai-chat', {
@@ -194,36 +175,19 @@
             const data = await response.json();
             const aiResponse = data.choices?.[0]?.message?.content || 'No response';
 
-            // Add assistant response to history
+            // Add assistant response to history and re-render
             chatHistory.push({ role: 'assistant', content: aiResponse });
             renderHistory();
 
-            // 1. Parse Markdown links: [text](url) -> <a href="url" target="_blank">text</a>
-            let formattedResponse = aiResponse
-                .replace(/</g, '&lt;') // Simple XSS prevention for non-link tags
-                .replace(/>/g, '&gt;')
-                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-
-            // 2. Parse Inline Assets: (asset:name)
-            formattedResponse = formattedResponse.replace(/\(asset:(\w+)\)/g, (match, assetKey) => {
-                const asset = ASSETS[assetKey.toLowerCase()];
-                if (!asset) return ''; // Hide invalid assets
-
-                if (asset.type === 'video') {
-                    return `<div class="ai-chat__media-block"><video src="${asset.src}" autoplay loop muted playsinline></video></div>`;
-                } else {
-                    return `<div class="ai-chat__media-block"><img src="${asset.src}" alt="${assetKey}"></div>`;
-                }
-            });
-
-            responseEl.innerHTML = formattedResponse;
-
         } catch (error) {
             console.error('AI Chat error:', error);
-            responseEl.textContent = 'Error: ' + error.message;
+            // Add error as assistant message
+            chatHistory.push({ role: 'assistant', content: 'Error: ' + error.message });
+            renderHistory();
         }
 
         isLoading = false;
+        inputEl.focus();
     }
 
     // Handle input events

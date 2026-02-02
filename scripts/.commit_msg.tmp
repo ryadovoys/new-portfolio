@@ -1,6 +1,7 @@
-feat: enhance AI chat response guidelines
+feat: Redesign AI chat with terminal style
 
-- Add visual asset display rules and followup suggestions
-- Include key storytelling narratives
-- Update styling and logic for chat component
-- Cleanup obsolete files (chore)
+- Added terminal-style layout with flexbox and monospace font
+- Implemented scrollable response area and line-based messages
+- Introduced prompt symbols, avatars, and improved media styling
+- Updated body scroll behavior when chat active
+- Added new terminal-me.png asset
