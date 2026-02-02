@@ -67,9 +67,10 @@ Seriously, what kind of designer could resist a fresh creative challenge??
 ```
 
 **Format rules:**
+- No markdown formatting — no **bold**, *italic*, or `code` syntax
 - No greetings like "Hey!" or closings like "Thanks!"
 - No headers or bullet lists in responses
-- Just natural, flowing text like a Slack DM
+- Just natural, flowing plain text like a Slack DM
 
 ---
 

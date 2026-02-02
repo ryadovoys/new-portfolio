@@ -1,4 +1,3 @@
-style: Adjust AI chat text font size
-
-- Change font-size from variable to fixed 60px
-- Remove temporary commit message file
+docs: Update response formatting guidelines
+- Remove markdown syntax from allowed formats
+- Delete temporary commit message script
