@@ -1,7 +1,5 @@
-fix: Remove asterisk actions to prevent rendering breaks
+chore: Update thinking GIFs and remove unused files
 
-- Removed markdown asterisks around cat behaviors in docs
-- Updated instructions to avoid asterisks in responses
-- Adjusted response examples to use natural language
-- Modified CSS for chat component styling
-- Deleted temporary commit message file (chore)
+- Updated animation assets (1.gif, 2.gif, 4.gif, 5.gif, 6.gif)
+- Removed unused JPG asset (2f70b5f...jpg)
+- Deleted temporary commit script file
