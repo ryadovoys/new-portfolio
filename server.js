@@ -241,33 +241,64 @@ app.post('/api/ai-chat', async (req, res) => {
     return res.status(400).json({ error: 'Messages array required' });
   }
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'API key not configured' });
+    return res.status(500).json({ error: 'GOOGLE_API_KEY not configured' });
   }
 
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    // Transform messages to Gemini format
+    let systemInstruction = undefined;
+    const contents = [];
+
+    messages.forEach(msg => {
+      if (msg.role === 'system') {
+        systemInstruction = {
+          parts: [{ text: msg.content }]
+        };
+      } else if (msg.role === 'user') {
+        contents.push({
+          role: 'user',
+          parts: [{ text: msg.content }]
+        });
+      } else if (msg.role === 'assistant') {
+        contents.push({
+          role: 'model',
+          parts: [{ text: msg.content }]
+        });
+      }
+    });
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'https://ryadovoy.com',
-        'X-Title': 'Sergey Ryadovoy Digital Twin'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-sonnet-4.5',
-        messages: messages,
-        max_tokens: 2000
+        system_instruction: systemInstruction,
+        contents: contents,
+        generationConfig: {
+          maxOutputTokens: 2000
+        }
       })
     });
 
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`Google API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    res.json(data);
+    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+
+    // Map back to OpenAI format for frontend compatibility
+    res.json({
+      choices: [{
+        message: {
+          content: generatedText
+        }
+      }]
+    });
   } catch (error) {
     console.error('AI Chat error:', error);
     res.status(500).json({ error: error.message });

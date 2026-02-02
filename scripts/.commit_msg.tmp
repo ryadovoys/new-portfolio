@@ -1,7 +1,6 @@
-feat: Add asset documentation and expand AI context
+refactor: Migrate AI chat to Gemini API
 
-- Added ASSETS_SUMMARY.md for asset tracking
-- Expanded digital twin context with new asset keys
-- Added new thinking animation (8.gif)
-- Updated UI components and chatbot behavior
-- Removed obsolete files and temporary scripts
+- Remove temporary commit message script
+- Switch from OpenRouter to Gemini API
+- Update message transformation and request handling
+- Add response mapping for frontend compatibility
