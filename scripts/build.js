@@ -194,17 +194,18 @@ if (fs.existsSync(assetsGridSrc)) {
 }
 
 // 6. Generate JSON API Files for Static Hosting
-const IMAGES_DIR = path.join(ROOT_DIR, 'assets', 'images');
+const ASSETS_DIR = path.join(ROOT_DIR, 'assets');
 const API_DIR = path.join(DIST_DIR, 'api', 'folder-assets');
 
-if (fs.existsSync(IMAGES_DIR)) {
+if (fs.existsSync(ASSETS_DIR)) {
     fs.mkdirSync(API_DIR, { recursive: true });
 
-    const entries = fs.readdirSync(IMAGES_DIR, { withFileTypes: true });
+    const entries = fs.readdirSync(ASSETS_DIR, { withFileTypes: true });
     entries.forEach(entry => {
-        if (entry.isDirectory()) {
+        // Process folders (exclude archive)
+        if (entry.isDirectory() && entry.name !== 'archive') {
             const folderName = entry.name;
-            const folderPath = path.join(IMAGES_DIR, folderName);
+            const folderPath = path.join(ASSETS_DIR, folderName);
             try {
                 const files = fs.readdirSync(folderPath);
                 const assets = files
@@ -212,7 +213,7 @@ if (fs.existsSync(IMAGES_DIR)) {
                     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
                     .map(f => ({
                         filename: f,
-                        path: `/assets/images/${folderName}/${f}`,
+                        path: `/assets/${folderName}/${f}`,
                         isVideo: /\.(mp4|webm|mov)$/i.test(f)
                     }));
 

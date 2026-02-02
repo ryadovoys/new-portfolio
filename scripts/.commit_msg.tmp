@@ -1,3 +1,7 @@
-docs: Update response formatting guidelines
-- Remove markdown syntax from allowed formats
-- Delete temporary commit message script
+chore: Reorganize assets and update related code
+
+- Move unused images to archive directory
+- Rename project asset files for clarity
+- Add new thinking-animation.gif
+- Update card data, JS/CSS, and build scripts
+- Remove temporary commit message file

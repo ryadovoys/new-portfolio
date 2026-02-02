@@ -3,23 +3,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const PREVIEWS = {
         "https://www.digitas.com/en-us/pressroom/digitas-unveils-new-generative-ai-platform-digitas-ai": {
             title: "Digitas Unveils New Generative AI Platform",
-            image: "assets/images/digitas-learn-more-link.jpg"
+            image: "assets/digitas-ai-link-preview.jpg"
         },
         "https://apps.apple.com/us/app/journely/id6744461713": {
             title: "Journely: Handwriting Journal AI",
-            image: "assets/images/journely-link.jpg"
+            image: "assets/journely-app-link-preview.jpg"
         },
         "https://www.figma.com/community/plugin/1593731353807484611/mindcomplete": {
             title: "Mindcomplete - AI Writing Assistant",
-            image: "assets/images/mindcomplete-figma-plugin-link.jpg"
+            image: "assets/mindcomplete-plugin-link-preview.jpg"
         },
         "assets/Peace Sans.zip": {
             title: "Peace Sans Free Font",
-            image: "assets/images/peace-sans-link.jpg"
+            image: "assets/peace-sans-font-link-preview.jpg"
         },
         "https://www.amway.com/": {
             title: "Amway Official Website",
-            image: "assets/images/amway-link.jpg"
+            image: "assets/amway-website-link-preview.jpg"
         },
         "assets/sergey-ryadovoy-context.md": {
             title: "This is a file that you can download or copy and paste into your favorite AI tool to ask questions about me.",

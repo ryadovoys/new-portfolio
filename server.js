@@ -7,16 +7,16 @@ require('dotenv').config();
 const app = express();
 const PORT = 3000;
 
-// Ensure assets/images directory exists
-const imagesDir = path.join(__dirname, 'assets', 'images');
-if (!fs.existsSync(imagesDir)) {
-  fs.mkdirSync(imagesDir, { recursive: true });
+// Assets directory (flat structure with folder galleries)
+const assetsDir = path.join(__dirname, 'assets');
+if (!fs.existsSync(assetsDir)) {
+  fs.mkdirSync(assetsDir, { recursive: true });
 }
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, imagesDir);
+    cb(null, assetsDir);
   },
   filename: (req, file, cb) => {
     // Keep original filename - duplicates will be handled by check-file endpoint
@@ -48,11 +48,11 @@ app.post('/api/check-file', express.json(), (req, res) => {
   const { filename } = req.body;
 
   // Check for exact match first
-  const exactPath = path.join(imagesDir, filename);
+  const exactPath = path.join(assetsDir, filename);
   if (fs.existsSync(exactPath)) {
     return res.json({
       exists: true,
-      path: `/assets/images/${filename}`
+      path: `/assets/${filename}`
     });
   }
 
@@ -60,7 +60,7 @@ app.post('/api/check-file', express.json(), (req, res) => {
   const ext = path.extname(filename);
   const baseName = path.basename(filename, ext);
 
-  const existingFiles = fs.readdirSync(imagesDir);
+  const existingFiles = fs.readdirSync(assetsDir).filter(f => !fs.statSync(path.join(assetsDir, f)).isDirectory());
   const match = existingFiles.find(f => {
     // Match if file starts with same base name
     return f.startsWith(baseName) && f.endsWith(ext);
@@ -69,7 +69,7 @@ app.post('/api/check-file', express.json(), (req, res) => {
   if (match) {
     return res.json({
       exists: true,
-      path: `/assets/images/${match}`
+      path: `/assets/${match}`
     });
   }
 
@@ -82,7 +82,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     return res.status(400).json({ error: 'No file uploaded' });
   }
 
-  const filePath = `/assets/images/${req.file.filename}`;
+  const filePath = `/assets/${req.file.filename}`;
   res.json({
     success: true,
     path: filePath,
@@ -117,16 +117,16 @@ app.get('/api/cards', (req, res) => {
   }
 });
 
-// List all assets endpoint
+// List all assets endpoint (excludes folders and archive)
 app.get('/api/assets', (req, res) => {
   try {
-    const files = fs.readdirSync(imagesDir);
-    const assets = files
-      .filter(f => /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(f))
-      .map(f => ({
-        filename: f,
-        path: `/assets/images/${f}`,
-        isVideo: /\.(mp4|webm|mov)$/i.test(f)
+    const entries = fs.readdirSync(assetsDir, { withFileTypes: true });
+    const assets = entries
+      .filter(entry => !entry.isDirectory() && /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(entry.name))
+      .map(entry => ({
+        filename: entry.name,
+        path: `/assets/${entry.name}`,
+        isVideo: /\.(mp4|webm|mov)$/i.test(entry.name)
       }));
     res.json(assets);
   } catch (error) {
@@ -134,20 +134,20 @@ app.get('/api/assets', (req, res) => {
   }
 });
 
-// List all folders in assets/images
+// List all folders in assets (excludes archive)
 app.get('/api/folders', (req, res) => {
   try {
-    const entries = fs.readdirSync(imagesDir, { withFileTypes: true });
+    const entries = fs.readdirSync(assetsDir, { withFileTypes: true });
     const folders = entries
-      .filter(entry => entry.isDirectory())
+      .filter(entry => entry.isDirectory() && entry.name !== 'archive')
       .map(entry => {
-        const folderPath = path.join(imagesDir, entry.name);
+        const folderPath = path.join(assetsDir, entry.name);
         const files = fs.readdirSync(folderPath);
         const imageFiles = files.filter(f => /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(f));
 
         // Get first image as preview
         const preview = imageFiles.length > 0
-          ? `/assets/images/${entry.name}/${imageFiles[0]}`
+          ? `/assets/${entry.name}/${imageFiles[0]}`
           : null;
 
         return {
@@ -173,10 +173,10 @@ app.get('/api/folder-assets', (req, res) => {
     return res.status(400).json({ error: 'Folder name required' });
   }
 
-  const folderPath = path.join(imagesDir, folderName);
+  const folderPath = path.join(assetsDir, folderName);
 
-  // Security check: ensure path is within imagesDir
-  if (!folderPath.startsWith(imagesDir)) {
+  // Security check: ensure path is within assetsDir
+  if (!folderPath.startsWith(assetsDir)) {
     return res.status(403).json({ error: 'Invalid folder path' });
   }
 
@@ -191,7 +191,7 @@ app.get('/api/folder-assets', (req, res) => {
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })) // Natural sort (1, 2, 10)
       .map(f => ({
         filename: f,
-        path: `/assets/images/${folderName}/${f}`,
+        path: `/assets/${folderName}/${f}`,
         isVideo: /\.(mp4|webm|mov)$/i.test(f)
       }));
     res.json(assets);
@@ -206,9 +206,9 @@ app.get('/api/folder-assets/:folderName.json', (req, res) => {
   console.log('Server: Request for folder json', req.params.folderName);
   const folderName = req.params.folderName;
   // Reuse existing logic
-  const folderPath = path.join(imagesDir, folderName);
+  const folderPath = path.join(assetsDir, folderName);
 
-  if (!folderPath.startsWith(imagesDir)) {
+  if (!folderPath.startsWith(assetsDir)) {
     return res.status(403).json({ error: 'Invalid folder path' });
   }
 
@@ -223,7 +223,7 @@ app.get('/api/folder-assets/:folderName.json', (req, res) => {
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
       .map(f => ({
         filename: f,
-        path: `/assets/images/${folderName}/${f}`,
+        path: `/assets/${folderName}/${f}`,
         isVideo: /\.(mp4|webm|mov)$/i.test(f)
       }));
     res.json(assets);

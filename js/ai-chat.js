@@ -21,6 +21,7 @@
         <div class="ai-chat__text-wrapper">
             <span class="ai-chat__text"></span><span class="ai-chat__cursor"></span>
         </div>
+        <div class="ai-chat__history"></div>
         <div class="ai-chat__hint">Enter to send · Esc to close</div>
     `;
     document.body.appendChild(overlay);
@@ -28,6 +29,7 @@
 
     const textEl = overlay.querySelector('.ai-chat__text');
     const cursorEl = overlay.querySelector('.ai-chat__cursor');
+    const historyEl = overlay.querySelector('.ai-chat__history');
 
     // Activate overlay (start typing)
     function activate() {
@@ -53,6 +55,7 @@
         inputText = '';
         textEl.textContent = '';
         textEl.classList.remove('loading');
+        historyEl.innerHTML = '';
         chatHistory = []; // Reset history on close checking "session"
     }
 
@@ -66,22 +69,22 @@
     // Asset mapping - keys match context file instructions
     const ASSETS = {
         // Video assets
-        'visa': { type: 'video', src: '/assets/images/visa-showcase-2020-2024.mp4' },
-        'mindcomplete': { type: 'video', src: '/assets/images/mindcomplete-hero-1.mp4' },
+        'visa': { type: 'video', src: '/assets/visa-website-showcase-video.mp4' },
+        'mindcomplete': { type: 'video', src: '/assets/mindcomplete-plugin-showcase-video.mp4' },
 
         // Personal projects
-        'journely': { type: 'image', src: '/assets/images/journely.jpg' },
-        'peace': { type: 'image', src: '/assets/images/peace-sans.jpg' },
-        'type': { type: 'image', src: '/assets/images/1-36-days-of-type-project-card.gif' },
+        'journely': { type: 'image', src: '/assets/journely-ipad-app-preview.jpg' },
+        'peace': { type: 'image', src: '/assets/peace-sans-font-preview.jpg' },
+        'type': { type: 'image', src: '/assets/36-days-of-type-creative-coding.gif' },
 
         // Agency work
-        'digitas': { type: 'image', src: '/assets/images/Animation-WebsiteAsset.gif' },
-        'amway': { type: 'image', src: '/assets/images/7-upload-1.gif' },
-        'delta': { type: 'image', src: '/assets/images/1-delta-overview.webp' },
-        'loreal': { type: 'image', src: '/assets/images/loreal-mix-project card.webp' },
-        'racetrac': { type: 'image', src: '/assets/images/racetrac-app-1.jpg' },
-        'logos': { type: 'image', src: '/assets/images/Image-590bb1b1-a148-4566-a6f2-eaa6aaca32be.gif' },
-        'genmedia': { type: 'image', src: '/assets/images/generative-media/generative-media.png' }
+        'digitas': { type: 'image', src: '/assets/digitas-ai-agentic-platform.gif' },
+        'amway': { type: 'image', src: '/assets/amway-website-redesign.gif' },
+        'delta': { type: 'image', src: '/assets/delta-ces-campaign-overview.webp' },
+        'loreal': { type: 'image', src: '/assets/loreal-beauty-ai-project.webp' },
+        'racetrac': { type: 'image', src: '/assets/racetrac-app-design-system.jpg' },
+        'logos': { type: 'image', src: '/assets/logo-design-collection-animated.gif' },
+        'genmedia': { type: 'video', src: '/assets/generative-media/1-video.mp4' }
     };
 
     // System prompt placeholder - will be fetched
@@ -99,6 +102,32 @@
             SYSTEM_PROMPT = `You are Sergey Ryadovoy's digital twin. You speak in first person. You are a Design VP at Digitas.`;
         });
 
+    // Render conversation history in sidebar
+    function renderHistory() {
+        historyEl.innerHTML = chatHistory.map(msg => {
+            const isUser = msg.role === 'user';
+            let content = msg.content
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+            // Parse assets for small thumbnails in history
+            content = content.replace(/\(asset:(\w+)\)/g, (match, assetKey) => {
+                const asset = ASSETS[assetKey.toLowerCase()];
+                if (!asset) return '';
+                if (asset.type === 'video') {
+                    return `<video class="ai-chat__history-video" src="${asset.src}" autoplay loop muted playsinline></video>`;
+                }
+                return `<img class="ai-chat__history-img" src="${asset.src}" alt="${assetKey}">`;
+            });
+
+            return `<div class="ai-chat__history-msg ai-chat__history-msg--${isUser ? 'user' : 'assistant'}">${content}</div>`;
+        }).join('');
+
+        // Scroll to bottom
+        historyEl.scrollTop = historyEl.scrollHeight;
+    }
+
     // Send message to AI
     async function sendMessage() {
         if (!inputText.trim() || isLoading) return;
@@ -115,6 +144,7 @@
 
         // Add user message to history
         chatHistory.push({ role: 'user', content: question });
+        renderHistory();
 
         // Log payload to debug
         console.log('Sending payload:', JSON.stringify({
@@ -147,6 +177,7 @@
 
             // Add assistant response to history
             chatHistory.push({ role: 'assistant', content: aiResponse });
+            renderHistory();
 
             textEl.classList.remove('loading');
 

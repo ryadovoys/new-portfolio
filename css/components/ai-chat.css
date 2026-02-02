@@ -39,6 +39,46 @@ body.ai-chat-active {
     flex-wrap: wrap;
 }
 
+/* Conversation history sidebar - 4th column */
+.ai-chat__history {
+    grid-column: 4;
+    grid-row: 1;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.ai-chat__history-msg {
+    padding: var(--space-2) 0;
+}
+
+.ai-chat__history-msg--user {
+    color: var(--text-muted);
+}
+
+.ai-chat__history-msg--assistant {
+    color: var(--text-primary);
+}
+
+.ai-chat__history-msg a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.ai-chat__history-img,
+.ai-chat__history-video {
+    display: block;
+    max-width: 120px;
+    height: auto;
+    border-radius: var(--radius-sm);
+    margin-top: var(--space-2);
+}
+
 .ai-chat__text {
     font-size: 60px;
     line-height: 1;
@@ -106,8 +146,13 @@ body.ai-chat-active {
 
 /* Loading indicator */
 .ai-chat__text.loading::after {
-    content: '●';
-    animation: blink 1s infinite;
+    content: '';
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    background: url('/assets/thinking-animation.gif') no-repeat center;
+    background-size: contain;
+    vertical-align: middle;
 }
 
 @keyframes blink {
@@ -124,9 +169,8 @@ body.ai-chat-active {
 
 /* Hint text */
 .ai-chat__hint {
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
+    grid-column: 4;
+    align-self: end;
     font-size: 14px;
     color: var(--text-primary);
     opacity: 0.3;
@@ -143,6 +187,11 @@ body.ai-chat-active {
     .ai-chat__text-wrapper {
         grid-column: 1;
         /* Single column on mobile */
+    }
+
+    .ai-chat__history {
+        display: none;
+        /* Hide history on mobile */
     }
 
     .ai-chat__text {
