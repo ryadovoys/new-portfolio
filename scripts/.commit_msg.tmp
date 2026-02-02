@@ -1,7 +1,6 @@
-feat: Add console button and adjust chat UI
+feat: enhance AI chat response guidelines
 
-- Increase AI response max_tokens to 500
-- Reduce chat font sizes and adjust cursor height
-- Add responsive console button with styling
-- Connect console button to chat activation
-- Remove temporary commit message file
+- Add visual asset display rules and followup suggestions
+- Include key storytelling narratives
+- Update styling and logic for chat component
+- Cleanup obsolete files (chore)

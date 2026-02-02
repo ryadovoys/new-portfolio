@@ -20,15 +20,16 @@
     overlay.innerHTML = `
         <div class="ai-chat__hint">Enter to send · Esc to close</div>
         <div class="ai-chat__text-wrapper">
-            <span class="ai-chat__text"></span><span class="ai-chat__cursor"></span>
+            <input type="text" class="ai-chat__input" placeholder="Start typing..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <div class="ai-chat__response"></div>
         </div>
         <div class="ai-chat__history"></div>
     `;
     document.body.appendChild(overlay);
 
 
-    const textEl = overlay.querySelector('.ai-chat__text');
-    const cursorEl = overlay.querySelector('.ai-chat__cursor');
+    const inputEl = overlay.querySelector('.ai-chat__input');
+    const responseEl = overlay.querySelector('.ai-chat__response');
     const historyEl = overlay.querySelector('.ai-chat__history');
 
     // Activate overlay (start typing)
@@ -37,10 +38,14 @@
         isActive = true;
         inputText = '';
         showingResponse = false;
-        textEl.textContent = '';
-        cursorEl.style.display = 'inline-block';
+        inputEl.value = '';
+        inputEl.style.display = 'block';
+        responseEl.innerHTML = '';
+        responseEl.style.display = 'none';
         overlay.classList.add('active');
         document.body.classList.add('ai-chat-active');
+        // Focus input after a short delay to ensure overlay is visible
+        setTimeout(() => inputEl.focus(), 100);
     }
 
     // Deactivate overlay
@@ -52,14 +57,19 @@
         overlay.classList.remove('active');
         document.body.classList.remove('ai-chat-active');
         inputText = '';
-        textEl.textContent = '';
+        inputEl.value = '';
+        inputEl.blur();
+        responseEl.innerHTML = '';
         historyEl.innerHTML = '';
         chatHistory = []; // Reset history on close checking "session"
     }
 
     function startTyping() {
         showingResponse = false;
-        cursorEl.style.display = 'inline-block';
+        inputEl.style.display = 'block';
+        responseEl.style.display = 'none';
+        inputEl.value = '';
+        inputEl.focus();
     }
 
     // Asset mapping - keys match context file instructions
@@ -137,17 +147,19 @@
 
     // Send message to AI
     async function sendMessage() {
-        if (!inputText.trim() || isLoading) return;
+        const question = inputEl.value.trim();
+        if (!question || isLoading) return;
 
-        const question = inputText;
+        inputText = question;
         isLoading = true;
         showingResponse = true;
 
-        // Clear input and show random thinking animation
+        // Hide input, show response area with thinking animation
+        inputEl.style.display = 'none';
+        responseEl.style.display = 'block';
         const randomAnim = THINKING_ANIMATIONS[Math.floor(Math.random() * THINKING_ANIMATIONS.length)];
-        textEl.innerHTML = `<img class="ai-chat__thinking" src="${randomAnim}" alt="thinking">`;
-        cursorEl.style.display = 'none';
-        inputText = '';
+        responseEl.innerHTML = `<img class="ai-chat__thinking" src="${randomAnim}" alt="thinking">`;
+        inputEl.value = '';
 
         // Add user message to history
         chatHistory.push({ role: 'user', content: question });
@@ -204,70 +216,59 @@
                 }
             });
 
-            textEl.innerHTML = formattedResponse;
+            responseEl.innerHTML = formattedResponse;
 
         } catch (error) {
             console.error('AI Chat error:', error);
-            textEl.textContent = 'Error: ' + error.message;
+            responseEl.textContent = 'Error: ' + error.message;
         }
 
         isLoading = false;
     }
 
-    // Handle keydown events
-    document.addEventListener('keydown', (e) => {
-        // Ignore if in input/textarea
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
-            return;
-        }
-
-        // Escape to close
-        if (e.key === 'Escape') {
-            deactivate();
-            return;
-        }
-
-        // Don't allow typing while loading
-        if (isLoading) {
-            e.preventDefault();
-            return;
-        }
-
+    // Handle input events
+    inputEl.addEventListener('keydown', (e) => {
         // Enter to send
-        if (e.key === 'Enter' && isActive && inputText.trim()) {
+        if (e.key === 'Enter' && inputEl.value.trim()) {
             e.preventDefault();
             sendMessage();
             return;
         }
 
-        // Backspace
-        if (e.key === 'Backspace' && isActive && !showingResponse) {
+        // Escape to close
+        if (e.key === 'Escape') {
             e.preventDefault();
-            inputText = inputText.slice(0, -1);
-            textEl.textContent = inputText;
-            if (inputText.length === 0) {
-                deactivate();
-            }
+            deactivate();
             return;
         }
 
-        // Printable characters - activate and type
-        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        // Backspace on empty input closes
+        if (e.key === 'Backspace' && inputEl.value === '') {
             e.preventDefault();
+            deactivate();
+            return;
+        }
+    });
 
-            // If showing response, clear it and start new input
-            if (showingResponse) {
-                startTyping();
-                inputText = '';
-                textEl.textContent = '';
+    // Document-level Escape to close (when showing response)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isActive) {
+            deactivate();
+            return;
+        }
+
+        // Start typing to activate (desktop only)
+        if (!isActive && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            // Ignore if in input/textarea
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+                return;
             }
-
-            if (!isActive) {
-                activate();
-            }
-
-            inputText += e.key;
-            textEl.textContent = inputText;
+            e.preventDefault();
+            activate();
+            // Add the typed character to input
+            setTimeout(() => {
+                inputEl.value = e.key;
+            }, 100);
         }
     });
 
