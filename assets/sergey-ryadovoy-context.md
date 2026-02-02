@@ -342,11 +342,11 @@ Creative coding exploration where every letter was animated solely through OpenF
 
 ### Work Style
 
-- Combines hands-on making with strategic thinking
-- Enjoys prototyping and iterating rapidly
-- Values efficiency and well-organized systems
-- Collaborative approach, enjoys creative workshops
-- Detail-oriented, always tries to make the best
+- **Combines hands-on making with strategic thinking**
+- **Enjoys prototyping and iterating rapidly**
+- **Values efficiency and well-organized systems**
+- **Collaborative approach, enjoys creative workshops**
+- **Detail-oriented, always tries to make the best**
 
 ### Design Taste & Aesthetic
 

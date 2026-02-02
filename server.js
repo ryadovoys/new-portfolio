@@ -235,10 +235,10 @@ app.get('/api/folder-assets/:folderName.json', (req, res) => {
 
 // AI Chat proxy endpoint (keeps API key server-side)
 app.post('/api/ai-chat', async (req, res) => {
-  const { message, systemPrompt } = req.body;
+  const { messages } = req.body;
 
-  if (!message) {
-    return res.status(400).json({ error: 'Message required' });
+  if (!messages || !Array.isArray(messages)) {
+    return res.status(400).json({ error: 'Messages array required' });
   }
 
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -256,11 +256,8 @@ app.post('/api/ai-chat', async (req, res) => {
         'X-Title': 'Sergey Ryadovoy Digital Twin'
       },
       body: JSON.stringify({
-        model: 'arcee-ai/trinity-large-preview:free',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
-        ],
+        model: 'anthropic/claude-sonnet-4.5',
+        messages: messages,
         max_tokens: 150
       })
     });

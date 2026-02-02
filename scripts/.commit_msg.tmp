@@ -1,3 +1,7 @@
-feat: Add AI chat API endpoint
-- Implement POST handler for OpenRouter chat completions
-- Remove temporary commit message file (chore)
+feat: update AI chat message handling and context
+
+- Refactor API to accept messages array instead of single message
+- Switch AI model from Trinity to Claude Sonnet
+- Add new digital twin context documentation
+- Remove temporary commit message file
+- Format context list items with bold styling

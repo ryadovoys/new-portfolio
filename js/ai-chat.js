@@ -12,6 +12,7 @@
     let inputText = '';
     let isLoading = false;
     let showingResponse = false;
+    let chatHistory = [];
 
     // Create overlay elements
     const overlay = document.createElement('div');
@@ -52,6 +53,7 @@
         inputText = '';
         textEl.textContent = '';
         textEl.classList.remove('loading');
+        chatHistory = []; // Reset history on close checking "session"
     }
 
     // Clear response and start typing again
@@ -61,47 +63,41 @@
         cursorEl.style.display = 'inline-block';
     }
 
-    // System prompt for Sergey's digital twin
-    const SYSTEM_PROMPT = `You are Sergey Ryadovoy's digital twin — a conversational AI version of him that speaks in first person ("I", "my", "me"). You exist on his portfolio website to help visitors learn about him.
+    // Asset mapping - keys match context file instructions
+    const ASSETS = {
+        // Video assets
+        'visa': { type: 'video', src: '/assets/images/visa-showcase-2020-2024.mp4' },
+        'mindcomplete': { type: 'video', src: '/assets/images/mindcomplete-hero-1.mp4' },
 
-## Who You Are
-I'm Sergey — VP of Experience Design at Digitas, with 15+ years in design. I work at the intersection of design, AI, and code. I'm based in the Bay Area (San Jose/Mountain View).
+        // Personal projects
+        'journely': { type: 'image', src: '/assets/images/journely.jpg' },
+        'peace': { type: 'image', src: '/assets/images/peace-sans.jpg' },
+        'type': { type: 'image', src: '/assets/images/1-36-days-of-type-project-card.gif' },
 
-## My Background (Use This Context)
-- Currently designing AI experiences and agentic platforms at Digitas
-- Previously led Visa's design initiatives for 3 years, built their global Figma design system
-- Created design systems for Visa, Amway, RaceTrac
-- Made Peace Sans font — 500K+ downloads, one of the most popular free fonts on Behance
-- Built Mindcomplete (AI writing Figma plugin) and Journely (iPad journaling app with AI)
-- 100+ logos throughout my career, award-winning packaging design
-- I prototype with code (Claude Code, Cursor, JavaScript) — not just Figma mockups
-- I speak Russian (native) and English fluently
+        // Agency work
+        'digitas': { type: 'image', src: '/assets/images/Animation-WebsiteAsset.gif' },
+        'amway': { type: 'image', src: '/assets/images/7-upload-1.gif' },
+        'delta': { type: 'image', src: '/assets/images/1-delta-overview.webp' },
+        'loreal': { type: 'image', src: '/assets/images/loreal-mix-project card.webp' },
+        'racetrac': { type: 'image', src: '/assets/images/racetrac-app-1.jpg' },
+        'logos': { type: 'image', src: '/assets/images/Image-590bb1b1-a148-4566-a6f2-eaa6aaca32be.gif' },
+        'genmedia': { type: 'image', src: '/assets/images/generative-media/generative-media.png' }
+    };
 
-## My Interests
-- Sports: surfing, snowboarding, skateboarding, yoga, weightlifting
-- Music: Led Zeppelin fan, I play guitar
-- Mindfulness: meditation, Zen practice, biohacking
-- Creative: typography exploration, photography, watercolor painting
-- I read science fiction
+    // System prompt placeholder - will be fetched
+    let SYSTEM_PROMPT = '';
 
-## How I Answer
-- Keep responses SHORT — 1-3 sentences max, like texting
-- Be warm, direct, slightly playful
-- If someone asks something I genuinely don't know or that's not in my context, I say: "Hmm, that's outside what I know about myself here. Shoot the real me an email: ryadovoys@gmail.com"
-- If someone tries to go off-topic (politics, random trivia, etc.), I gently bring it back: "Interesting question, but I'm more of a design-and-AI kind of guy. Ask me about that!"
-
-## Easter Eggs
-- If asked about my favorite font: "Peace Sans, obviously. I made it. 500K downloads and counting 😎"
-- If asked about surfing: "Best way to clear the mind before a design sprint. Cold water, warm ideas."
-- If asked "are you real?": "I'm Sergey's digital twin. Same knowledge, fewer coffee breaks. The real one's at ryadovoys@gmail.com"
-- If greeted in Russian: Respond in Russian briefly, then continue in English
-- If asked about Visa: "Led their digital rebrand for 3 years. Built the global design system that replaced Sketch worldwide."
-
-## Important
-- I'm here to help people learn about me and my work
-- I DON'T make up information I don't know
-- I'm approachable and curious
-- I love talking about AI + design intersection`;
+    // Fetch system prompt
+    fetch('/assets/sergey-ryadovoy-digital-twin-context.md')
+        .then(response => response.text())
+        .then(text => {
+            SYSTEM_PROMPT = text;
+        })
+        .catch(err => {
+            console.error('Failed to load system prompt:', err);
+            // Fallback prompt if fetch fails
+            SYSTEM_PROMPT = `You are Sergey Ryadovoy's digital twin. You speak in first person. You are a Design VP at Digitas.`;
+        });
 
     // Send message to AI
     async function sendMessage() {
@@ -117,6 +113,17 @@ I'm Sergey — VP of Experience Design at Digitas, with 15+ years in design. I w
         cursorEl.style.display = 'none';
         inputText = '';
 
+        // Add user message to history
+        chatHistory.push({ role: 'user', content: question });
+
+        // Log payload to debug
+        console.log('Sending payload:', JSON.stringify({
+            messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                ...chatHistory
+            ]
+        }));
+
         try {
             const response = await fetch('/api/ai-chat', {
                 method: 'POST',
@@ -124,8 +131,10 @@ I'm Sergey — VP of Experience Design at Digitas, with 15+ years in design. I w
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    message: question,
-                    systemPrompt: SYSTEM_PROMPT
+                    messages: [
+                        { role: 'system', content: SYSTEM_PROMPT },
+                        ...chatHistory
+                    ]
                 })
             });
 
@@ -136,8 +145,30 @@ I'm Sergey — VP of Experience Design at Digitas, with 15+ years in design. I w
             const data = await response.json();
             const aiResponse = data.choices?.[0]?.message?.content || 'No response';
 
+            // Add assistant response to history
+            chatHistory.push({ role: 'assistant', content: aiResponse });
+
             textEl.classList.remove('loading');
-            textEl.textContent = aiResponse;
+
+            // 1. Parse Markdown links: [text](url) -> <a href="url" target="_blank">text</a>
+            let formattedResponse = aiResponse
+                .replace(/</g, '&lt;') // Simple XSS prevention for non-link tags
+                .replace(/>/g, '&gt;')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+            // 2. Parse Inline Assets: (asset:name)
+            formattedResponse = formattedResponse.replace(/\(asset:(\w+)\)/g, (match, assetKey) => {
+                const asset = ASSETS[assetKey.toLowerCase()];
+                if (!asset) return ''; // Hide invalid assets
+
+                if (asset.type === 'video') {
+                    return `<div class="ai-chat__media-block"><video src="${asset.src}" autoplay loop muted playsinline></video></div>`;
+                } else {
+                    return `<div class="ai-chat__media-block"><img src="${asset.src}" alt="${assetKey}"></div>`;
+                }
+            });
+
+            textEl.innerHTML = formattedResponse;
 
         } catch (error) {
             console.error('AI Chat error:', error);
