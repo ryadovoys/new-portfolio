@@ -1,6 +1,6 @@
-refactor: Remove chat history persistence
+feat: Enhance chat error handling and messaging
 
-- Remove localStorage history loading and saving
-- Delete saveHistory function and calls
-- Initialize chatHistory as empty array
-- Remove temporary commit message template
+- Update welcome message for clearer introduction
+- Rename system prompt filename
+- Add retry logic for API requests
+- Remove temporary commit message file

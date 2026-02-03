@@ -78,7 +78,7 @@
 
         // Initial welcome message (only if history is empty)
         if (chatHistory.length === 0) {
-            const welcomeMsg = "Hello! I'm Sergey's cat Snow. He is out now, but I've been watching him work a lot, so if you want to know anything about him, please ask me and I'll try to do my best to help you. Meow.";
+            const welcomeMsg = "Hello! My name is Snow. I'm Sergey's cat. He's not home right now. I don't know where he is, but I hope he comes back soon. I've been watching him work a lot, though, so I can tell you more about him and what he's doing. Feel free to ask me anything. I'll do my best to help you out. Meow.";
             chatHistory.push({ role: 'assistant', content: welcomeMsg });
         }
 
@@ -161,7 +161,7 @@
     let SYSTEM_PROMPT = '';
 
     // Fetch system prompt
-    fetch('/assets/sergey-ryadovoy-digital-twin-context.md')
+    fetch('/assets/sergey-ryadovoy-context.md')
         .then(response => response.text())
         .then(text => {
             SYSTEM_PROMPT = text;
@@ -198,18 +198,37 @@
         responseEl.scrollTop = responseEl.scrollHeight;
 
         try {
-            const response = await fetch('/api/ai-chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    messages: [
-                        { role: 'system', content: SYSTEM_PROMPT },
-                        ...chatHistory
-                    ]
-                })
-            });
+            let response;
+            try {
+                response = await fetch('/api/ai-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            { role: 'system', content: SYSTEM_PROMPT },
+                            ...chatHistory
+                        ]
+                    })
+                });
+            } catch (networkError) {
+                console.warn('First attempt failed, retrying...', networkError);
+                // Simple retry logic for "Load failed" or network issues
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                response = await fetch('/api/ai-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            { role: 'system', content: SYSTEM_PROMPT },
+                            ...chatHistory
+                        ]
+                    })
+                });
+            }
 
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
