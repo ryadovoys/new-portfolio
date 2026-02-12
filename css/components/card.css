@@ -215,12 +215,25 @@
     align-self: flex-start;
     /* Don't stretch */
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
     transition: color 0.2s ease;
+}
+
+.card__link::after {
+    content: "\2192";
+    margin-left: 0.2em;
+    transition: margin-left 0.2s ease;
 }
 
 .card__link:hover {
     color: var(--link-hover);
-    text-decoration: underline;
+    text-decoration: none;
+}
+
+.card__link:hover::after,
+.card__link:focus-visible::after {
+    margin-left: 0.38em;
 }
 
 /* Sortable drag states */

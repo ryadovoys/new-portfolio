@@ -130,12 +130,25 @@
     font-size: var(--font-size-sm);
     color: var(--link-color);
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
     transition: color 0.2s ease;
+}
+
+.sidebar__identity-link::after {
+    content: "\2192";
+    margin-left: 0.2em;
+    transition: margin-left 0.2s ease;
 }
 
 .sidebar__identity-link:hover {
     color: var(--link-hover);
-    text-decoration: underline;
+    text-decoration: none;
+}
+
+.sidebar__identity-link:hover::after,
+.sidebar__identity-link:focus-visible::after {
+    margin-left: 0.38em;
 }
 
 .theme-toggle-text-mobile {
@@ -221,6 +234,12 @@
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
+.sidebar__nav-link::after {
+    content: "\2192";
+    margin-left: -6px;
+    transition: margin-left 0.2s ease;
+}
+
 /* Specific link colors on hover? */
 .sidebar__nav-link--share:hover {
     /* Standard link hover is fine, but we can target if we want specific color */
@@ -241,6 +260,7 @@
     color: var(--text-primary);
     background-color: var(--color-neutral-100);
     /* Light mode light gray */
+    text-decoration: none;
 }
 
 [data-theme="dark"] .sidebar__nav-link:hover {
@@ -258,6 +278,12 @@
     /* transform: translateX(16px); */
     /* Disabling slide + dot to prefer background style */
     color: var(--text-primary);
+}
+
+.sidebar__nav-link:hover::after,
+.sidebar__nav-link:focus-visible::after,
+.sidebar__nav-link.active::after {
+    margin-left: -2px;
 }
 
 /* Remove old pseudo-elements */

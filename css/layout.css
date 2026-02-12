@@ -34,6 +34,14 @@
     margin-bottom: var(--space-12);
 }
 
+/* Give parallax more breathing room on desktop rows */
+@media (min-width: 1025px) {
+    .card-grid,
+    .card-grid--featured {
+        row-gap: calc(var(--grid-vertical-gap) + var(--space-6));
+    }
+}
+
 /* 
    Previously used fixed width columns + fluid gaps at 1440px+.
    Disabled to allow proportional scaling of wide cards via 1fr.

@@ -17,7 +17,7 @@
   background-color: #ff0000;
   color: white;
   border: none;
-  font-family: 'Google Sans Flex', sans-serif;
+  font-family: var(--font-family-sans);
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
@@ -129,7 +129,7 @@
   top: 20px;
   left: 20px;
   color: var(--text-muted, #999);
-  font-family: 'Google Sans Flex', sans-serif;
+  font-family: var(--font-family-sans);
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -174,7 +174,7 @@
 }
 
 .maze-intro-msg {
-  font-family: 'Google Sans Flex', sans-serif;
+  font-family: var(--font-family-sans);
   font-size: 32px;
   font-weight: 700;
   color: #fff;
@@ -249,7 +249,7 @@
 }
 
 .char-label {
-  font-family: 'Google Sans Flex', sans-serif;
+  font-family: var(--font-family-sans);
   font-size: 16px;
   /* Increased from 14px */
   color: #fff;

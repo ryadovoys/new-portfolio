@@ -48,7 +48,7 @@
     color: var(--text-primary);
     margin: 0;
     line-height: 1.4;
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: var(--font-family-sans);
 
     /* Truncate to 2 lines */
     display: -webkit-box;
