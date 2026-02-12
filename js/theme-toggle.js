@@ -5,10 +5,11 @@
 
 (function () {
     const toggles = document.querySelectorAll('.theme-toggle');
+    const textToggleMobile = document.querySelector('.theme-toggle-text-mobile');
     const root = document.documentElement;
     // We update arms individually per button structure
 
-    if (toggles.length === 0) return;
+    if (toggles.length === 0 && !textToggleMobile) return;
 
     // Check for saved preference or system preference
     const savedTheme = localStorage.getItem('theme');
@@ -48,6 +49,12 @@
                 label.textContent = nextText;
             }
         });
+
+        if (textToggleMobile) {
+            const nextModeText = theme === 'dark' ? 'Light mode' : 'Dark mode';
+            textToggleMobile.textContent = nextModeText;
+            textToggleMobile.setAttribute('aria-label', `Switch to ${nextModeText.toLowerCase()}`);
+        }
     }
 
     // Apply strict initial state
@@ -70,6 +77,10 @@
     toggles.forEach(btn => {
         btn.addEventListener('click', toggleTheme);
     });
+
+    if (textToggleMobile) {
+        textToggleMobile.addEventListener('click', toggleTheme);
+    }
 
     // Listen for system preference changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {

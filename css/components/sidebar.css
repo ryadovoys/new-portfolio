@@ -25,13 +25,20 @@
 /* Logo */
 .sidebar__logo {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    gap: 12px;
 }
 
 .sidebar__logo-mark {
     height: 24px;
     width: auto;
     color: var(--text-primary);
+}
+
+.sidebar__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
 /* Menu Toggle Button (Desktop: Hidden) */
@@ -127,6 +134,25 @@
 }
 
 .sidebar__identity-link:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+.theme-toggle-text-mobile {
+    display: none;
+    margin-top: var(--space-2);
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    color: var(--link-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.theme-toggle-text-mobile:hover {
     color: var(--link-hover);
     text-decoration: underline;
 }
@@ -334,6 +360,11 @@
 
     .menu-toggle {
         display: block;
+        margin-right: -8px;
+    }
+
+    .theme-toggle-text-mobile {
+        display: inline-flex;
     }
 
     /* Burger Menu Drawer */
