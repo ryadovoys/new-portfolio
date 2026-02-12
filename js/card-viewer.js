@@ -740,39 +740,24 @@ class CardViewer {
     }
 
     randomizeLayerHover(card) {
-        const layers = Array.from(card.querySelectorAll('.project-layer'));
-        if (layers.length === 0) return;
+        const hoverTargets = this.getProjectHoverTargets(card);
+        if (hoverTargets.length === 0) return;
 
-        const mainMedia = card.querySelector('.project-main-media');
-        const hoverTargets = mainMedia ? [mainMedia, ...layers] : layers;
+        const lastIndex = Math.max(1, hoverTargets.length - 1);
 
-        // Randomly pick starting side for the first layer: 0 for leftish, 1 for rightish
-        let side = Math.random() < 0.5 ? 0 : 1;
+        hoverTargets.forEach((target, index) => {
+            const depthProgress = index / lastIndex; // 0 = top, 1 = deepest
+            // Controlled center-out spread: deterministic and symmetric from center.
+            const ring = index === 0 ? 0 : Math.ceil(index / 2);
+            const side = index === 0 ? 0 : (index % 2 === 1 ? -1 : 1);
 
-        hoverTargets.forEach((target) => {
-            // angle ranges (in radians):
-            // Leftish-up: ~100 to 160 degrees (1.7 to 2.8 rad)
-            // Rightish-up: ~20 to 80 degrees (0.35 to 1.4 rad)
-            let angle;
-            if (side === 0) {
-                angle = 1.7 + (Math.random() * 1.1);
-            } else {
-                angle = 0.35 + (Math.random() * 1.05);
-            }
+            const horizontal = side * (6.6 + ring * 4.6);
+            const vertical = -(6.6 + ring * 3.7);
+            const rotation = side * (0.2 + ring * 0.15) * (0.95 - depthProgress * 0.1);
 
-            const distance = (28 + Math.random() * 11) * 0.68; // softer initial spread
-
-            const x = Math.cos(angle) * distance;
-            const y = -Math.sin(angle) * distance; // Negative Y is UP
-
-            const rotation = (Math.random() * 3.4) - 1.7; // -1.7 to +1.7
-
-            target.style.setProperty('--hover-x', `${x}px`);
-            target.style.setProperty('--hover-y', `${y}px`);
-            target.style.setProperty('--hover-rotation', `${rotation}deg`);
-
-            // Flip side for the next layer
-            side = 1 - side;
+            target.style.setProperty('--hover-x', `${horizontal.toFixed(2)}px`);
+            target.style.setProperty('--hover-y', `${vertical.toFixed(2)}px`);
+            target.style.setProperty('--hover-rotation', `${rotation.toFixed(2)}deg`);
         });
     }
 
@@ -790,29 +775,40 @@ class CardViewer {
 
     randomizeProjectPushProfile(card) {
         const targets = this.getProjectHoverTargets(card);
+        const lastIndex = Math.max(1, targets.length - 1);
+
         targets.forEach((target, index) => {
-            const depthTaper = 1 - (index * 0.08);
-            const primary = (0.24 + Math.random() * 0.22) * Math.max(0.55, depthTaper);
-            const cross = (Math.random() * 0.16) - 0.08;
-            const rotate = 0.018 + Math.random() * 0.02;
+            const depthProgress = index / lastIndex; // 0 = top card, 1 = deepest
+            const response = 1.42 - (depthProgress * 0.58);
+            const primary = (0.18 + Math.random() * 0.1) * (0.95 - depthProgress * 0.16);
+            const cross = ((Math.random() * 0.09) - 0.045) * (0.95 - depthProgress * 0.2);
+            const rotate = (0.012 + Math.random() * 0.01) * (0.95 - depthProgress * 0.2);
 
             target.style.setProperty('--push-primary', `${primary}`);
             target.style.setProperty('--push-cross', `${cross}`);
             target.style.setProperty('--push-rotate', `${rotate}`);
+            target.style.setProperty('--push-response', `${response}`);
         });
     }
 
     applyProjectHoverPush(card, velocityX, velocityY) {
         const targets = this.getProjectHoverTargets(card);
+        const lastIndex = Math.max(1, targets.length - 1);
+
         targets.forEach((target, index) => {
             const primary = parseFloat(target.style.getPropertyValue('--push-primary')) || 0.6;
             const cross = parseFloat(target.style.getPropertyValue('--push-cross')) || 0;
             const rotate = parseFloat(target.style.getPropertyValue('--push-rotate')) || 0.1;
+            const response = parseFloat(target.style.getPropertyValue('--push-response')) || 1;
             const twistSign = index % 2 === 0 ? 1 : -1;
+            const depthProgress = index / lastIndex; // 0 = top, 1 = deepest
+            const depthGain = 1.52 - (depthProgress * 0.6); // top ~1.52x, deepest ~0.92x
+            const drivenX = velocityX * response * depthGain;
+            const drivenY = velocityY * response * depthGain;
 
-            const pushX = (velocityX * primary) + (velocityY * cross);
-            const pushY = (velocityY * primary) - (velocityX * cross);
-            const pushRotation = ((velocityX * rotate * twistSign) + (velocityY * rotate * 0.25));
+            const pushX = (drivenX * primary) + (drivenY * cross);
+            const pushY = (drivenY * primary) - (drivenX * cross);
+            const pushRotation = ((drivenX * rotate * twistSign) + (drivenY * rotate * 0.25));
 
             target.style.setProperty('--push-x', `${pushX.toFixed(2)}px`);
             target.style.setProperty('--push-y', `${pushY.toFixed(2)}px`);
@@ -878,11 +874,11 @@ class CardViewer {
                 card.classList.add('is-hover-tracking');
             }
 
-            const resistanceX = 1 - Math.min(0.8, Math.abs(state.pushX) / 140);
-            const resistanceY = 1 - Math.min(0.8, Math.abs(state.pushY) / 140);
+            const resistanceX = 1 - Math.min(0.76, Math.abs(state.pushX) / 150);
+            const resistanceY = 1 - Math.min(0.76, Math.abs(state.pushY) / 150);
 
-            state.pushX = this.clamp(state.pushX + (deltaX * 0.22 * resistanceX), -140, 140);
-            state.pushY = this.clamp(state.pushY + (deltaY * 0.22 * resistanceY), -140, 140);
+            state.pushX = this.clamp(state.pushX + (deltaX * 0.31 * resistanceX), -146, 146);
+            state.pushY = this.clamp(state.pushY + (deltaY * 0.31 * resistanceY), -146, 146);
 
             this.applyProjectHoverPush(card, state.pushX, state.pushY);
         });
