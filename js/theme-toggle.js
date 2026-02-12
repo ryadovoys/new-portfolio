@@ -11,16 +11,9 @@
 
     if (toggles.length === 0 && !textToggleMobile) return;
 
-    // Check for saved preference or system preference
+    // Check for saved preference
     const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    let currentTheme = 'light';
-    if (savedTheme) {
-        currentTheme = savedTheme;
-    } else if (systemPrefersDark) {
-        currentTheme = 'dark';
-    }
+    const currentTheme = (savedTheme === 'dark' || savedTheme === 'light') ? savedTheme : 'dark';
 
     // Initialize state
     root.setAttribute('data-theme', currentTheme);
@@ -81,17 +74,6 @@
     if (textToggleMobile) {
         textToggleMobile.addEventListener('click', toggleTheme);
     }
-
-    // Listen for system preference changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            const newSystemTheme = e.matches ? 'dark' : 'light';
-            root.setAttribute('data-theme', newSystemTheme);
-
-            currentRotation = newSystemTheme === 'dark' ? 180 : 0;
-            updateUI();
-        }
-    });
 
     // Expose toggle function if needed by other scripts (e.g. keyboard shortcuts)
     window.toggleThemeGlobal = toggleTheme;
