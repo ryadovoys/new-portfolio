@@ -111,7 +111,7 @@
 
 .sidebar__identity-name {
     color: var(--text-secondary);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-regular);
 }
 
 .sidebar__identity-email {
