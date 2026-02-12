@@ -106,7 +106,7 @@
     "description": "Built design systems for Visa, RaceTrac, Amway, and more. Components, tokens, variables, documentation. I love organizing, structuring, and making sure every small piece fits into the bigger picture.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/design-systems-visa-figma.jpg",
+    "media": "/assets/visa-design-system.jpg",
     "mediaType": "image",
     "folder": null,
     "link": null
@@ -184,7 +184,7 @@
     "description": "I've given several public talks about AI and design. Sharing experiments, tools, and interesting ways designers can use AI in their work.",
     "tag": "Experience",
     "width": "regular",
-    "media": "/assets/public-speaking.png",
+    "media": "/assets/public-speaking-2.png",
     "mediaType": "image",
     "folder": null,
     "link": null
@@ -214,6 +214,16 @@
     "link": null
   },
   {
+    "title": "Plantlife",
+    "description": "Together with a few ex Nike and Apple colleagues and plant experts, and botanists from around the world, we've collaborated to create PlantLife. A new social platform for plant lovers to connect, shop, and share their experiences and expertise rooted in plants—everything from houseplants, gardening, decor, plant-based nutrition, wellness, and more. From the outset, I played a pivotal role in crafting the entire user interface, design system, and brand communications.",
+    "tag": "Project",
+    "width": "wide",
+    "media": null,
+    "mediaType": null,
+    "folder": "plantlife",
+    "link": null
+  },
+  {
     "title": "Logo Design",
     "description": "I've designed over 100 logos throughout my career. Seeing them printed on shipping containers, store signs, and merchandise all over the world never gets old.",
     "tag": "Skill",
@@ -234,6 +244,16 @@
     "link": null
   },
   {
+    "title": "Visa Analytics Platform",
+    "description": "Redesign of a global analytics platform by Visa with a daily use of million people worldwide.",
+    "tag": "Project",
+    "width": "regular",
+    "media": null,
+    "mediaType": null,
+    "folder": "vap",
+    "link": null
+  },
+  {
     "title": "Peace Sans Free Font",
     "description": "Peace Sans is a free display font I designed. It reached 500K+ downloads and became one of the most popular free fonts on Behance.",
     "tag": "Project",
@@ -246,25 +266,5 @@
       "url": "assets/Peace Sans.zip",
       "attributes": "download"
     }
-  },
-  {
-    "title": "Plantlife",
-    "description": "Together with a few ex Nike and Apple colleagues and plant experts, and botanists from around the world, we've collaborated to create PlantLife. A new social platform for plant lovers to connect, shop, and share their experiences and expertise rooted in plants—everything from houseplants, gardening, decor, plant-based nutrition, wellness, and more. From the outset, I played a pivotal role in crafting the entire user interface, design system, and brand communications.",
-    "tag": "Project",
-    "width": "wide",
-    "media": null,
-    "mediaType": null,
-    "folder": "plantlife",
-    "link": null
-  },
-  {
-    "title": "Visa Analytics Platform",
-    "description": "Redesign of a global analytics platform by Visa with a daily use of million people worldwide.",
-    "tag": "Project",
-    "width": "regular",
-    "media": null,
-    "mediaType": null,
-    "folder": "vap",
-    "link": null
   }
 ]
