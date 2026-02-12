@@ -583,7 +583,7 @@ class CardViewer {
 
             // Initial Randomization
             this.randomizeLayerInitialState(card);
-            this.setupProjectHoverPhysics(card);
+            this.setupProjectHoverPhysics(card, imageContainer);
 
             this.updateCardVideoPlayback(card);
 
@@ -686,7 +686,7 @@ class CardViewer {
     randomizeLayerInitialState(card) {
         const layers = card.querySelectorAll('.project-layer');
         layers.forEach(layer => {
-            const initialRotation = (Math.random() * 6) - 3; // -3 to +3
+            const initialRotation = (Math.random() * 4) - 2; // -2 to +2
             layer.style.setProperty('--initial-rotation', `${initialRotation}deg`);
         });
     }
@@ -712,12 +712,12 @@ class CardViewer {
                 angle = 0.35 + (Math.random() * 1.05);
             }
 
-            const distance = 28 + Math.random() * 11; // 30-45px
+            const distance = (28 + Math.random() * 11) * 0.68; // softer initial spread
 
             const x = Math.cos(angle) * distance;
             const y = -Math.sin(angle) * distance; // Negative Y is UP
 
-            const rotation = (Math.random() * 6) - 3; // -3 to +3
+            const rotation = (Math.random() * 3.4) - 1.7; // -1.7 to +1.7
 
             target.style.setProperty('--hover-x', `${x}px`);
             target.style.setProperty('--hover-y', `${y}px`);
@@ -746,7 +746,7 @@ class CardViewer {
             const depthTaper = 1 - (index * 0.08);
             const primary = (0.24 + Math.random() * 0.22) * Math.max(0.55, depthTaper);
             const cross = (Math.random() * 0.16) - 0.08;
-            const rotate = 0.03 + Math.random() * 0.05;
+            const rotate = 0.018 + Math.random() * 0.02;
 
             target.style.setProperty('--push-primary', `${primary}`);
             target.style.setProperty('--push-cross', `${cross}`);
@@ -781,8 +781,9 @@ class CardViewer {
         });
     }
 
-    setupProjectHoverPhysics(card) {
+    setupProjectHoverPhysics(card, imageContainer) {
         if (card.dataset.hoverPhysicsBound === 'true') return;
+        if (!imageContainer) return;
 
         const state = {
             lastX: 0,
@@ -792,7 +793,7 @@ class CardViewer {
             isInside: false
         };
 
-        card.addEventListener('mouseenter', (e) => {
+        imageContainer.addEventListener('mouseenter', (e) => {
             if (this.prefersReducedMotion) return;
             if (window.matchMedia('(pointer: coarse)').matches) return;
             if (card.classList.contains('is-active') || document.body.classList.contains('is-project-expanded')) return;
@@ -807,10 +808,11 @@ class CardViewer {
             state.pushX = 0;
             state.pushY = 0;
 
+            card.classList.add('is-media-hovered');
             card.classList.remove('is-hover-tracking');
         });
 
-        card.addEventListener('mousemove', (e) => {
+        imageContainer.addEventListener('mousemove', (e) => {
             if (!state.isInside) return;
             if (this.prefersReducedMotion) return;
             if (window.matchMedia('(pointer: coarse)').matches) return;
@@ -837,8 +839,9 @@ class CardViewer {
             this.applyProjectHoverPush(card, state.pushX, state.pushY);
         });
 
-        card.addEventListener('mouseleave', () => {
+        imageContainer.addEventListener('mouseleave', () => {
             state.isInside = false;
+            card.classList.remove('is-media-hovered');
             card.classList.remove('is-hover-tracking');
         });
 
