@@ -58,7 +58,7 @@
   },
   {
     "title": "Prototyping",
-    "description": "Quick iteration with AI in Figma Make or Claude Code with Figma MCP, and then detailed prototypes with complex animations in Figma. This was my main approach for prototyping for the last year. The prototyping keep evolving, and I'm always staying ahead of all the latest practices, because prototyping is essential part of any workflow.",
+    "description": "Quick iteration with AI in Figma Make or Claude Code with Figma MCP, and then detailed prototypes with complex animations in Figma. This was my main approach for prototyping for the last year. The prototyping keep evolving, and I'm always staying ahead of all the latest practices, because it is an essential part of any workflow.",
     "tag": "Skill",
     "width": "regular",
     "media": "/assets/racetrac-prototype.mp4",
@@ -189,18 +189,14 @@
     "link": null
   },
   {
-    "title": "Peace Sans Free Font",
-    "description": "Peace Sans is a free display font I designed. It reached 500K+ downloads and became one of the most popular free fonts on Behance. I wanted to give something back to the design community.",
+    "title": "RaceTrac App",
+    "description": "I was a lead designer on a team of redesigning the RaceTrac app. Our team won the pitch that lead to redesigning and rebuilding rewards experience for the app and building new Figma design system.",
     "tag": "Project",
     "width": "regular",
-    "media": "/assets/peace-sans-font-preview.jpg",
+    "media": "/assets/prototyping-figma-demo.gif",
     "mediaType": "image",
     "folder": null,
-    "link": {
-      "text": "Download Peace Sans",
-      "url": "assets/Peace Sans.zip",
-      "attributes": "download"
-    }
+    "link": null
   },
   {
     "title": "36 days of type",
@@ -231,5 +227,19 @@
     "mediaType": "image",
     "folder": null,
     "link": null
+  },
+  {
+    "title": "Peace Sans Free Font",
+    "description": "Peace Sans is a free display font I designed. It reached 500K+ downloads and became one of the most popular free fonts on Behance. I wanted to give something back to the design community.",
+    "tag": "Project",
+    "width": "regular",
+    "media": "/assets/peace-sans-font-preview.jpg",
+    "mediaType": "image",
+    "folder": null,
+    "link": {
+      "text": "Download Peace Sans",
+      "url": "assets/Peace Sans.zip",
+      "attributes": "download"
+    }
   }
 ]
