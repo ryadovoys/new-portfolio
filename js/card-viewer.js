@@ -253,6 +253,14 @@ class CardViewer {
         return this.getRectIntersectionRatio(rect, viewportRect) >= minViewportVisibility;
     }
 
+    isElementVisibleInContainer(el, container, minVisibility = 0.55) {
+        if (!el || !container) return false;
+
+        const elRect = el.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        return this.getRectIntersectionRatio(elRect, containerRect) >= minVisibility;
+    }
+
     isVideoEligibleForPlayback(videoEl, card, isProjectExpanded) {
         if (!videoEl || !card) return false;
 
@@ -261,8 +269,16 @@ class CardViewer {
 
         const isProjectLayerVideo = Boolean(videoEl.closest('.project-layer'));
         if (!isProjectExpanded) {
-            // While collapsed, keep only the primary project preview video running.
-            return !isProjectLayerVideo;
+            // Desktop collapsed: keep only the primary preview video running.
+            // Mobile collapsed: allow project layers to autoplay when they are mostly visible
+            // inside the horizontal project track.
+            if (!isProjectLayerVideo) return true;
+
+            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+            if (!isMobile) return false;
+
+            const track = videoEl.closest('.project-media-track');
+            return this.isElementVisibleInContainer(videoEl, track, 0.6);
         }
 
         // While expanded, only play videos that are in the center 80% viewport zone.
@@ -544,8 +560,10 @@ class CardViewer {
                 mainMediaEl.autoplay = true;
                 mainMediaEl.loop = true;
                 mainMediaEl.muted = true;
+                mainMediaEl.defaultMuted = true;
                 mainMediaEl.setAttribute('muted', '');
                 mainMediaEl.playsInline = true;
+                mainMediaEl.setAttribute('playsinline', '');
             } else {
                 mainMediaEl = document.createElement('img');
                 mainMediaEl.src = mainAsset.path;
@@ -584,6 +602,7 @@ class CardViewer {
             // Initial Randomization
             this.randomizeLayerInitialState(card);
             this.setupProjectHoverPhysics(card, imageContainer);
+            this.setupProjectMobileTrackPlayback(card, imageContainer);
 
             this.updateCardVideoPlayback(card);
 
@@ -635,8 +654,10 @@ class CardViewer {
                 vid.autoplay = true;
                 vid.loop = true;
                 vid.muted = true;
+                vid.defaultMuted = true;
                 vid.setAttribute('muted', '');
                 vid.playsInline = true;
+                vid.setAttribute('playsinline', '');
                 vid.style.width = '100%';
                 vid.style.height = '100%';
                 vid.style.objectFit = 'cover';
@@ -681,6 +702,33 @@ class CardViewer {
         });
 
         this.recalculateLayerGeometry(card, container);
+    }
+
+    setupProjectMobileTrackPlayback(card, track) {
+        if (!card || !track) return;
+        if (track.dataset.mobilePlaybackBound === 'true') return;
+
+        let rafId = null;
+        const requestPlaybackUpdate = () => {
+            if (rafId !== null) return;
+            rafId = requestAnimationFrame(() => {
+                rafId = null;
+                this.updateCardVideoPlayback(card);
+            });
+        };
+
+        track.addEventListener('scroll', requestPlaybackUpdate, { passive: true });
+        track.addEventListener('touchend', requestPlaybackUpdate);
+        track.addEventListener('touchcancel', requestPlaybackUpdate);
+
+        // Keep playback selection fresh when viewport changes on mobile.
+        window.addEventListener('resize', requestPlaybackUpdate);
+
+        // Initial sync after the mobile track settles.
+        requestPlaybackUpdate();
+        window.setTimeout(requestPlaybackUpdate, 120);
+
+        track.dataset.mobilePlaybackBound = 'true';
     }
 
     randomizeLayerInitialState(card) {

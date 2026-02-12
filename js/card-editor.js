@@ -822,7 +822,10 @@ class CardEditor {
                     video.autoplay = true;
                     video.loop = true;
                     video.muted = true;
+                    video.defaultMuted = true;
+                    video.setAttribute('muted', '');
                     video.playsInline = true;
+                    video.setAttribute('playsinline', '');
                     zone.appendChild(video);
                 } else {
                     const img = document.createElement('img');
@@ -1114,8 +1117,10 @@ class CardEditor {
             video.autoplay = true;
             video.loop = true;
             video.muted = true;
+            video.defaultMuted = true;
             video.setAttribute('muted', '');
             video.playsInline = true;
+            video.setAttribute('playsinline', '');
             zone.appendChild(video);
         } else {
             const img = document.createElement('img');
@@ -1194,8 +1199,10 @@ class CardEditor {
                 video.autoplay = true;
                 video.loop = true;
                 video.muted = true;
+                video.defaultMuted = true;
                 video.setAttribute('muted', '');
                 video.playsInline = true;
+                video.setAttribute('playsinline', '');
                 slide.appendChild(video);
             } else {
                 const img = document.createElement('img');
