@@ -5,6 +5,7 @@
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
+const SHOW_ABOUT_STATS = false;
 
 // Initialize animations when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -37,11 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function markLineRevealTargets() {
     const selectors = [
-        '.sidebar__identity-name',
-        '.sidebar__identity-email',
-        '.sidebar__identity-link',
-        '.card[data-folder="introduction"] .card__title',
-        '.card[data-folder="introduction"] .card__description',
         '.about-stats__title',
         '.about-stats__intro'
     ];
@@ -103,6 +99,12 @@ function initLenisSmoothScroll() {
 }
 
 function ensureAboutStatsSection() {
+    if (!SHOW_ABOUT_STATS) {
+        const existing = document.getElementById('about-stats');
+        if (existing) existing.remove();
+        return;
+    }
+
     const main = document.querySelector('.main-content');
     const grid = document.querySelector('.card-grid');
     if (!main || !grid) return;
@@ -238,6 +240,8 @@ function initLineReveal() {
 }
 
 function initCountUpStats() {
+    if (!SHOW_ABOUT_STATS) return;
+
     const counters = document.querySelectorAll('[data-count]:not([data-count-ready="1"])');
     if (!counters.length) return;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

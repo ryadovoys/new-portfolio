@@ -397,28 +397,32 @@
     /* Ensure card is relative for absolute positioning of zone */
 }
 
-.card__add-zone {
+.is-card-editor .card:not(.card--add) {
+    overflow: visible;
+}
+
+.is-card-editor .card__add-zone {
     position: absolute;
     top: 0;
     bottom: 0;
-    right: -50px;
-    /* Center in 60px gap (30px center + 20px half-width) */
+    right: calc(var(--grid-gap) * -0.5);
     width: 40px;
-    z-index: 10;
+    transform: translateX(50%);
+    z-index: 30;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     opacity: 0;
+    pointer-events: auto;
     transition: opacity 0.2s ease;
 }
 
-/* Adjust for the gap. If gap is var(--card-gap), we ideally want to center in that gap.
-   Let's assume the zone is attached to the right side.
-   Note: This might overlap somewhat with the next card, but z-index should handle hovering.
-*/
+.is-card-editor .card__add-zone:hover {
+    opacity: 1;
+}
 
-.card__add-btn {
+.is-card-editor .card__add-btn {
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -433,19 +437,15 @@
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.card__add-zone:hover {
-    opacity: 1;
-}
-
-.card__add-zone:hover .card__add-btn {
+.is-card-editor .card__add-zone:hover .card__add-btn {
     transform: scale(1);
 }
 
-.card__add-btn svg {
+.is-card-editor .card__add-btn svg {
     width: 16px;
     height: 16px;
+}
 
-    /* Filtered Out State */
-    .card.is-filtered-out {
-        display: none !important;
-    }
+.card.is-filtered-out {
+    display: none !important;
+}

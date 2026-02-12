@@ -1,7 +1,7 @@
 [
   {
-    "title": "Introduction",
-    "description": "Hi, my name is Sergey. I'm a VP of Product Design with strong visual design foundations, technical understanding and product thinking. I have 15 years in design and leadership across different categories, from branding and visual design to product design and AI integration.",
+    "title": "About me",
+    "description": "Sergey Ryadovoy, VP of Design with strong visual design foundations, technical depth and product thinking. 15 years in design and leadership across different categories, from branding and visual design to product design and AI integration.",
     "tag": "Personal",
     "width": "regular",
     "media": null,
@@ -13,7 +13,7 @@
     }
   },
   {
-    "title": "Visa product design",
+    "title": "Visa Product Design",
     "description": "I was a lead designer on the team that helped Visa roll out their digital rebranding in 2022. We rebuilt the global Figma design system, replacing their Sketch workflows so teams worldwide could ship consistent, accessible products faster. Working alongside strategists, user researchers, and copywriters, we handed off 50+ landing pages and campaigns to production that established the new visual identity across digital. From complex user research and prototypes to marketing strategies and exploring what the brand's future presence could look like, we partnered with the Visa team to explore new horizons and deliver better services to users.",
     "tag": "Project",
     "width": "wide",
@@ -24,7 +24,7 @@
   },
   {
     "title": "Digitas AI",
-    "description": "AI\nWe built an internal platform to orchestrate AI agents for Digitas. My role covered everything from defining the workflows and designing the interface to working right alongside the developers to ship it.",
+    "description": "We built an internal platform to orchestrate AI agents for Digitas. My role covered everything from defining the workflows and designing the interface to working right alongside the developers to ship it.",
     "tag": "Project",
     "width": "regular",
     "media": "/assets/digitas-ai-agentic-platform.gif",
@@ -47,7 +47,7 @@
     "link": null
   },
   {
-    "title": "Global brands",
+    "title": "Global Brands",
     "description": "Worked with many global brands like Visa, Sephora, Delta, Amway, Mondelez, L'Oreal, RaceTrac. Everything from products and interfaces to global campaigns and immersive experiences.",
     "tag": "Experience",
     "width": "regular",
@@ -91,7 +91,7 @@
     "link": null
   },
   {
-    "title": "Motion design",
+    "title": "Motion Design",
     "description": "Figma for quick motion examples, After Effects and Cavalry for complex motion assets. I love working with motion and always keep my skills up to date.",
     "tag": "Skill",
     "width": "regular",
@@ -101,7 +101,7 @@
     "link": null
   },
   {
-    "title": "Design systems",
+    "title": "Design Systems",
     "description": "Built design systems for Visa, RaceTrac, Amway, and more. Components, tokens, variables, documentation. I love organizing, structuring, and making sure every small piece fits into the bigger picture.",
     "tag": "Skill",
     "width": "regular",
@@ -111,7 +111,7 @@
     "link": null
   },
   {
-    "title": "AI workflows",
+    "title": "AI Workflows",
     "description": "Figuring out how design and AI actually work together. Claude Code, Cursor, Antigravity, MCP tools—using AI across research, ideation, prototyping, designing and code.",
     "tag": "Experience",
     "width": "regular",
@@ -155,7 +155,7 @@
     "link": null
   },
   {
-    "title": "Building tools",
+    "title": "Building Tools",
     "description": "I keep building small tools that solve problems I actually have. iOS apps, Figma plugins, web tools, Apple shortcuts. Most started as personal experiments, some turned into real products.",
     "tag": "Experience",
     "width": "regular",
@@ -179,7 +179,7 @@
     }
   },
   {
-    "title": "Public talks",
+    "title": "Public Talks",
     "description": "I've given several public talks about AI and design. Sharing experiments, tools, and interesting ways designers can use AI in their work.",
     "tag": "Experience",
     "width": "regular",
@@ -203,7 +203,7 @@
     }
   },
   {
-    "title": "36 days of type",
+    "title": "36 Days of Type",
     "description": "Creative coding exploration. I animated every letter using OpenFrameworks and AI, trying to see how code and design could mix.",
     "tag": "Experiment",
     "width": "wide",
@@ -213,7 +213,7 @@
     "link": null
   },
   {
-    "title": "Logo design",
+    "title": "Logo Design",
     "description": "I've designed over 100 logos throughout my career. Seeing them printed on shipping containers, store signs, and merchandise all over the world never gets old.",
     "tag": "Skill",
     "width": "regular",
@@ -223,7 +223,7 @@
     "link": null
   },
   {
-    "title": "Packaging design",
+    "title": "Packaging Design",
     "description": "Packaging design taught me to think about the physical world—materials, production, and how things actually look on a shelf. My work was featured in Dieline and Packaging of the World.",
     "tag": "Skill",
     "width": "regular",

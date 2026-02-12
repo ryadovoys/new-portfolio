@@ -6,6 +6,7 @@
 class CardEditor {
     constructor() {
         this.cards = [];
+        document.body.classList.add('is-card-editor');
         this.init();
     }
 
