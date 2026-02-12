@@ -433,3 +433,9 @@
     border-radius: var(--radius-sm);
     z-index: 10;
 }
+
+@media (max-width: 768px) {
+    .card__image--carousel {
+        --carousel-gap: 16px;
+    }
+}

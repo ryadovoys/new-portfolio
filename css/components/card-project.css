@@ -163,11 +163,15 @@ body.is-project-expanded .close-button {
    ================================================================= */
 
 @media (max-width: 768px) {
+    .card--project {
+        --project-layer-gap: 16px;
+    }
+
     .card--project .project-media-track {
         display: flex;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        gap: var(--project-layer-gap, 40px);
+        gap: var(--project-layer-gap, 16px);
         padding-right: 10%;
         margin: 0 -20px;
         padding-left: 20px;

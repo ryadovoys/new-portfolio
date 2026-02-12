@@ -42,9 +42,9 @@
     "description": "Text became the main way we talk to AI. Because of that, conversational interfaces became one of the most essential user interface element. I've been working on conversational interfaces for a few years now.",
     "tag": "Experience",
     "width": "regular",
-    "media": "/assets/conversational-ai-interface-liquid.jpg",
-    "mediaType": "image",
-    "folder": null,
+    "media": null,
+    "mediaType": null,
+    "folder": "conversational",
     "link": null
   },
   {
@@ -140,7 +140,7 @@
     "description": "Led product design for Visa's global digital presence, directed redesigns for Amway, RaceTrac, Delta. Websites, apps, dashboards, design systems. Always thinking about how it looks and how it actually works.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/ui-ux-design-system-preview.jpg",
+    "media": "/assets/subway-uiux.jpg",
     "mediaType": "image",
     "folder": null,
     "link": null
