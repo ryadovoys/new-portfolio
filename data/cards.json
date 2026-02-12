@@ -217,9 +217,9 @@
     "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/logo-design-collection-animated.gif",
-    "mediaType": "image",
-    "folder": null,
+    "media": null,
+    "mediaType": null,
+    "folder": "logos",
     "link": null
   },
   {
