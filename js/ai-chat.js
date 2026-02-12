@@ -14,18 +14,39 @@
     let showingResponse = false;
     let isContextLoading = false;
     let contextLoadPromise = null;
-    const CONTEXT_FILES = [
-        '/assets/sergey-ryadovoy-context-2.md',
-        '/assets/sergey-ryadovoy-context.md'
-    ];
-    const CHAT_HEIGHT_STORAGE_KEY = 'ai-chat-height-px';
-    const CHAT_DEFAULT_HEIGHT_RATIO = 1 / 3;
+    const CORE_CONTEXT_FILE = '/assets/sergey-ryadovoy-context.md';
+    const CHARACTER_CONTEXT_FILE = '/assets/character.md';
+    const CHAT_DEFAULT_HEIGHT_RATIO = 1 / 2;
     const CHAT_MIN_HEIGHT_RATIO = 0.24;
     const CHAT_MAX_HEIGHT_RATIO = 0.9;
+    const PLAYGROUND_ROOT = document.documentElement;
+    const PLAYGROUND_TARGET_SELECTOR = '.page';
+    const AI_KNOWN_TAGS = ['skill', 'project', 'personal', 'experience', 'experiment'];
 
     let chatHistory = [];
     let suggestionIndex = -1;
     let resizeState = null;
+    let activeCardFilter = 'all';
+
+    const styleState = {
+        visual: {
+            hueRotate: 0,
+            saturate: 100,
+            contrast: 100,
+            brightness: 100
+        },
+        layout: {
+            scale: 1,
+            rotateDeg: 0,
+            skewDeg: 0
+        }
+    };
+
+    const playgroundState = {
+        initialTheme: null,
+        tokenOverrides: new Set(),
+        cardOrderCaptured: false
+    };
 
     const SUGGESTED_QUESTIONS = [
         "Who is Sergey?",
@@ -76,6 +97,8 @@
     const inputEl = overlay.querySelector('.ai-chat__input');
     const responseEl = overlay.querySelector('.ai-chat__response-area');
     const resizeHandleEl = overlay.querySelector('.ai-chat__resize-handle');
+    const playgroundTargetEl = document.querySelector(PLAYGROUND_TARGET_SELECTOR) || document.body;
+    const cardGridEl = document.querySelector('.card-grid');
 
     function isPlainTypingKey(e) {
         return e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey;
@@ -104,41 +127,15 @@
         return Math.min(max, Math.max(min, Math.round(nextHeight)));
     }
 
-    function getSavedChatHeight() {
-        try {
-            const rawValue = localStorage.getItem(CHAT_HEIGHT_STORAGE_KEY);
-            const parsed = Number(rawValue);
-            return Number.isFinite(parsed) ? parsed : null;
-        } catch (err) {
-            console.warn('Could not read chat height from localStorage:', err);
-            return null;
-        }
-    }
-
-    function persistChatHeight(height) {
-        try {
-            localStorage.setItem(CHAT_HEIGHT_STORAGE_KEY, String(height));
-        } catch (err) {
-            console.warn('Could not persist chat height:', err);
-        }
-    }
-
-    function applyChatHeight(nextHeight, options = {}) {
-        const { persist = true } = options;
+    function applyChatHeight(nextHeight) {
         const clamped = clampChatHeight(nextHeight);
         overlay.style.height = `${clamped}px`;
-        if (persist) {
-            persistChatHeight(clamped);
-        }
         return clamped;
     }
 
     function initChatHeight() {
-        const savedHeight = getSavedChatHeight();
-        const initialHeight = Number.isFinite(savedHeight)
-            ? savedHeight
-            : getViewportHeight() * CHAT_DEFAULT_HEIGHT_RATIO;
-        applyChatHeight(initialHeight, { persist: false });
+        const initialHeight = getViewportHeight() * CHAT_DEFAULT_HEIGHT_RATIO;
+        applyChatHeight(initialHeight);
     }
 
     function startResize(event) {
@@ -165,15 +162,12 @@
 
         const deltaY = event.clientY - resizeState.startY;
         const nextHeight = resizeState.startHeight + deltaY;
-        applyChatHeight(nextHeight, { persist: false });
+        applyChatHeight(nextHeight);
     }
 
     function endResize(event) {
         if (!resizeState) return;
         if (event && event.pointerId !== undefined && event.pointerId !== resizeState.pointerId) return;
-
-        const finalHeight = overlay.getBoundingClientRect().height;
-        persistChatHeight(clampChatHeight(finalHeight));
 
         if (resizeHandleEl.releasePointerCapture && resizeHandleEl.hasPointerCapture(resizeState.pointerId)) {
             resizeHandleEl.releasePointerCapture(resizeState.pointerId);
@@ -196,7 +190,7 @@
 
     function syncChatHeightToViewport() {
         const currentHeight = overlay.getBoundingClientRect().height || getViewportHeight() * CHAT_DEFAULT_HEIGHT_RATIO;
-        applyChatHeight(currentHeight, { persist: false });
+        applyChatHeight(currentHeight);
     }
 
     function handleOverlayWheel(event) {
@@ -216,6 +210,283 @@
         }
     }
 
+    function clampNumber(value, min, max, fallback = null) {
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue)) return fallback;
+        return Math.min(max, Math.max(min, numericValue));
+    }
+
+    function normalizeTagValue(rawTag) {
+        if (typeof rawTag !== 'string') return null;
+        const normalized = rawTag.trim().toLowerCase();
+        if (!normalized) return null;
+        if (normalized === 'all' || normalized === '*' || normalized === 'any') return 'all';
+        return normalized;
+    }
+
+    function getFilterableCards() {
+        return Array.from(document.querySelectorAll('.card:not(#addCardPlaceholder):not(.card--add)'));
+    }
+
+    function getCardTag(cardEl) {
+        const tagText = cardEl.querySelector('.card__tag')?.textContent?.trim();
+        const category = cardEl.dataset.category;
+        return normalizeTagValue(tagText || category || '');
+    }
+
+    function clearCardFilter() {
+        const cards = getFilterableCards();
+        cards.forEach((card) => {
+            card.style.removeProperty('display');
+            card.classList.remove('is-filtered-out');
+        });
+        activeCardFilter = 'all';
+        return cards.length;
+    }
+
+    function applyCardFilter(tag) {
+        const normalizedTag = normalizeTagValue(tag);
+        if (!normalizedTag || normalizedTag === 'all') {
+            return { shown: clearCardFilter(), total: getFilterableCards().length, activeFilter: 'all' };
+        }
+
+        let shown = 0;
+        const cards = getFilterableCards();
+        cards.forEach((card) => {
+            const cardTag = getCardTag(card);
+            const shouldShow = cardTag === normalizedTag;
+            if (shouldShow) {
+                shown += 1;
+                card.style.removeProperty('display');
+                card.classList.remove('is-filtered-out');
+            } else {
+                card.classList.add('is-filtered-out');
+                card.style.display = 'none';
+            }
+        });
+
+        activeCardFilter = normalizedTag;
+        return { shown, total: cards.length, activeFilter: normalizedTag };
+    }
+
+    function applyVisualStyles() {
+        const { hueRotate, saturate, contrast, brightness } = styleState.visual;
+        const isDefault = hueRotate === 0
+            && saturate === 100
+            && contrast === 100
+            && brightness === 100;
+
+        if (isDefault) {
+            playgroundTargetEl.style.removeProperty('filter');
+            return;
+        }
+
+        playgroundTargetEl.style.filter = [
+            `hue-rotate(${hueRotate}deg)`,
+            `saturate(${saturate}%)`,
+            `contrast(${contrast}%)`,
+            `brightness(${brightness}%)`
+        ].join(' ');
+    }
+
+    function setVisualFilters(payload = {}) {
+        const nextHue = clampNumber(payload.hue_rotate ?? payload.hue ?? payload.hueDeg, -180, 180, styleState.visual.hueRotate);
+        const nextSaturate = clampNumber(payload.saturate, 0, 400, styleState.visual.saturate);
+        const nextContrast = clampNumber(payload.contrast, 0, 300, styleState.visual.contrast);
+        const nextBrightness = clampNumber(payload.brightness, 0, 300, styleState.visual.brightness);
+
+        styleState.visual.hueRotate = nextHue;
+        styleState.visual.saturate = nextSaturate;
+        styleState.visual.contrast = nextContrast;
+        styleState.visual.brightness = nextBrightness;
+
+        applyVisualStyles();
+        return `${Math.round(nextHue)}deg / sat ${Math.round(nextSaturate)}% / con ${Math.round(nextContrast)}% / bri ${Math.round(nextBrightness)}%`;
+    }
+
+    function applyLayoutStyles() {
+        const { scale, rotateDeg, skewDeg } = styleState.layout;
+        const isDefault = scale === 1 && rotateDeg === 0 && skewDeg === 0;
+
+        if (isDefault) {
+            playgroundTargetEl.style.removeProperty('transform');
+            playgroundTargetEl.style.removeProperty('transform-origin');
+            return;
+        }
+
+        playgroundTargetEl.style.transformOrigin = 'top center';
+        playgroundTargetEl.style.transform = `scale(${scale}) rotate(${rotateDeg}deg) skew(${skewDeg}deg)`;
+    }
+
+    function setLayoutTransform(payload = {}) {
+        const nextScale = clampNumber(payload.scale, 0.6, 1.4, styleState.layout.scale);
+        const nextRotate = clampNumber(payload.rotate_deg ?? payload.rotate, -20, 20, styleState.layout.rotateDeg);
+        const nextSkew = clampNumber(payload.skew_deg ?? payload.skew, -20, 20, styleState.layout.skewDeg);
+
+        styleState.layout.scale = nextScale;
+        styleState.layout.rotateDeg = nextRotate;
+        styleState.layout.skewDeg = nextSkew;
+
+        applyLayoutStyles();
+        return `scale ${nextScale.toFixed(2)}, rotate ${Math.round(nextRotate)}deg, skew ${Math.round(nextSkew)}deg`;
+    }
+
+    function isValidTokenName(tokenName) {
+        return typeof tokenName === 'string'
+            && tokenName.startsWith('--')
+            && tokenName.length >= 3
+            && tokenName.length <= 64;
+    }
+
+    function applyTokenOverride(tokenName, tokenValue) {
+        if (!isValidTokenName(tokenName) || typeof tokenValue !== 'string' || !tokenValue.trim()) {
+            return false;
+        }
+        PLAYGROUND_ROOT.style.setProperty(tokenName, tokenValue.trim());
+        playgroundState.tokenOverrides.add(tokenName);
+        return true;
+    }
+
+    function applyTokenOverrides(tokenMap) {
+        if (!tokenMap || typeof tokenMap !== 'object' || Array.isArray(tokenMap)) {
+            return { applied: 0, total: 0 };
+        }
+
+        let applied = 0;
+        const entries = Object.entries(tokenMap);
+        entries.forEach(([tokenName, tokenValue]) => {
+            if (applyTokenOverride(tokenName, String(tokenValue))) {
+                applied += 1;
+            }
+        });
+
+        return { applied, total: entries.length };
+    }
+
+    function captureInitialCardOrder() {
+        if (playgroundState.cardOrderCaptured) return;
+        getFilterableCards().forEach((card, index) => {
+            card.dataset.aiOriginalOrder = String(index);
+        });
+        playgroundState.cardOrderCaptured = true;
+    }
+
+    function restoreCardOrder() {
+        if (!cardGridEl) return 0;
+        const cards = getFilterableCards();
+        if (!cards.length) return 0;
+
+        const placeholder = document.getElementById('addCardPlaceholder');
+        cards
+            .sort((a, b) => {
+                const aOrder = Number(a.dataset.aiOriginalOrder ?? Number.MAX_SAFE_INTEGER);
+                const bOrder = Number(b.dataset.aiOriginalOrder ?? Number.MAX_SAFE_INTEGER);
+                return aOrder - bOrder;
+            })
+            .forEach((card) => {
+                if (placeholder && placeholder.parentNode === cardGridEl) {
+                    cardGridEl.insertBefore(card, placeholder);
+                } else {
+                    cardGridEl.appendChild(card);
+                }
+            });
+
+        return cards.length;
+    }
+
+    function shuffleCards() {
+        if (!cardGridEl) return 0;
+        const cards = getFilterableCards();
+        if (cards.length < 2) return cards.length;
+
+        const shuffled = [...cards];
+        for (let i = shuffled.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        const placeholder = document.getElementById('addCardPlaceholder');
+        const fragment = document.createDocumentFragment();
+        shuffled.forEach((card) => fragment.appendChild(card));
+
+        if (placeholder && placeholder.parentNode === cardGridEl) {
+            cardGridEl.insertBefore(fragment, placeholder);
+        } else {
+            cardGridEl.appendChild(fragment);
+        }
+
+        if (activeCardFilter !== 'all') {
+            applyCardFilter(activeCardFilter);
+        }
+        return shuffled.length;
+    }
+
+    function getCurrentTheme() {
+        if (typeof window.getThemeGlobal === 'function') {
+            return window.getThemeGlobal();
+        }
+        return normalizeThemeValue(document.documentElement.getAttribute('data-theme')) || 'dark';
+    }
+
+    function resetPlayground() {
+        clearCardFilter();
+
+        styleState.visual = {
+            hueRotate: 0,
+            saturate: 100,
+            contrast: 100,
+            brightness: 100
+        };
+        applyVisualStyles();
+
+        styleState.layout = {
+            scale: 1,
+            rotateDeg: 0,
+            skewDeg: 0
+        };
+        applyLayoutStyles();
+
+        playgroundState.tokenOverrides.forEach((tokenName) => {
+            PLAYGROUND_ROOT.style.removeProperty(tokenName);
+        });
+        playgroundState.tokenOverrides.clear();
+
+        restoreCardOrder();
+
+        if (playgroundState.initialTheme) {
+            setThemeFromChat(playgroundState.initialTheme);
+        }
+    }
+
+    function runChaosMode(intensityValue) {
+        const intensity = clampNumber(intensityValue, 0, 1, 0.65);
+        const amplitude = intensity || 0.65;
+
+        setVisualFilters({
+            hue_rotate: (Math.random() * 360 - 180) * amplitude,
+            saturate: 100 + (Math.random() * 250 * amplitude),
+            contrast: 100 + (Math.random() * 80 * amplitude),
+            brightness: 90 + (Math.random() * 45 * amplitude)
+        });
+
+        setLayoutTransform({
+            scale: 1 + ((Math.random() * 0.4 - 0.2) * amplitude),
+            rotate_deg: (Math.random() * 24 - 12) * amplitude,
+            skew_deg: (Math.random() * 16 - 8) * amplitude
+        });
+
+        shuffleCards();
+
+        // Optional token chaos to make the UI feel intentionally "broken" but recoverable on refresh/reset.
+        const tagHue = Math.round(Math.random() * 360);
+        const linkHue = Math.round(Math.random() * 360);
+        applyTokenOverride('--tag-bg', `hsl(${tagHue} 90% 68%)`);
+        applyTokenOverride('--tag-text', `hsl(${(tagHue + 170) % 360} 70% 18%)`);
+        applyTokenOverride('--link-color', `hsl(${linkHue} 85% 50%)`);
+
+        return intensity.toFixed(2);
+    }
+
     // Activate overlay (start typing)
     function activate() {
         if (isActive) return;
@@ -228,7 +499,7 @@
 
         // Initial welcome message (only if history is empty)
         if (chatHistory.length === 0) {
-            const welcomeMsg = "Hello! My name is Snow. I'm Sergey's cat. He's not home right now. I don't know where he is, but I hope he comes back soon. I've been watching him work a lot, though, so I can tell you more about him and what he's doing. Feel free to ask me anything. I'll do my best to help you out. Meow.";
+            const welcomeMsg = "Hello! My name is Snow. I'm Sergey's cat. He's not home right now. Maybe I can help?";
             chatHistory.push({ role: 'assistant', content: welcomeMsg });
         }
 
@@ -308,14 +579,40 @@
     let SYSTEM_PROMPT = '';
     const AI_ACTIONS_SYSTEM_PROMPT = [
         'You can optionally control website behavior using a strict action tag.',
-        'When a user asks to change website UI state, append exactly one block at the end of your message:',
+        'When a user asks to change UI state, append exactly one block at the end of your reply:',
         '<app-actions>{"actions":[{"type":"set_theme","theme":"dark"}]}</app-actions>',
+        'These actions are temporary and should not be persisted across page refresh.',
+        'Allowed actions:',
+        '- {"type":"set_theme","theme":"light|dark"}',
+        '- {"type":"toggle_theme"}',
+        '- {"type":"filter_cards","tag":"project|skill|personal|experience|experiment|all"}',
+        '- {"type":"clear_card_filter"}',
+        '- {"type":"set_visual_filter","hue_rotate":-180..180,"saturate":0..400,"contrast":0..300,"brightness":0..300}',
+        '- {"type":"set_layout_transform","scale":0.6..1.4,"rotate_deg":-20..20,"skew_deg":-20..20}',
+        '- {"type":"set_token","token":"--token-name","value":"any css value"}',
+        '- {"type":"set_tokens","tokens":{"--token":"value","--token-2":"value"}}',
+        '- {"type":"set_chat_height","height_vh":24..90}',
+        '- {"type":"shuffle_cards"}',
+        '- {"type":"chaos_mode","intensity":0..1}',
+        '- {"type":"reset_playground"}',
         'Rules:',
-        '- Allowed actions only: {"type":"set_theme","theme":"light|dark"} and {"type":"toggle_theme"}.',
-        '- Never output CSS, JS, HTML, or any other action types.',
-        '- If a request is unsupported, explain it in plain text and omit <app-actions>.',
+        '- Never output CSS, JS, HTML, shell commands, or non-allowed actions.',
+        '- If unsupported, answer in plain text and omit <app-actions>.',
         '- Keep normal conversational text outside the tag.'
     ].join('\n');
+
+    async function fetchPromptFile(path) {
+        try {
+            const response = await fetch(path);
+            if (!response.ok) return null;
+            const text = await response.text();
+            const trimmedText = text ? text.trim() : '';
+            return trimmedText || null;
+        } catch (err) {
+            console.warn(`Context fetch failed for ${path}:`, err);
+            return null;
+        }
+    }
 
     async function loadContextFile() {
         if (contextLoadPromise) return contextLoadPromise;
@@ -325,23 +622,32 @@
             isContextLoading = true;
 
             try {
-                for (const path of CONTEXT_FILES) {
-                    try {
-                        const response = await fetch(path);
-                        if (!response.ok) continue;
-                        const text = await response.text();
-                        if (!text || !text.trim()) continue;
-                        SYSTEM_PROMPT = text;
-                        return;
-                    } catch (err) {
-                        console.warn(`Context fetch failed for ${path}:`, err);
-                    }
+                const [coreContext, characterContext] = await Promise.all([
+                    fetchPromptFile(CORE_CONTEXT_FILE),
+                    fetchPromptFile(CHARACTER_CONTEXT_FILE)
+                ]);
+
+                if (!coreContext && !characterContext) {
+                    throw new Error('No prompt file could be loaded');
                 }
 
-                throw new Error('No context file could be loaded');
+                const promptParts = [];
+                if (coreContext) {
+                    promptParts.push(coreContext);
+                }
+                if (characterContext) {
+                    promptParts.push(characterContext);
+                }
+                SYSTEM_PROMPT = promptParts.join('\n\n');
             } catch (err) {
                 console.error('Failed to load context file:', err);
-                SYSTEM_PROMPT = `You are Sergey Ryadovoy's digital twin. You speak in first person. You are a Design VP at Digitas.`;
+                SYSTEM_PROMPT = [
+                    `You are Snow, Sergey Ryadovoy's cat and digital twin assistant.`,
+                    `Speak in first person and keep answers short, playful, helpful, and proactive.`,
+                    `Use simple childlike phrasing and occasional cat humor, but stay clear and accurate.`,
+                    `You may briefly drift topics like a cat, then return to the user's question.`,
+                    `You are helping people learn about Sergey's work and projects.`
+                ].join(' ');
             } finally {
                 isContextLoading = false;
             }
@@ -354,6 +660,8 @@
         }
     }
     loadContextFile();
+    captureInitialCardOrder();
+    playgroundState.initialTheme = getCurrentTheme();
     initChatHeight();
     window.addEventListener('resize', syncChatHeightToViewport);
     window.addEventListener('wheel', handleOverlayWheel, { passive: false, capture: true });
@@ -434,26 +742,15 @@
         if (!normalizedTheme) return false;
 
         if (typeof window.setThemeGlobal === 'function') {
-            return !!window.setThemeGlobal(normalizedTheme);
+            return !!window.setThemeGlobal(normalizedTheme, { persist: false });
         }
 
         document.documentElement.setAttribute('data-theme', normalizedTheme);
-        try {
-            localStorage.setItem('theme', normalizedTheme);
-        } catch (err) {
-            console.warn('Theme persistence failed:', err);
-        }
         return true;
     }
 
     function toggleThemeFromChat() {
-        if (typeof window.toggleThemeGlobal === 'function') {
-            window.toggleThemeGlobal();
-            const current = document.documentElement.getAttribute('data-theme');
-            return normalizeThemeValue(current);
-        }
-
-        const currentTheme = normalizeThemeValue(document.documentElement.getAttribute('data-theme')) || 'dark';
+        const currentTheme = getCurrentTheme();
         const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
         const wasApplied = setThemeFromChat(nextTheme);
         return wasApplied ? nextTheme : null;
@@ -475,32 +772,128 @@
                 return;
             }
 
-            if (action.type === 'set_theme') {
-                const theme = normalizeThemeValue(action.theme);
-                if (!theme) {
-                    result.rejected.push('set_theme requires theme light or dark');
+            switch (action.type) {
+                case 'set_theme': {
+                    const theme = normalizeThemeValue(action.theme);
+                    if (!theme) {
+                        result.rejected.push('set_theme requires theme light or dark');
+                        return;
+                    }
+
+                    const wasApplied = setThemeFromChat(theme);
+                    if (wasApplied) {
+                        result.applied.push(`theme set to ${theme}`);
+                    } else {
+                        result.rejected.push(`failed to set theme to ${theme}`);
+                    }
                     return;
                 }
-                const wasApplied = setThemeFromChat(theme);
-                if (wasApplied) {
-                    result.applied.push(`theme set to ${theme}`);
-                } else {
-                    result.rejected.push(`failed to set theme to ${theme}`);
-                }
-                return;
-            }
 
-            if (action.type === 'toggle_theme') {
-                const theme = toggleThemeFromChat();
-                if (theme) {
-                    result.applied.push(`theme toggled to ${theme}`);
-                } else {
-                    result.rejected.push('failed to toggle theme');
+                case 'toggle_theme': {
+                    const theme = toggleThemeFromChat();
+                    if (theme) {
+                        result.applied.push(`theme toggled to ${theme}`);
+                    } else {
+                        result.rejected.push('failed to toggle theme');
+                    }
+                    return;
                 }
-                return;
-            }
 
-            result.rejected.push(`unsupported action "${String(action.type)}"`);
+                case 'filter_cards': {
+                    const tag = normalizeTagValue(action.tag || action.filter || action.value || '');
+                    if (!tag) {
+                        result.rejected.push('filter_cards requires tag');
+                        return;
+                    }
+
+                    const outcome = applyCardFilter(tag);
+                    if (tag !== 'all' && !AI_KNOWN_TAGS.includes(tag)) {
+                        result.applied.push(`card filter "${tag}" (${outcome.shown}/${outcome.total} shown; custom tag)`);
+                    } else {
+                        result.applied.push(`card filter "${outcome.activeFilter}" (${outcome.shown}/${outcome.total} shown)`);
+                    }
+                    return;
+                }
+
+                case 'clear_card_filter': {
+                    const restored = clearCardFilter();
+                    result.applied.push(`card filter cleared (${restored} cards visible)`);
+                    return;
+                }
+
+                case 'set_visual_filter': {
+                    const summary = setVisualFilters(action);
+                    result.applied.push(`visual filter updated (${summary})`);
+                    return;
+                }
+
+                case 'set_layout_transform': {
+                    const summary = setLayoutTransform(action);
+                    result.applied.push(`layout transform updated (${summary})`);
+                    return;
+                }
+
+                case 'set_token': {
+                    const tokenName = action.token;
+                    const tokenValue = action.value;
+                    const wasApplied = applyTokenOverride(tokenName, typeof tokenValue === 'string' ? tokenValue : String(tokenValue ?? ''));
+                    if (wasApplied) {
+                        result.applied.push(`token ${tokenName} updated`);
+                    } else {
+                        result.rejected.push('set_token requires valid token and value');
+                    }
+                    return;
+                }
+
+                case 'set_tokens': {
+                    const stats = applyTokenOverrides(action.tokens);
+                    if (stats.total === 0) {
+                        result.rejected.push('set_tokens requires a tokens object');
+                        return;
+                    }
+                    if (stats.applied === 0) {
+                        result.rejected.push('set_tokens had no valid token/value pairs');
+                        return;
+                    }
+                    result.applied.push(`${stats.applied}/${stats.total} tokens updated`);
+                    return;
+                }
+
+                case 'set_chat_height': {
+                    const vh = clampNumber(action.height_vh ?? action.vh, CHAT_MIN_HEIGHT_RATIO * 100, CHAT_MAX_HEIGHT_RATIO * 100, null);
+                    const px = clampNumber(action.height_px ?? action.px, 120, getViewportHeight(), null);
+                    if (vh === null && px === null) {
+                        result.rejected.push('set_chat_height requires height_vh or height_px');
+                        return;
+                    }
+
+                    const nextHeightPx = vh !== null ? (getViewportHeight() * vh) / 100 : px;
+                    const finalHeight = applyChatHeight(nextHeightPx);
+                    result.applied.push(`chat height set to ${finalHeight}px`);
+                    return;
+                }
+
+                case 'shuffle_cards': {
+                    const shuffledCount = shuffleCards();
+                    result.applied.push(`${shuffledCount} cards shuffled`);
+                    return;
+                }
+
+                case 'chaos_mode': {
+                    const intensity = runChaosMode(action.intensity);
+                    result.applied.push(`chaos mode applied (intensity ${intensity})`);
+                    return;
+                }
+
+                case 'reset_playground': {
+                    resetPlayground();
+                    result.applied.push('playground reset');
+                    return;
+                }
+
+                default:
+                    result.rejected.push(`unsupported action "${String(action.type)}"`);
+            }
         });
 
         return result;

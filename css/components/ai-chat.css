@@ -181,6 +181,25 @@ body.ai-chat-resizing {
     color: var(--ai-chat-text-secondary);
 }
 
+/* User messages are intentionally softer than AI responses */
+.ai-chat__line--user {
+    color: var(--ai-chat-text-secondary);
+    opacity: 0.72;
+}
+
+.ai-chat__line--user .ai-chat__prompt {
+    color: var(--ai-chat-text-muted);
+}
+
+/* Extra spacing after each AI response */
+.ai-chat__line--assistant {
+    margin-bottom: 40px;
+}
+
+.ai-chat__line--assistant:last-child {
+    margin-bottom: 0;
+}
+
 /* Avatar wrapper */
 .ai-chat__avatar-wrap {
     flex-shrink: 0;
