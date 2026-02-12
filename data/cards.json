@@ -245,5 +245,25 @@
       "url": "assets/Peace Sans.zip",
       "attributes": "download"
     }
+  },
+  {
+    "title": "Plantlife",
+    "description": "Together with a few ex Nike and Apple colleagues and plant experts, and botanists from around the world, we've collaborated to create PlantLife. A new social platform for plant lovers to connect, shop, and share their experiences and expertise rooted in plants—everything from houseplants, gardening, decor, plant-based nutrition, wellness, and more. From the outset, I played a pivotal role in crafting the entire user interface, design system, and brand communications.",
+    "tag": "Project",
+    "width": "wide",
+    "media": null,
+    "mediaType": null,
+    "folder": "plantlife",
+    "link": null
+  },
+  {
+    "title": "Visa Analytics Platform",
+    "description": "Redesign of a global analytics platform by Visa with a daily use of million people worldwide.",
+    "tag": "Project",
+    "width": "regular",
+    "media": null,
+    "mediaType": null,
+    "folder": "vap",
+    "link": null
   }
 ]
