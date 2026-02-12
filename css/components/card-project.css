@@ -5,6 +5,7 @@
 
 /* Project Card Base */
 .card--project {
+    --project-layer-gap: 40px;
     position: relative;
     z-index: 10;
     transition: all 0.3s ease;
@@ -96,9 +97,9 @@ body.is-project-expanded .theme-toggle {
 /* Active layers spread out */
 body.is-project-expanded .card--project.is-active .project-layer {
     opacity: 1;
-    left: calc(var(--layer-offset-index) * (100% + 4px));
+    left: calc(var(--layer-offset-index) * (100% + var(--project-layer-gap, 40px)));
     transform: translate(0, 0) scale(1);
-    width: calc(var(--layer-width-mult) * 100% + (var(--layer-width-mult) - 1) * 4px);
+    width: calc(var(--layer-width-mult) * 100% + (var(--layer-width-mult) - 1) * var(--project-layer-gap, 40px));
     z-index: 1;
 }
 
@@ -149,7 +150,7 @@ body.is-project-expanded .close-button {
         display: flex;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        gap: 10px;
+        gap: var(--project-layer-gap, 40px);
         padding-right: 10%;
         margin: 0 -20px;
         padding-left: 20px;

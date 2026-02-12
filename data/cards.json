@@ -1,7 +1,7 @@
 [
   {
     "title": "Introduction",
-    "description": "Hi, my name is Sergey Ryadovoy. I'm a design leader with strong graphic design foundations and product thinking. 15 years in design and leadership—from branding and visual design to digital and AI products.",
+    "description": "Hi, my name is Sergey. I'm a VP of Product Design with strong visual design foundations, technical understanding and product thinking. I have 15 years in design and leadership across different categories, from branding and visual design to product design and AI integration.",
     "tag": "Personal",
     "width": "regular",
     "media": null,
@@ -13,13 +13,13 @@
     }
   },
   {
-    "title": "Visa Website (2022–2025)",
-    "description": "Directed Visa's digital rebranding rollout. I built the global design system in Figma, replacing our Sketch workflows so teams worldwide could ship consistent, accessible products faster. We created a ton of web pages and campaigns that established the new visual identity across digital. I also explored opportunities for what the site could become—ideas that are now reflected in the new website launching in 2026. We're continuing to work together on this.",
+    "title": "Visa product design",
+    "description": "I was a lead designer on the team that helped Visa roll out their digital rebranding in 2022. We rebuilt the global Figma design system, replacing their Sketch workflows so teams worldwide could ship consistent, accessible products faster. Working alongside strategists, user researchers, and copywriters, we handed off 50+ landing pages and campaigns to production that established the new visual identity across digital. From complex user research and prototypes to marketing strategies and exploring what the brand's future presence could look like, we partnered with the Visa team to explore new horizons and deliver better services to users.",
     "tag": "Project",
     "width": "wide",
-    "media": "/assets/visa-website-showcase-video.mp4",
-    "mediaType": "video",
-    "folder": null,
+    "media": null,
+    "mediaType": null,
+    "folder": "visa-website",
     "link": null
   },
   {
@@ -48,21 +48,21 @@
   },
   {
     "title": "Global brands",
-    "description": "Worked with many global brands across my career. Visa, Delta, Amway, Mondelez, L'Oreal, RaceTrac, and more. Everything from websites and apps to global campaigns. Every project taught me something new about working at scale.",
+    "description": "Worked with many global brands across my career. Visa, Sephora, Delta, Amway, Mondelez, L'Oreal, RaceTrac, and more. Everything from websites and apps to global campaigns. Every project taught me something new about working at scale.",
     "tag": "Experience",
     "width": "regular",
-    "media": "/assets/visa-brand-identity-animation.gif",
+    "media": "/assets/sephora.gif",
     "mediaType": "image",
     "folder": null,
     "link": null
   },
   {
     "title": "Prototyping",
-    "description": "From detailed prototypes in Figma to interactive prototype in HTML, Javascript. Building, iterating and brainstorming with AI and building quick prototypes, and using detailed Figma prototypes ]to make it look as close as the real product. I use CLI and IDE like Antigravity and Claude Code for code, and Figma prototypes and Figma makes for prototyping in Figma.",
+    "description": "From detailed prototypes in Figma to interactive prototype in HTML and Javascript. Building, iterating and brainstorming with AI and building quick prototypes, and using detailed Figma prototypes to make it look as close as the real product. I use CLI and IDE like Antigravity and Claude Code for code, and Figma prototypes and Figma Make for prototyping in Figma.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/prototyping-figma-demo.gif",
-    "mediaType": "image",
+    "media": "/assets/racetrac-prototype.mp4",
+    "mediaType": "video",
     "folder": null,
     "link": null
   },
@@ -159,7 +159,7 @@
     "description": "I've given several public talks about AI and design. Sharing experiments, tools, and interesting ways designers can use AI in their work.",
     "tag": "Experience",
     "width": "regular",
-    "media": "/assets/public-talks-magic-of-code.gif",
+    "media": "/assets/magic-of-code.jpg",
     "mediaType": "image",
     "folder": null,
     "link": null
@@ -169,9 +169,9 @@
     "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products.",
     "tag": "Project",
     "width": "wide",
-    "media": "/assets/amway-website-redesign.gif",
-    "mediaType": "image",
-    "folder": null,
+    "media": null,
+    "mediaType": null,
+    "folder": "amway",
     "link": {
       "text": "Visit website",
       "url": "https://www.amway.com/",
@@ -189,26 +189,6 @@
     "link": null
   },
   {
-    "title": "Logo design",
-    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/logo-design-collection-animated.gif",
-    "mediaType": "image",
-    "folder": null,
-    "link": null
-  },
-  {
-    "title": "36 days of type",
-    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
-    "tag": "Experiment",
-    "width": "wide",
-    "media": "/assets/36-days-of-type-creative-coding.gif",
-    "mediaType": "image",
-    "folder": null,
-    "link": null
-  },
-  {
     "title": "Peace Sans Free Font",
     "description": "Peace Sans is a free display font I designed. It reached 500K+ downloads and became one of the most popular free fonts on Behance. I wanted to give something back to the design community.",
     "tag": "Project",
@@ -221,6 +201,26 @@
       "url": "assets/Peace Sans.zip",
       "attributes": "download"
     }
+  },
+  {
+    "title": "36 days of type",
+    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
+    "tag": "Experiment",
+    "width": "wide",
+    "media": "/assets/36-days-of-type-creative-coding.gif",
+    "mediaType": "image",
+    "folder": null,
+    "link": null
+  },
+  {
+    "title": "Logo design",
+    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/logo-design-collection-animated.gif",
+    "mediaType": "image",
+    "folder": null,
+    "link": null
   },
   {
     "title": "Packaging design",

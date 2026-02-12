@@ -94,6 +94,43 @@
     align-items: flex-start;
 }
 
+/* Simplified profile block */
+.sidebar__identity {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+}
+
+.sidebar__identity-name,
+.sidebar__identity-email {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+}
+
+.sidebar__identity-name {
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-medium);
+}
+
+.sidebar__identity-email {
+    color: var(--text-secondary);
+}
+
+.sidebar__identity-link {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.sidebar__identity-link:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
 .sidebar__nav-link {
     font-size: var(--font-size-sm);
     color: var(--link-color);
@@ -348,6 +385,7 @@
 
     /* Links alignment */
     .sidebar__nav,
+    .sidebar__identity,
     .sidebar__intro,
     .sidebar__contact {
         width: 100%;

@@ -1355,8 +1355,7 @@ class CardEditor {
         if (!track) return;
 
         track.style.transition = 'transform 0.3s ease';
-        // Use percentage + gap to avoid sub-pixel rendering gaps
-        track.style.transform = `translateX(calc(-${index} * (100% + 2px)))`;
+        track.style.transform = `translateX(calc(-${index} * (100% + var(--carousel-gap, 40px))))`;
 
         zone.dataset.currentSlide = index;
     }

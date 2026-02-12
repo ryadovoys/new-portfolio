@@ -19,6 +19,8 @@ class CardViewer {
         this.velocity = 0;
         this.momentumId = null;
         this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.cardsInViewport = new Set();
+        this.cardVisibilityObserver = null;
 
         this.init();
     }
@@ -28,12 +30,19 @@ class CardViewer {
         this.setupProjectCards();
         this.bindGlobalEvents();
         this.forceMuteAll();
+        this.setupVideoVisibilityObserver();
     }
 
     forceMuteAll() {
         const handleVideo = (v) => {
             v.muted = true;
             v.setAttribute('muted', '');
+            v.pause();
+
+            const card = v.closest('.card');
+            if (card && this.cardVisibilityObserver) {
+                this.cardVisibilityObserver.observe(card);
+            }
         };
 
         // Mute existing
@@ -46,6 +55,9 @@ class CardViewer {
                     if (node.nodeName === 'VIDEO') {
                         handleVideo(node);
                     } else if (node.querySelectorAll) {
+                        if (node.classList && node.classList.contains('card') && this.cardVisibilityObserver) {
+                            this.cardVisibilityObserver.observe(node);
+                        }
                         node.querySelectorAll('video').forEach(handleVideo);
                     }
                 });
@@ -55,6 +67,162 @@ class CardViewer {
         observer.observe(document.body, {
             childList: true,
             subtree: true
+        });
+    }
+
+    hasFilenameToken(filename, token) {
+        const base = String(filename || '').replace(/\.[^.]+$/, '').toLowerCase();
+        if (!base) return false;
+
+        const segments = base.split(/[-_]+/).filter(Boolean);
+        return segments.includes(String(token || '').toLowerCase());
+    }
+
+    getMediaAspectRatio(media) {
+        if (!media) return 1;
+
+        if (media.tagName === 'VIDEO') {
+            const vw = media.videoWidth;
+            const vh = media.videoHeight;
+            if (vw > 0 && vh > 0) return vw / vh;
+        } else if (media.tagName === 'IMG') {
+            const nw = media.naturalWidth;
+            const nh = media.naturalHeight;
+            if (nw > 0 && nh > 0) return nw / nh;
+        }
+
+        const rect = media.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+            return rect.width / rect.height;
+        }
+
+        return 1;
+    }
+
+    recalculateLayerGeometry(card, container) {
+        const layers = Array.from(card.querySelectorAll('.project-layer'));
+        if (layers.length === 0) return;
+
+        const containerRect = container.getBoundingClientRect();
+        const containerWidth = containerRect.width || container.offsetWidth || 0;
+        const containerHeight = containerRect.height || container.offsetHeight || 0;
+        if (containerWidth <= 0 || containerHeight <= 0) return;
+
+        let currentOffsetIndex = 1;
+
+        layers.forEach((layer) => {
+            const fallbackWidthMult = parseFloat(layer.dataset.baseWidthMult || '1') || 1;
+            let widthMult = fallbackWidthMult;
+
+            if (layer.dataset.heightDriven === 'true') {
+                const media = layer.querySelector('img, video');
+                const ratio = this.getMediaAspectRatio(media);
+                if (ratio > 0) {
+                    widthMult = (containerHeight * ratio) / containerWidth;
+                }
+            }
+
+            layer.style.setProperty('--layer-offset-index', currentOffsetIndex);
+            layer.style.setProperty('--layer-width-mult', widthMult);
+            currentOffsetIndex += widthMult;
+        });
+    }
+
+    getProjectLayerGap(card) {
+        if (!card) return 40;
+        const raw = getComputedStyle(card).getPropertyValue('--project-layer-gap');
+        const parsed = parseFloat(raw);
+        return Number.isFinite(parsed) ? parsed : 40;
+    }
+
+    // =================================================================
+    // VIDEO PLAYBACK (VISIBLE AREA ONLY)
+    // =================================================================
+
+    setupVideoVisibilityObserver() {
+        if (this.cardVisibilityObserver) {
+            this.cardVisibilityObserver.disconnect();
+        }
+
+        this.cardsInViewport.clear();
+
+        this.cardVisibilityObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                const card = entry.target;
+                const isVisible = entry.isIntersecting && entry.intersectionRatio >= 0.2;
+
+                if (isVisible) {
+                    this.cardsInViewport.add(card);
+                } else {
+                    this.cardsInViewport.delete(card);
+                }
+
+                this.updateCardVideoPlayback(card);
+            });
+        }, {
+            threshold: [0, 0.2, 0.6]
+        });
+
+        document.querySelectorAll('.card').forEach((card) => {
+            this.cardVisibilityObserver.observe(card);
+        });
+
+        this.updateAllCardVideoPlayback();
+    }
+
+    isCardPlaybackVisible(card) {
+        return card.classList.contains('is-active') || this.cardsInViewport.has(card);
+    }
+
+    playVideo(videoEl) {
+        videoEl.muted = true;
+        videoEl.setAttribute('muted', '');
+        const playPromise = videoEl.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => { });
+        }
+    }
+
+    updateAllCardVideoPlayback() {
+        document.querySelectorAll('.card').forEach((card) => {
+            this.updateCardVideoPlayback(card);
+        });
+    }
+
+    updateCardVideoPlayback(card) {
+        if (!card) return;
+        const videos = card.querySelectorAll('video');
+        if (videos.length === 0) return;
+
+        const shouldPlay = this.isCardPlaybackVisible(card);
+
+        videos.forEach((videoEl) => {
+            videoEl.muted = true;
+            videoEl.setAttribute('muted', '');
+            videoEl.pause();
+        });
+
+        if (!shouldPlay) return;
+
+        const carouselVideos = new Set();
+        card.querySelectorAll('.card__image--carousel').forEach((zone) => {
+            const track = zone.querySelector('.carousel__track');
+            if (!track) return;
+
+            track.querySelectorAll('video').forEach((videoEl) => carouselVideos.add(videoEl));
+            const currentIndex = parseInt(zone.dataset.currentSlide, 10) || 0;
+            const activeSlide = track.children[currentIndex];
+            const activeVideo = activeSlide ? activeSlide.querySelector('video') : null;
+
+            if (activeVideo) {
+                this.playVideo(activeVideo);
+            }
+        });
+
+        videos.forEach((videoEl) => {
+            if (!carouselVideos.has(videoEl)) {
+                this.playVideo(videoEl);
+            }
         });
     }
 
@@ -73,9 +241,8 @@ class CardViewer {
 
             window.addEventListener('resize', () => {
                 const currentSlide = parseInt(zone.dataset.currentSlide) || 0;
-                const slideWidth = zone.offsetWidth;
                 track.style.transition = 'none';
-                track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+                track.style.transform = this.getCarouselTransform(currentSlide);
             });
         });
     }
@@ -172,24 +339,18 @@ class CardViewer {
     }
 
     goToCarouselSlide(zone, track, index) {
-        const slideWidth = zone.offsetWidth;
         track.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
-        track.style.transform = `translateX(-${index * slideWidth}px)`;
+        track.style.transform = this.getCarouselTransform(index);
         zone.dataset.currentSlide = index;
 
-        track.querySelectorAll('video').forEach(v => {
-            v.pause();
-            v.muted = true;
-        });
-
-        const activeSlide = track.children[index];
-        if (activeSlide) {
-            const video = activeSlide.querySelector('video');
-            if (video) {
-                video.muted = true;
-                video.play().catch(() => { });
-            }
+        const card = zone.closest('.card');
+        if (card) {
+            this.updateCardVideoPlayback(card);
         }
+    }
+
+    getCarouselTransform(index) {
+        return `translateX(calc(-${index} * (100% + var(--carousel-gap, 40px))))`;
     }
 
     // =================================================================
@@ -224,7 +385,7 @@ class CardViewer {
 
             // Setup Main Media
             const mainAsset = assets[0];
-            const isWide = mainAsset.filename.startsWith('-w');
+            const isWide = this.hasFilenameToken(mainAsset.filename, 'w');
 
             // Allow card to stay wide if it was manually added as wide, OR if the first image dictates it
             const shouldBeWide = card.classList.contains('card--wide') || isWide;
@@ -277,6 +438,7 @@ class CardViewer {
                 layers.forEach(l => {
                     l.style.height = `${imageContainer.offsetHeight}px`;
                 });
+                this.recalculateLayerGeometry(card, imageContainer);
             });
             observer.observe(imageContainer);
 
@@ -291,6 +453,8 @@ class CardViewer {
             card.addEventListener('mouseenter', () => {
                 this.randomizeLayerHover(card);
             });
+
+            this.updateCardVideoPlayback(card);
 
         } catch (e) {
             console.error('Error setting up project card:', e);
@@ -310,15 +474,18 @@ class CardViewer {
             layer.className = `project-layer project-layer--${i}`;
 
             const asset = assets[i - 1];
-            const isWide = asset.filename && asset.filename.includes('-w');
-            const widthMult = isWide ? 2 : 1;
+            const isWide = this.hasFilenameToken(asset.filename, 'w');
+            const isHeightDriven = this.hasFilenameToken(asset.filename, 'h');
+            const widthMult = isHeightDriven ? 1 : (isWide ? 2 : 1);
 
             layer.style.setProperty('--layer-offset-index', currentOffsetIndex);
             layer.style.setProperty('--layer-width-mult', widthMult);
+            layer.dataset.baseWidthMult = String(widthMult);
+            layer.dataset.heightDriven = isHeightDriven ? 'true' : 'false';
 
             currentOffsetIndex += widthMult;
 
-            if (isWide) {
+            if (isWide && !isHeightDriven) {
                 layer.classList.add('project-layer--wide');
             }
 
@@ -343,6 +510,12 @@ class CardViewer {
                 vid.style.height = '100%';
                 vid.style.objectFit = 'cover';
                 layer.appendChild(vid);
+
+                if (isHeightDriven) {
+                    vid.addEventListener('loadedmetadata', () => {
+                        this.recalculateLayerGeometry(card, container);
+                    }, { once: true });
+                }
             } else {
                 const img = document.createElement('img');
                 img.src = asset.path;
@@ -351,6 +524,16 @@ class CardViewer {
                 img.style.height = '100%';
                 img.style.objectFit = 'cover';
                 layer.appendChild(img);
+
+                if (isHeightDriven) {
+                    if (img.complete && img.naturalWidth > 0) {
+                        this.recalculateLayerGeometry(card, container);
+                    } else {
+                        img.addEventListener('load', () => {
+                            this.recalculateLayerGeometry(card, container);
+                        }, { once: true });
+                    }
+                }
             }
 
             container.appendChild(layer);
@@ -365,6 +548,8 @@ class CardViewer {
                 l.style.height = '';
             }
         });
+
+        this.recalculateLayerGeometry(card, container);
     }
 
     randomizeLayerInitialState(card) {
@@ -417,7 +602,9 @@ class CardViewer {
         if (card.dataset.a11yBound === 'true') return;
 
         card.addEventListener('keydown', (e) => {
-            if (e.target && e.target.closest && e.target.closest('a')) return;
+            // Only treat Enter/Space as activation when the card itself has focus.
+            // This avoids hijacking typing in contenteditable fields when local editor is active.
+            if (e.target !== card) return;
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 card.click();
@@ -466,6 +653,7 @@ class CardViewer {
 
                 document.body.classList.add('is-project-expanded');
                 card.classList.add('is-active');
+                this.updateCardVideoPlayback(card);
 
                 self.activeExpandedCard = card;
                 self.activeCloseFunction = () => self.closeExpanded(card);
@@ -562,6 +750,7 @@ class CardViewer {
                 placeholder.remove();
             }
             card.classList.remove('is-closing');
+            this.updateCardVideoPlayback(card);
         };
 
         if (placeholder) {
@@ -592,6 +781,8 @@ class CardViewer {
             this.activeCloseFunction = null;
             cleanup();
         }
+
+        this.updateAllCardVideoPlayback();
     }
 
     // =================================================================
@@ -754,6 +945,7 @@ class CardViewer {
         const cardWidth = this.activeExpandedCard.offsetWidth;
         const padding = parseFloat(style.paddingTop) || 20;
         const layers = this.activeExpandedCard.querySelectorAll('.project-layer');
+        const layerGap = this.getProjectLayerGap(this.activeExpandedCard);
 
         let totalContentWidth = 0;
         if (layers.length > 0) {
@@ -761,7 +953,6 @@ class CardViewer {
             const layerIndex = parseFloat(lastLayer.style.getPropertyValue('--layer-offset-index')) || layers.length;
             const widthMult = parseFloat(lastLayer.style.getPropertyValue('--layer-width-mult')) || 1;
 
-            const layerGap = 4;
             const unitSize = cardWidth + layerGap;
 
             const lastLayerEnd = (layerIndex * unitSize) + (widthMult * cardWidth + (widthMult - 1) * layerGap);
@@ -820,7 +1011,7 @@ class CardViewer {
 
         const layers = this.activeExpandedCard.querySelectorAll('.project-layer');
 
-        const layerGap = 4;
+        const layerGap = this.getProjectLayerGap(this.activeExpandedCard);
         let totalContentWidth = 0;
 
         if (layers.length > 0) {

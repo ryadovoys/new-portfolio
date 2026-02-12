@@ -20,12 +20,15 @@ body.ai-chat-active {
 
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
 }
 
 .ai-chat-overlay.active {
     pointer-events: auto;
     opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease, visibility 0s linear 0s;
 }
 
 /* Close Button */
@@ -328,5 +331,4 @@ body.ai-chat-active {
     .ai-chat__hint {
         display: none;
     }
-
-    ```
+}
