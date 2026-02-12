@@ -547,6 +547,7 @@ class CardViewer {
                 mainMediaEl.src = mainAsset.path;
                 mainMediaEl.alt = `${cardTitle} preview`;
             }
+            mainMediaEl.classList.add('project-main-media');
             imageContainer.appendChild(mainMediaEl);
 
             // Create Layers
@@ -691,11 +692,16 @@ class CardViewer {
     }
 
     randomizeLayerHover(card) {
-        const layers = card.querySelectorAll('.project-layer');
+        const layers = Array.from(card.querySelectorAll('.project-layer'));
+        if (layers.length === 0) return;
+
+        const mainMedia = card.querySelector('.project-main-media');
+        const hoverTargets = mainMedia ? [mainMedia, ...layers] : layers;
+
         // Randomly pick starting side for the first layer: 0 for leftish, 1 for rightish
         let side = Math.random() < 0.5 ? 0 : 1;
 
-        layers.forEach((layer) => {
+        hoverTargets.forEach((target) => {
             // angle ranges (in radians):
             // Leftish-up: ~100 to 160 degrees (1.7 to 2.8 rad)
             // Rightish-up: ~20 to 80 degrees (0.35 to 1.4 rad)
@@ -713,9 +719,9 @@ class CardViewer {
 
             const rotation = (Math.random() * 6) - 3; // -3 to +3
 
-            layer.style.setProperty('--hover-x', `${x}px`);
-            layer.style.setProperty('--hover-y', `${y}px`);
-            layer.style.setProperty('--hover-rotation', `${rotation}deg`);
+            target.style.setProperty('--hover-x', `${x}px`);
+            target.style.setProperty('--hover-y', `${y}px`);
+            target.style.setProperty('--hover-rotation', `${rotation}deg`);
 
             // Flip side for the next layer
             side = 1 - side;
