@@ -21,9 +21,13 @@ function syncCardImageHeights() {
     const targetHeight = rect.height;
 
     // 3. Apply to all Wide Cards
-    const wideImages = document.querySelectorAll('.card--wide .card__image');
+    const wideImages = document.querySelectorAll('.card--wide:not(.card--project) .card__image');
 
     wideImages.forEach(img => {
+        // Avoid overriding cards that rely on intrinsic/media-driven layout.
+        if (img.classList.contains('card__image--carousel')) return;
+        if (img.querySelector('video')) return;
+
         // Enforce the height
         img.style.height = `${targetHeight}px`;
         // Disable aspect-ratio if CSS interferes

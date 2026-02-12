@@ -58,7 +58,7 @@
   },
   {
     "title": "Prototyping",
-    "description": "From detailed prototypes in Figma to interactive prototype in HTML and Javascript. Building, iterating and brainstorming with AI and building quick prototypes, and using detailed Figma prototypes to make it look as close as the real product. I use CLI and IDE like Antigravity and Claude Code for code, and Figma prototypes and Figma Make for prototyping in Figma.",
+    "description": "Quick iteration with AI in Figma Make or Claude Code with Figma MCP, and then detailed prototypes with complex animations in Figma. This was my main approach for prototyping for the last year. The prototyping keep evolving, and I'm always staying ahead of all the latest practices, because prototyping is essential part of any workflow.",
     "tag": "Skill",
     "width": "regular",
     "media": "/assets/racetrac-prototype.mp4",

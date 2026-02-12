@@ -804,8 +804,11 @@ class CardViewer {
                     targetLeft = 20;
                     targetWidth = window.innerWidth - 40;
                 } else {
-                    const imgRect = imageContainer.getBoundingClientRect();
-                    const imageRatio = imgRect.width / imgRect.height;
+                    // Keep expanded sizing deterministic. Using measured box ratio here can be
+                    // unstable when other scripts temporarily force inline heights during load.
+                    const imageRatio = card.classList.contains('card--wide')
+                        ? (16 / 9)
+                        : (1 / 1.236);
 
                     const targetImageHeight = window.innerHeight - 120;
                     const targetImageWidth = targetImageHeight * imageRatio;
