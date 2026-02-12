@@ -734,7 +734,7 @@ class CardViewer {
     randomizeLayerInitialState(card) {
         const layers = card.querySelectorAll('.project-layer');
         layers.forEach(layer => {
-            const initialRotation = (Math.random() * 4) - 2; // -2 to +2
+            const initialRotation = (Math.random() * 6) - 3; // -3 to +3
             layer.style.setProperty('--initial-rotation', `${initialRotation}deg`);
         });
     }
@@ -763,6 +763,19 @@ class CardViewer {
 
     clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
+    }
+
+    getCenterResponseFactor(currentPush, delta, softLimit = 146) {
+        const distance = Math.min(1, Math.abs(currentPush) / softLimit);
+        const movingAway = currentPush !== 0 && Math.sign(delta) === Math.sign(currentPush);
+
+        if (movingAway) {
+            // The farther from center, the "heavier" it feels when pushing farther out.
+            return 1 - (distance * 0.86);
+        }
+
+        // When returning toward center, movement feels lighter and more responsive.
+        return 1 + (distance * 0.8);
     }
 
     getProjectHoverTargets(card) {
@@ -876,9 +889,11 @@ class CardViewer {
 
             const resistanceX = 1 - Math.min(0.76, Math.abs(state.pushX) / 150);
             const resistanceY = 1 - Math.min(0.76, Math.abs(state.pushY) / 150);
+            const centerResponseX = this.getCenterResponseFactor(state.pushX, deltaX, 146);
+            const centerResponseY = this.getCenterResponseFactor(state.pushY, deltaY, 146);
 
-            state.pushX = this.clamp(state.pushX + (deltaX * 0.31 * resistanceX), -146, 146);
-            state.pushY = this.clamp(state.pushY + (deltaY * 0.31 * resistanceY), -146, 146);
+            state.pushX = this.clamp(state.pushX + (deltaX * 0.31 * resistanceX * centerResponseX), -146, 146);
+            state.pushY = this.clamp(state.pushY + (deltaY * 0.31 * resistanceY * centerResponseY), -146, 146);
 
             this.applyProjectHoverPush(card, state.pushX, state.pushY);
         });
