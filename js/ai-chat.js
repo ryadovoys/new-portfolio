@@ -12,17 +12,20 @@
     let inputText = '';
     let isLoading = false;
     let showingResponse = false;
-    let contextText = '';
     let isContextLoading = false;
     let contextLoadPromise = null;
-    let contextCopyResetTimer = null;
     const CONTEXT_FILES = [
         '/assets/sergey-ryadovoy-context-2.md',
         '/assets/sergey-ryadovoy-context.md'
     ];
+    const CHAT_HEIGHT_STORAGE_KEY = 'ai-chat-height-px';
+    const CHAT_DEFAULT_HEIGHT_RATIO = 1 / 3;
+    const CHAT_MIN_HEIGHT_RATIO = 0.24;
+    const CHAT_MAX_HEIGHT_RATIO = 0.9;
 
     let chatHistory = [];
     let suggestionIndex = -1;
+    let resizeState = null;
 
     const SUGGESTED_QUESTIONS = [
         "Who is Sergey?",
@@ -63,16 +66,155 @@
             <input type="text" class="ai-chat__input" placeholder="What's on your mind?" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
         <div class="ai-chat__footer">
-            <button type="button" class="ai-chat__context-link ai-chat__context-copy">Copy Sergey's Context</button>
             <span class="ai-chat__hint">Press up or down key for suggestions</span>
         </div>
+        <div class="ai-chat__resize-handle" role="separator" aria-label="Resize chat panel" aria-orientation="horizontal" tabindex="0"></div>
     `;
     document.body.appendChild(overlay);
 
 
     const inputEl = overlay.querySelector('.ai-chat__input');
     const responseEl = overlay.querySelector('.ai-chat__response-area');
-    const contextCopyEl = overlay.querySelector('.ai-chat__context-copy');
+    const resizeHandleEl = overlay.querySelector('.ai-chat__resize-handle');
+
+    function isPlainTypingKey(e) {
+        return e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey;
+    }
+
+    function focusInputAndAppend(text) {
+        inputEl.focus({ preventScroll: true });
+        if (!text) return;
+        inputEl.value += text;
+        inputEl.selectionStart = inputEl.selectionEnd = inputEl.value.length;
+    }
+
+    function getViewportHeight() {
+        return Math.max(window.innerHeight || 0, window.visualViewport?.height || 0, 1);
+    }
+
+    function getHeightBounds() {
+        const viewportHeight = getViewportHeight();
+        const min = Math.round(viewportHeight * CHAT_MIN_HEIGHT_RATIO);
+        const max = Math.round(viewportHeight * CHAT_MAX_HEIGHT_RATIO);
+        return { min, max };
+    }
+
+    function clampChatHeight(nextHeight) {
+        const { min, max } = getHeightBounds();
+        return Math.min(max, Math.max(min, Math.round(nextHeight)));
+    }
+
+    function getSavedChatHeight() {
+        try {
+            const rawValue = localStorage.getItem(CHAT_HEIGHT_STORAGE_KEY);
+            const parsed = Number(rawValue);
+            return Number.isFinite(parsed) ? parsed : null;
+        } catch (err) {
+            console.warn('Could not read chat height from localStorage:', err);
+            return null;
+        }
+    }
+
+    function persistChatHeight(height) {
+        try {
+            localStorage.setItem(CHAT_HEIGHT_STORAGE_KEY, String(height));
+        } catch (err) {
+            console.warn('Could not persist chat height:', err);
+        }
+    }
+
+    function applyChatHeight(nextHeight, options = {}) {
+        const { persist = true } = options;
+        const clamped = clampChatHeight(nextHeight);
+        overlay.style.height = `${clamped}px`;
+        if (persist) {
+            persistChatHeight(clamped);
+        }
+        return clamped;
+    }
+
+    function initChatHeight() {
+        const savedHeight = getSavedChatHeight();
+        const initialHeight = Number.isFinite(savedHeight)
+            ? savedHeight
+            : getViewportHeight() * CHAT_DEFAULT_HEIGHT_RATIO;
+        applyChatHeight(initialHeight, { persist: false });
+    }
+
+    function startResize(event) {
+        if (event.button !== 0) return;
+        event.preventDefault();
+
+        resizeState = {
+            pointerId: event.pointerId,
+            startY: event.clientY,
+            startHeight: overlay.getBoundingClientRect().height
+        };
+
+        overlay.classList.add('is-resizing');
+        document.body.classList.add('ai-chat-resizing');
+
+        if (resizeHandleEl.setPointerCapture) {
+            resizeHandleEl.setPointerCapture(event.pointerId);
+        }
+    }
+
+    function moveResize(event) {
+        if (!resizeState || event.pointerId !== resizeState.pointerId) return;
+        event.preventDefault();
+
+        const deltaY = event.clientY - resizeState.startY;
+        const nextHeight = resizeState.startHeight + deltaY;
+        applyChatHeight(nextHeight, { persist: false });
+    }
+
+    function endResize(event) {
+        if (!resizeState) return;
+        if (event && event.pointerId !== undefined && event.pointerId !== resizeState.pointerId) return;
+
+        const finalHeight = overlay.getBoundingClientRect().height;
+        persistChatHeight(clampChatHeight(finalHeight));
+
+        if (resizeHandleEl.releasePointerCapture && resizeHandleEl.hasPointerCapture(resizeState.pointerId)) {
+            resizeHandleEl.releasePointerCapture(resizeState.pointerId);
+        }
+
+        resizeState = null;
+        overlay.classList.remove('is-resizing');
+        document.body.classList.remove('ai-chat-resizing');
+    }
+
+    function handleResizeByKeyboard(event) {
+        if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+        event.preventDefault();
+
+        const step = event.shiftKey ? 48 : 24;
+        const delta = event.key === 'ArrowDown' ? step : -step;
+        const currentHeight = overlay.getBoundingClientRect().height;
+        applyChatHeight(currentHeight + delta);
+    }
+
+    function syncChatHeightToViewport() {
+        const currentHeight = overlay.getBoundingClientRect().height || getViewportHeight() * CHAT_DEFAULT_HEIGHT_RATIO;
+        applyChatHeight(currentHeight, { persist: false });
+    }
+
+    function handleOverlayWheel(event) {
+        if (!isActive) return;
+        if (!overlay.contains(event.target)) return;
+
+        const maxScrollTop = responseEl.scrollHeight - responseEl.clientHeight;
+        if (maxScrollTop > 0) {
+            responseEl.scrollTop += event.deltaY;
+        }
+
+        // Keep wheel control inside chat and bypass global smooth-scroll handlers.
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === 'function') {
+            event.stopImmediatePropagation();
+        }
+    }
 
     // Activate overlay (start typing)
     function activate() {
@@ -92,9 +234,6 @@
 
         // Always render history (restored or new)
         renderHistory();
-
-        // Focus input after a short delay to ensure overlay is visible
-        setTimeout(() => inputEl.focus(), 100);
     }
 
     // Deactivate overlay
@@ -167,34 +306,16 @@
 
     // System prompt placeholder - will be fetched
     let SYSTEM_PROMPT = '';
-
-    function setContextCopyLabel(label) {
-        if (contextCopyResetTimer) {
-            clearTimeout(contextCopyResetTimer);
-            contextCopyResetTimer = null;
-        }
-        contextCopyEl.textContent = label;
-    }
-
-    function queueContextCopyLabelReset() {
-        contextCopyResetTimer = setTimeout(() => {
-            contextCopyEl.textContent = "Copy Sergey's Context";
-            contextCopyResetTimer = null;
-        }, 1800);
-    }
-
-    function fallbackCopyText(text) {
-        const temp = document.createElement('textarea');
-        temp.value = text;
-        temp.setAttribute('readonly', '');
-        temp.style.position = 'absolute';
-        temp.style.left = '-9999px';
-        document.body.appendChild(temp);
-        temp.select();
-        const copied = document.execCommand('copy');
-        document.body.removeChild(temp);
-        return copied;
-    }
+    const AI_ACTIONS_SYSTEM_PROMPT = [
+        'You can optionally control website behavior using a strict action tag.',
+        'When a user asks to change website UI state, append exactly one block at the end of your message:',
+        '<app-actions>{"actions":[{"type":"set_theme","theme":"dark"}]}</app-actions>',
+        'Rules:',
+        '- Allowed actions only: {"type":"set_theme","theme":"light|dark"} and {"type":"toggle_theme"}.',
+        '- Never output CSS, JS, HTML, or any other action types.',
+        '- If a request is unsupported, explain it in plain text and omit <app-actions>.',
+        '- Keep normal conversational text outside the tag.'
+    ].join('\n');
 
     async function loadContextFile() {
         if (contextLoadPromise) return contextLoadPromise;
@@ -202,7 +323,6 @@
         contextLoadPromise = (async () => {
             if (isContextLoading) return;
             isContextLoading = true;
-            setContextCopyLabel('Loading context...');
 
             try {
                 for (const path of CONTEXT_FILES) {
@@ -211,9 +331,7 @@
                         if (!response.ok) continue;
                         const text = await response.text();
                         if (!text || !text.trim()) continue;
-                        contextText = text;
                         SYSTEM_PROMPT = text;
-                        setContextCopyLabel("Copy Sergey's Context");
                         return;
                     } catch (err) {
                         console.warn(`Context fetch failed for ${path}:`, err);
@@ -224,8 +342,6 @@
             } catch (err) {
                 console.error('Failed to load context file:', err);
                 SYSTEM_PROMPT = `You are Sergey Ryadovoy's digital twin. You speak in first person. You are a Design VP at Digitas.`;
-                setContextCopyLabel('Context unavailable');
-                queueContextCopyLabelReset();
             } finally {
                 isContextLoading = false;
             }
@@ -237,36 +353,158 @@
             contextLoadPromise = null;
         }
     }
+    loadContextFile();
+    initChatHeight();
+    window.addEventListener('resize', syncChatHeightToViewport);
+    window.addEventListener('wheel', handleOverlayWheel, { passive: false, capture: true });
 
-    async function copyContext() {
-        if (!contextText) {
-            await loadContextFile();
-        }
+    resizeHandleEl.addEventListener('pointerdown', startResize);
+    resizeHandleEl.addEventListener('pointermove', moveResize);
+    resizeHandleEl.addEventListener('pointerup', endResize);
+    resizeHandleEl.addEventListener('pointercancel', endResize);
+    resizeHandleEl.addEventListener('lostpointercapture', endResize);
+    resizeHandleEl.addEventListener('keydown', handleResizeByKeyboard);
 
-        if (!contextText) {
-            setContextCopyLabel('Context unavailable');
-            queueContextCopyLabelReset();
-            return;
-        }
-
-        try {
-            if (navigator.clipboard && window.isSecureContext) {
-                await navigator.clipboard.writeText(contextText);
-            } else {
-                const copied = fallbackCopyText(contextText);
-                if (!copied) throw new Error('Fallback copy failed');
-            }
-            setContextCopyLabel('Context copied');
-        } catch (err) {
-            console.error('Copy failed:', err);
-            setContextCopyLabel('Copy failed');
-        }
-
-        queueContextCopyLabelReset();
+    function buildChatRequestPayload() {
+        return {
+            messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                { role: 'system', content: AI_ACTIONS_SYSTEM_PROMPT },
+                ...chatHistory
+            ]
+        };
     }
 
-    contextCopyEl.addEventListener('click', copyContext);
-    loadContextFile();
+    function parseJsonObject(rawValue) {
+        if (typeof rawValue !== 'string') return null;
+
+        try {
+            return JSON.parse(rawValue);
+        } catch {
+            const withoutFence = rawValue
+                .replace(/^```(?:json)?\s*/i, '')
+                .replace(/\s*```$/, '')
+                .trim();
+
+            if (!withoutFence) return null;
+            try {
+                return JSON.parse(withoutFence);
+            } catch {
+                return null;
+            }
+        }
+    }
+
+    function normalizeThemeValue(value) {
+        if (typeof value !== 'string') return null;
+        const normalized = value.trim().toLowerCase();
+        return normalized === 'dark' || normalized === 'light' ? normalized : null;
+    }
+
+    function extractAppActions(text) {
+        if (typeof text !== 'string') {
+            return {
+                cleanText: '',
+                actions: [],
+                hadActionTag: false
+            };
+        }
+
+        const actionTagRegex = /<app-actions>([\s\S]*?)<\/app-actions>/gi;
+        const actions = [];
+        let hadActionTag = false;
+        let match;
+
+        while ((match = actionTagRegex.exec(text)) !== null) {
+            hadActionTag = true;
+            const parsed = parseJsonObject(match[1].trim());
+            if (!parsed || !Array.isArray(parsed.actions)) continue;
+            parsed.actions.forEach(action => actions.push(action));
+        }
+
+        return {
+            cleanText: text.replace(/<app-actions>[\s\S]*?<\/app-actions>/gi, '').trim(),
+            actions,
+            hadActionTag
+        };
+    }
+
+    function setThemeFromChat(theme) {
+        const normalizedTheme = normalizeThemeValue(theme);
+        if (!normalizedTheme) return false;
+
+        if (typeof window.setThemeGlobal === 'function') {
+            return !!window.setThemeGlobal(normalizedTheme);
+        }
+
+        document.documentElement.setAttribute('data-theme', normalizedTheme);
+        try {
+            localStorage.setItem('theme', normalizedTheme);
+        } catch (err) {
+            console.warn('Theme persistence failed:', err);
+        }
+        return true;
+    }
+
+    function toggleThemeFromChat() {
+        if (typeof window.toggleThemeGlobal === 'function') {
+            window.toggleThemeGlobal();
+            const current = document.documentElement.getAttribute('data-theme');
+            return normalizeThemeValue(current);
+        }
+
+        const currentTheme = normalizeThemeValue(document.documentElement.getAttribute('data-theme')) || 'dark';
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        const wasApplied = setThemeFromChat(nextTheme);
+        return wasApplied ? nextTheme : null;
+    }
+
+    function runAppActions(actions) {
+        const result = {
+            applied: [],
+            rejected: []
+        };
+
+        if (!Array.isArray(actions) || actions.length === 0) {
+            return result;
+        }
+
+        actions.forEach(action => {
+            if (!action || typeof action !== 'object') {
+                result.rejected.push('invalid action payload');
+                return;
+            }
+
+            if (action.type === 'set_theme') {
+                const theme = normalizeThemeValue(action.theme);
+                if (!theme) {
+                    result.rejected.push('set_theme requires theme light or dark');
+                    return;
+                }
+                const wasApplied = setThemeFromChat(theme);
+                if (wasApplied) {
+                    result.applied.push(`theme set to ${theme}`);
+                } else {
+                    result.rejected.push(`failed to set theme to ${theme}`);
+                }
+                return;
+            }
+
+            if (action.type === 'toggle_theme') {
+                const theme = toggleThemeFromChat();
+                if (theme) {
+                    result.applied.push(`theme toggled to ${theme}`);
+                } else {
+                    result.rejected.push('failed to toggle theme');
+                }
+                return;
+            }
+
+            result.rejected.push(`unsupported action "${String(action.type)}"`);
+        });
+
+        return result;
+    }
 
     // Send message to AI
     // Send message
@@ -301,12 +539,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        messages: [
-                            { role: 'system', content: SYSTEM_PROMPT },
-                            ...chatHistory
-                        ]
-                    })
+                    body: JSON.stringify(buildChatRequestPayload())
                 });
             } catch (networkError) {
                 console.warn('First attempt failed, retrying...', networkError);
@@ -317,12 +550,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        messages: [
-                            { role: 'system', content: SYSTEM_PROMPT },
-                            ...chatHistory
-                        ]
-                    })
+                    body: JSON.stringify(buildChatRequestPayload())
                 });
             }
 
@@ -331,10 +559,29 @@
             }
 
             const data = await response.json();
-            const aiResponse = data.choices?.[0]?.message?.content || 'No response';
+            const aiResponseRaw = data.choices?.[0]?.message?.content || 'No response';
+            const { cleanText, actions, hadActionTag } = extractAppActions(aiResponseRaw);
+            const actionResults = runAppActions(actions);
+
+            let assistantText = cleanText;
+            if (actionResults.applied.length > 0) {
+                const appliedText = `Applied: ${actionResults.applied.join(', ')}.`;
+                assistantText = assistantText ? `${assistantText}\n\n${appliedText}` : appliedText;
+            }
+
+            if (actionResults.rejected.length > 0) {
+                const rejectedText = `Ignored action${actionResults.rejected.length > 1 ? 's' : ''}: ${actionResults.rejected.join('; ')}.`;
+                assistantText = assistantText ? `${assistantText}\n\n${rejectedText}` : rejectedText;
+            }
+
+            if (!assistantText && hadActionTag) {
+                assistantText = 'Done.';
+            } else if (!assistantText) {
+                assistantText = aiResponseRaw;
+            }
 
             // Add assistant response to history and re-render
-            chatHistory.push({ role: 'assistant', content: aiResponse });
+            chatHistory.push({ role: 'assistant', content: assistantText });
             renderHistory();
 
         } catch (error) {
@@ -404,6 +651,22 @@
 
         if (e.key === 'Escape' && isActive) {
             deactivate();
+            return;
+        }
+
+        if (!isActive || e.target === inputEl) {
+            return;
+        }
+
+        if (e.key === 'Backspace') {
+            e.preventDefault();
+            deactivate();
+            return;
+        }
+
+        if (isPlainTypingKey(e)) {
+            e.preventDefault();
+            focusInputAndAppend(e.key);
             return;
         }
 

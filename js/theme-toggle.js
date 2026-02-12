@@ -7,22 +7,22 @@
     const toggles = document.querySelectorAll('.theme-toggle');
     const textToggleMobile = document.querySelector('.theme-toggle-text-mobile');
     const root = document.documentElement;
-    // We update arms individually per button structure
-
-    if (toggles.length === 0 && !textToggleMobile) return;
 
     // Check for saved preference
     const savedTheme = localStorage.getItem('theme');
     const currentTheme = (savedTheme === 'dark' || savedTheme === 'light') ? savedTheme : 'dark';
-
-    // Initialize state
-    root.setAttribute('data-theme', currentTheme);
 
     // Initial rotation state
     // We track rotation per button? Or globally?
     // Globally makes sense for sync, but visual continuity might be per button?
     // Let's use one global 'rotation' value and apply to all arms.
     let currentRotation = currentTheme === 'dark' ? 180 : 0;
+
+    function normalizeTheme(theme) {
+        if (typeof theme !== 'string') return null;
+        const normalized = theme.toLowerCase();
+        return normalized === 'dark' || normalized === 'light' ? normalized : null;
+    }
 
     function updateUI() {
         const theme = root.getAttribute('data-theme');
@@ -50,20 +50,36 @@
         }
     }
 
+    function setTheme(theme, options = {}) {
+        const normalizedTheme = normalizeTheme(theme);
+        if (!normalizedTheme) return false;
+
+        const { persist = true, rotate = true } = options;
+        const prevTheme = root.getAttribute('data-theme');
+
+        root.setAttribute('data-theme', normalizedTheme);
+        if (persist) {
+            localStorage.setItem('theme', normalizedTheme);
+        }
+
+        if (prevTheme !== normalizedTheme && rotate) {
+            currentRotation += 180;
+        } else if (!rotate) {
+            currentRotation = normalizedTheme === 'dark' ? 180 : 0;
+        }
+
+        updateUI();
+        return true;
+    }
+
     // Apply strict initial state
-    updateUI();
+    setTheme(currentTheme, { persist: false, rotate: false });
 
     // Toggle theme function
     function toggleTheme() {
         const isDark = root.getAttribute('data-theme') === 'dark';
         const newTheme = isDark ? 'light' : 'dark';
-
-        root.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-
-        // Continuous clockwise rotation
-        currentRotation += 180;
-        updateUI();
+        setTheme(newTheme);
     }
 
     // Bind click to all buttons
@@ -77,4 +93,9 @@
 
     // Expose toggle function if needed by other scripts (e.g. keyboard shortcuts)
     window.toggleThemeGlobal = toggleTheme;
+    window.setThemeGlobal = setTheme;
+    window.getThemeGlobal = () => {
+        const normalizedTheme = normalizeTheme(root.getAttribute('data-theme'));
+        return normalizedTheme || 'dark';
+    };
 })();
