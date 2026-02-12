@@ -31,6 +31,14 @@
     overflow: hidden;
 }
 
+/* Keep placeholder background only for truly empty image zones */
+.card__image:has(> img),
+.card__image:has(> video),
+.card__image:has(> .carousel__track),
+.card__image:has(> .project-main-media) {
+    background: transparent;
+}
+
 /* Wide card image ratio */
 .card--wide .card__image {
     aspect-ratio: 16 / 9;

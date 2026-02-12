@@ -531,6 +531,7 @@ class CardViewer {
 
             card.classList.add('card--project');
             imageContainer.innerHTML = '';
+            imageContainer.classList.remove('card__image--dropzone');
 
             let mainMediaEl;
             const cardTitle = card.querySelector('.card__title')?.textContent?.trim() || 'Project';

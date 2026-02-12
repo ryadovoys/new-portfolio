@@ -1099,6 +1099,7 @@ class CardEditor {
     setCardMedia(zone, path, mediaType, cardIndex) {
         zone.innerHTML = '';
         zone.classList.remove('card__image--placeholder');
+        zone.classList.remove('card__image--dropzone');
 
         // Handle carousel type from saved data
         if (mediaType === 'carousel' && Array.isArray(path)) {
@@ -1176,6 +1177,7 @@ class CardEditor {
     setCardCarousel(zone, items, cardIndex) {
         zone.innerHTML = '';
         zone.classList.remove('card__image--placeholder');
+        zone.classList.remove('card__image--dropzone');
         zone.classList.add('card__image--carousel');
 
         // Create carousel track
