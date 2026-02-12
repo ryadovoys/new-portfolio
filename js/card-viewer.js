@@ -31,17 +31,32 @@ class CardViewer {
         this.bindGlobalEvents();
         this.forceMuteAll();
         this.setupVideoVisibilityObserver();
+        this.scheduleInitialPlaybackChecks();
+    }
+
+    scheduleInitialPlaybackChecks() {
+        // Handle async media/card insertion races during initial load.
+        [0, 150, 400, 900].forEach((delay) => {
+            window.setTimeout(() => this.updateAllCardVideoPlayback(), delay);
+        });
     }
 
     forceMuteAll() {
         const handleVideo = (v) => {
+            v.preload = 'auto';
             v.muted = true;
+            v.defaultMuted = true;
             v.setAttribute('muted', '');
             v.pause();
 
             const card = v.closest('.card');
             if (card && this.cardVisibilityObserver) {
                 this.cardVisibilityObserver.observe(card);
+            }
+
+            if (card) {
+                requestAnimationFrame(() => this.updateCardVideoPlayback(card));
+                window.setTimeout(() => this.updateCardVideoPlayback(card), 120);
             }
         };
 
@@ -171,16 +186,117 @@ class CardViewer {
     }
 
     isCardPlaybackVisible(card) {
-        return card.classList.contains('is-active') || this.cardsInViewport.has(card);
+        if (!card) return false;
+        if (card.classList.contains('is-active') || this.cardsInViewport.has(card)) return true;
+
+        const rect = card.getBoundingClientRect();
+        const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+
+        if (viewportWidth <= 0 || viewportHeight <= 0) return false;
+
+        const viewportRect = {
+            left: 0,
+            top: 0,
+            right: viewportWidth,
+            bottom: viewportHeight
+        };
+
+        return this.getRectIntersectionRatio(rect, viewportRect) >= 0.2;
+    }
+
+    getRectIntersectionRatio(rect, boundsRect) {
+        if (!rect || !boundsRect || rect.width <= 0 || rect.height <= 0) return 0;
+
+        const overlapWidth = Math.max(0, Math.min(rect.right, boundsRect.right) - Math.max(rect.left, boundsRect.left));
+        const overlapHeight = Math.max(0, Math.min(rect.bottom, boundsRect.bottom) - Math.max(rect.top, boundsRect.top));
+        const overlapArea = overlapWidth * overlapHeight;
+        const rectArea = rect.width * rect.height;
+
+        if (rectArea <= 0) return 0;
+        return overlapArea / rectArea;
+    }
+
+    isElementInCenterPlaybackZone(el, zoneCoverage = 0.8, minViewportVisibility = 0.2) {
+        if (!el) return false;
+
+        const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+        if (viewportWidth <= 0 || viewportHeight <= 0) return false;
+
+        const rect = el.getBoundingClientRect();
+        const zoneWidth = viewportWidth * zoneCoverage;
+        const zoneHeight = viewportHeight * zoneCoverage;
+        const zoneRect = {
+            left: (viewportWidth - zoneWidth) / 2,
+            top: (viewportHeight - zoneHeight) / 2,
+            right: (viewportWidth + zoneWidth) / 2,
+            bottom: (viewportHeight + zoneHeight) / 2
+        };
+
+        const centerX = rect.left + (rect.width / 2);
+        const centerY = rect.top + (rect.height / 2);
+        const isCenterInsideZone = centerX >= zoneRect.left
+            && centerX <= zoneRect.right
+            && centerY >= zoneRect.top
+            && centerY <= zoneRect.bottom;
+        if (!isCenterInsideZone) return false;
+
+        const viewportRect = {
+            left: 0,
+            top: 0,
+            right: viewportWidth,
+            bottom: viewportHeight
+        };
+
+        return this.getRectIntersectionRatio(rect, viewportRect) >= minViewportVisibility;
+    }
+
+    isVideoEligibleForPlayback(videoEl, card, isProjectExpanded) {
+        if (!videoEl || !card) return false;
+
+        const isProjectVideo = Boolean(videoEl.closest('.project-media-track'));
+        if (!isProjectVideo) return true;
+
+        const isProjectLayerVideo = Boolean(videoEl.closest('.project-layer'));
+        if (!isProjectExpanded) {
+            // While collapsed, keep only the primary project preview video running.
+            return !isProjectLayerVideo;
+        }
+
+        // While expanded, only play videos that are in the center 80% viewport zone.
+        return this.isElementInCenterPlaybackZone(videoEl, 0.8, 0.2);
     }
 
     playVideo(videoEl) {
         videoEl.muted = true;
+        videoEl.defaultMuted = true;
         videoEl.setAttribute('muted', '');
-        const playPromise = videoEl.play();
-        if (playPromise && typeof playPromise.catch === 'function') {
-            playPromise.catch(() => { });
+        videoEl.playsInline = true;
+        videoEl.setAttribute('playsinline', '');
+        videoEl.preload = 'auto';
+
+        const tryPlay = () => {
+            const playPromise = videoEl.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => { });
+            }
+        };
+
+        if (videoEl.readyState >= 2) {
+            tryPlay();
+            return;
         }
+
+        const retryOnReady = () => {
+            if (videoEl.isConnected) {
+                tryPlay();
+            }
+        };
+
+        videoEl.addEventListener('loadeddata', retryOnReady, { once: true });
+        videoEl.addEventListener('canplay', retryOnReady, { once: true });
+        tryPlay();
     }
 
     updateAllCardVideoPlayback() {
@@ -191,37 +307,51 @@ class CardViewer {
 
     updateCardVideoPlayback(card) {
         if (!card) return;
-        const videos = card.querySelectorAll('video');
+        const videos = Array.from(card.querySelectorAll('video'));
         if (videos.length === 0) return;
 
         const shouldPlay = this.isCardPlaybackVisible(card);
+        const isProjectExpanded = card.classList.contains('card--project')
+            && card.classList.contains('is-active')
+            && document.body.classList.contains('is-project-expanded');
 
         videos.forEach((videoEl) => {
             videoEl.muted = true;
             videoEl.setAttribute('muted', '');
-            videoEl.pause();
         });
 
-        if (!shouldPlay) return;
-
+        const playableVideos = new Set();
         const carouselVideos = new Set();
-        card.querySelectorAll('.card__image--carousel').forEach((zone) => {
-            const track = zone.querySelector('.carousel__track');
-            if (!track) return;
+        if (shouldPlay) {
+            card.querySelectorAll('.card__image--carousel').forEach((zone) => {
+                const track = zone.querySelector('.carousel__track');
+                if (!track) return;
 
-            track.querySelectorAll('video').forEach((videoEl) => carouselVideos.add(videoEl));
-            const currentIndex = parseInt(zone.dataset.currentSlide, 10) || 0;
-            const activeSlide = track.children[currentIndex];
-            const activeVideo = activeSlide ? activeSlide.querySelector('video') : null;
+                track.querySelectorAll('video').forEach((videoEl) => carouselVideos.add(videoEl));
+                const currentIndex = parseInt(zone.dataset.currentSlide, 10) || 0;
+                const activeSlide = track.children[currentIndex];
+                const activeVideo = activeSlide ? activeSlide.querySelector('video') : null;
 
-            if (activeVideo) {
-                this.playVideo(activeVideo);
-            }
-        });
+                if (activeVideo && this.isVideoEligibleForPlayback(activeVideo, card, isProjectExpanded)) {
+                    playableVideos.add(activeVideo);
+                }
+            });
+
+            videos.forEach((videoEl) => {
+                if (carouselVideos.has(videoEl)) return;
+                if (this.isVideoEligibleForPlayback(videoEl, card, isProjectExpanded)) {
+                    playableVideos.add(videoEl);
+                }
+            });
+        }
 
         videos.forEach((videoEl) => {
-            if (!carouselVideos.has(videoEl)) {
-                this.playVideo(videoEl);
+            if (playableVideos.has(videoEl)) {
+                if (videoEl.paused) {
+                    this.playVideo(videoEl);
+                }
+            } else if (!videoEl.paused) {
+                videoEl.pause();
             }
         });
     }
@@ -794,6 +924,8 @@ class CardViewer {
         window.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
         window.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
         window.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+        window.addEventListener('load', () => this.updateAllCardVideoPlayback());
+        window.addEventListener('resize', () => this.updateAllCardVideoPlayback());
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.activeExpandedCard && document.body.classList.contains('is-project-expanded')) {
                 e.preventDefault();
@@ -930,6 +1062,7 @@ class CardViewer {
             }
 
             self.activeExpandedCard.style.transform = `translateY(-50%) translateX(${self.currentScrollX}px)`;
+            self.updateCardVideoPlayback(self.activeExpandedCard);
 
             if (Math.abs(self.velocity) >= 0.1) {
                 self.momentumId = requestAnimationFrame(animate);
@@ -1037,6 +1170,7 @@ class CardViewer {
         if (this.currentScrollX > 0) this.currentScrollX = 0;
 
         this.activeExpandedCard.style.transform = `translateY(-50%) translateX(${this.currentScrollX}px)`;
+        this.updateCardVideoPlayback(this.activeExpandedCard);
     }
 }
 
