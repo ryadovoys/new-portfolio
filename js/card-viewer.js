@@ -398,6 +398,7 @@ class CardViewer {
 
             isDragging = true;
             startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            currentX = startX;
             startTranslate = getTranslateX();
             track.style.transition = 'none';
             zone.classList.add('carousel--dragging');
@@ -439,6 +440,7 @@ class CardViewer {
         track.addEventListener('touchstart', handleStart, { passive: true });
         track.addEventListener('touchmove', handleMove, { passive: false });
         track.addEventListener('touchend', handleEnd);
+        track.addEventListener('touchcancel', handleEnd);
 
         this.initHoverScrub(zone, track);
     }

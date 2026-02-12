@@ -1239,6 +1239,7 @@ class CardEditor {
         const handleStart = (e) => {
             isDragging = true;
             startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            currentX = startX;
             startTranslate = getTranslateX();
             track.style.transition = 'none';
             zone.classList.add('carousel--dragging');
@@ -1290,6 +1291,7 @@ class CardEditor {
         track.addEventListener('touchstart', handleStart, { passive: true });
         track.addEventListener('touchmove', handleMove, { passive: false });
         track.addEventListener('touchend', handleEnd);
+        track.addEventListener('touchcancel', handleEnd);
 
         // Cleanup function to remove window listeners when carousel is destroyed/replaced
         // Note: usage of this approach relies on the fact that we replace innerHTML
@@ -1360,6 +1362,14 @@ class CardEditor {
         track.style.transform = `translateX(calc(-${index} * (100% + var(--carousel-gap, 40px))))`;
 
         zone.dataset.currentSlide = index;
+
+        const card = zone.closest('.card');
+        if (card && window.cardViewer && typeof window.cardViewer.updateCardVideoPlayback === 'function') {
+            window.cardViewer.updateCardVideoPlayback(card);
+            window.setTimeout(() => {
+                window.cardViewer.updateCardVideoPlayback(card);
+            }, 320);
+        }
     }
 
     async addNewCard(type) {

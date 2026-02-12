@@ -38,7 +38,7 @@
   },
   {
     "title": "Conversational AI",
-    "description": "Text became the main way we talk to AI. I design conversational interfaces that deal with LLM quirks—context limits, latency, when the model gets things wrong. The goal is making these interactions feel natural, not robotic.",
+    "description": "Text became the main way we talk to AI. Because of that, conversational interfaces became one of the most essential user interface element. I've been working on conversational interfaces for a few years now.",
     "tag": "Experience",
     "width": "regular",
     "media": "/assets/conversational-ai-interface-liquid.jpg",
@@ -67,16 +67,16 @@
     "link": null
   },
   {
-    "title": "Mindcomplete",
-    "description": "AI-powered writing assistant that completes your thoughts in real-time. Mindcomplete helps you write faster and more fluidly by predicting and suggesting how to continue your paragraphs. Simply pause while typing, and AI will suggest a natural continuation matching your tone and style.",
-    "tag": "Experiment",
+    "title": "Amway Website",
+    "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products.",
+    "tag": "Project",
     "width": "wide",
-    "media": "/assets/mindcomplete-plugin-showcase-video.mp4",
-    "mediaType": "video",
-    "folder": null,
+    "media": null,
+    "mediaType": null,
+    "folder": "amway",
     "link": {
-      "text": "Try it in Figma!",
-      "url": "https://www.figma.com/community/plugin/1593731353807484611/mindcomplete",
+      "text": "Visit website",
+      "url": "https://www.amway.com/",
       "attributes": "target='_blank' rel='noopener noreferrer'"
     }
   },
@@ -111,6 +111,50 @@
     "link": null
   },
   {
+    "title": "AI workflows",
+    "description": "Figuring out how design and AI actually work together. Claude Code, Cursor, Antigravity, MCP tools—using AI across research, ideation, prototyping, designing and code.",
+    "tag": "Experience",
+    "width": "regular",
+    "media": "/assets/ai-workflows-cursor-claude.jpg",
+    "mediaType": "image",
+    "folder": null,
+    "link": null
+  },
+  {
+    "title": "Mindcomplete",
+    "description": "AI-powered writing assistant that completes your thoughts in real-time. Mindcomplete helps you write faster and more fluidly by predicting and suggesting how to continue your paragraphs. Simply pause while typing, and AI will suggest a natural continuation matching your tone and style.",
+    "tag": "Experiment",
+    "width": "wide",
+    "media": "/assets/mindcomplete-plugin-showcase-video.mp4",
+    "mediaType": "video",
+    "folder": null,
+    "link": {
+      "text": "Try it in Figma!",
+      "url": "https://www.figma.com/community/plugin/1593731353807484611/mindcomplete",
+      "attributes": "target='_blank' rel='noopener noreferrer'"
+    }
+  },
+  {
+    "title": "UI UX design",
+    "description": "Led product design for Visa's global digital presence, directed redesigns for Amway, RaceTrac, Delta. Websites, apps, dashboards, design systems. Always thinking about how it looks and how it actually works.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/ui-ux-design-system-preview.jpg",
+    "mediaType": "image",
+    "folder": null,
+    "link": null
+  },
+  {
+    "title": "Branding and identity design",
+    "description": "Brand identity work across 15 years, from startups to federal brands. Logo systems, visual identities, brand guidelines. Foundation that shaped how I think about consistency and systems.",
+    "tag": "Skill",
+    "width": "regular",
+    "media": "/assets/branding-identity-logo-animation.mp4",
+    "mediaType": "video",
+    "folder": null,
+    "link": null
+  },
+  {
     "title": "Building tools",
     "description": "I keep building small tools that solve problems I actually have. iOS apps, Figma plugins, web tools, Apple shortcuts. Most started as personal experiments, some turned into real products.",
     "tag": "Experience",
@@ -135,55 +179,11 @@
     }
   },
   {
-    "title": "AI workflows",
-    "description": "Figuring out how design and AI actually work together. Claude Code, Cursor, Antigravity, MCP tools—using AI across research, ideation, prototyping, designing and code.",
-    "tag": "Experience",
-    "width": "regular",
-    "media": "/assets/ai-workflows-cursor-claude.jpg",
-    "mediaType": "image",
-    "folder": null,
-    "link": null
-  },
-  {
-    "title": "Branding and identity design",
-    "description": "Brand identity work across 15 years, from startups to federal brands. Logo systems, visual identities, brand guidelines. Foundation that shaped how I think about consistency and systems.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/branding-identity-logo-animation.mp4",
-    "mediaType": "video",
-    "folder": null,
-    "link": null
-  },
-  {
     "title": "Public talks",
     "description": "I've given several public talks about AI and design. Sharing experiments, tools, and interesting ways designers can use AI in their work.",
     "tag": "Experience",
     "width": "regular",
     "media": "/assets/magic-of-code.jpg",
-    "mediaType": "image",
-    "folder": null,
-    "link": null
-  },
-  {
-    "title": "Amway Website",
-    "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products.",
-    "tag": "Project",
-    "width": "wide",
-    "media": null,
-    "mediaType": null,
-    "folder": "amway",
-    "link": {
-      "text": "Visit website",
-      "url": "https://www.amway.com/",
-      "attributes": "target='_blank' rel='noopener noreferrer'"
-    }
-  },
-  {
-    "title": "UI UX design",
-    "description": "Led product design for Visa's global digital presence, directed redesigns for Amway, RaceTrac, Delta. Websites, apps, dashboards, design systems. Always thinking about how it looks and how it actually works.",
-    "tag": "Skill",
-    "width": "regular",
-    "media": "/assets/ui-ux-design-system-preview.jpg",
     "mediaType": "image",
     "folder": null,
     "link": null
