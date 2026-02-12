@@ -8,12 +8,138 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Initialize animations when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    initLenisSmoothScroll();
+
+    ensureAboutStatsSection();
+    markLineRevealTargets();
     initScrollReveal();
-    initCardParallax();
+    initLineReveal();
+    initCountUpStats();
+
+    const grid = document.querySelector('.card-grid');
+    if (grid) {
+        const observer = new MutationObserver(() => {
+            ensureAboutStatsSection();
+            markLineRevealTargets();
+            initScrollReveal();
+            initLineReveal();
+            initCountUpStats();
+            ScrollTrigger.refresh();
+        });
+        observer.observe(grid, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    requestAnimationFrame(() => ScrollTrigger.refresh());
 });
 
+function markLineRevealTargets() {
+    const selectors = [
+        '.sidebar__identity-name',
+        '.sidebar__identity-email',
+        '.sidebar__identity-link',
+        '.card[data-folder="introduction"] .card__title',
+        '.card[data-folder="introduction"] .card__description',
+        '.about-stats__title',
+        '.about-stats__intro'
+    ];
+
+    selectors.forEach((selector) => {
+        document.querySelectorAll(selector).forEach((el) => {
+            if (!el.hasAttribute('data-reveal-lines')) {
+                el.setAttribute('data-reveal-lines', '');
+            }
+        });
+    });
+}
+
+function initLenisSmoothScroll() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return null;
+    if (typeof window.Lenis === 'undefined') return null;
+    if (window.__lenis) return window.__lenis;
+
+    const lenis = new window.Lenis({
+        duration: 1.2,
+        smoothWheel: true,
+        smoothTouch: false,
+        wheelMultiplier: 0.95,
+        easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t))
+    });
+
+    window.__lenis = lenis;
+
+    lenis.on('scroll', () => ScrollTrigger.update());
+
+    const raf = (time) => {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+
+    const body = document.body;
+    const updateLenisLock = () => {
+        const isLocked = body.classList.contains('is-project-expanded')
+            || body.classList.contains('ai-chat-active')
+            || body.style.overflow === 'hidden';
+
+        if (isLocked) {
+            lenis.stop();
+        } else {
+            lenis.start();
+        }
+    };
+
+    const bodyObserver = new MutationObserver(updateLenisLock);
+    bodyObserver.observe(body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+    updateLenisLock();
+
+    return lenis;
+}
+
+function ensureAboutStatsSection() {
+    const main = document.querySelector('.main-content');
+    const grid = document.querySelector('.card-grid');
+    if (!main || !grid) return;
+
+    if (document.getElementById('about-stats')) return;
+
+    const section = document.createElement('section');
+    section.id = 'about-stats';
+    section.className = 'about-stats';
+    section.innerHTML = `
+      <h2 class="about-stats__title" data-reveal-lines>Numbers that shaped my path</h2>
+      <p class="about-stats__intro" data-reveal-lines>From leading global teams to shipping products and building tools, here are a few milestones from my design journey.</p>
+      <div class="about-stats__grid">
+        <article class="about-stats__item">
+          <p class="about-stats__value" data-count="15" data-suffix="+">0+</p>
+          <p class="about-stats__label">Years in design</p>
+        </article>
+        <article class="about-stats__item">
+          <p class="about-stats__value" data-count="50" data-suffix="+">0+</p>
+          <p class="about-stats__label">Digital launches</p>
+        </article>
+        <article class="about-stats__item">
+          <p class="about-stats__value" data-count="100" data-suffix="+">0+</p>
+          <p class="about-stats__label">Logos designed</p>
+        </article>
+        <article class="about-stats__item">
+          <p class="about-stats__value" data-count="500" data-suffix="K+">0K+</p>
+          <p class="about-stats__label">Peace Sans downloads</p>
+        </article>
+      </div>
+    `;
+
+    grid.insertAdjacentElement('afterend', section);
+}
+
 function initScrollReveal() {
-    const cards = document.querySelectorAll('.card');
+    const cards = document.querySelectorAll('.card:not(#addCardPlaceholder):not(.card--add):not([data-reveal-ready="1"])');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (prefersReducedMotion) {
@@ -22,16 +148,13 @@ function initScrollReveal() {
         if (sidebarStatic) {
             gsap.set(sidebarStatic, { opacity: 1, x: 0, clearProps: 'transform' });
         }
+        cards.forEach((card) => { card.dataset.revealReady = '1'; });
         return;
     }
 
-    // Set initial state
-    gsap.set(cards, {
-        opacity: 0
-    });
-
-    // Animate each card when it enters viewport
     cards.forEach((card, index) => {
+        card.dataset.revealReady = '1';
+        gsap.set(card, { opacity: 0 });
         gsap.to(card, {
             opacity: 1,
             duration: 0.6,
@@ -45,9 +168,9 @@ function initScrollReveal() {
         });
     });
 
-    // Also animate sidebar (Desktop only)
     const sidebar = document.querySelector('.sidebar');
-    if (sidebar && window.innerWidth > 768) {
+    if (sidebar && window.innerWidth > 768 && sidebar.dataset.revealReady !== '1') {
+        sidebar.dataset.revealReady = '1';
         gsap.from(sidebar, {
             opacity: 0,
             x: -20,
@@ -58,98 +181,103 @@ function initScrollReveal() {
     }
 }
 
-function initCardParallax() {
-    const prefersReducedMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const desktopMQ = window.matchMedia('(min-width: 769px)');
-    const parallaxTriggers = new WeakMap();
-    let rafScheduled = false;
+function initLineReveal() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const targets = document.querySelectorAll('[data-reveal-lines]:not([data-lines-ready="1"])');
+    if (!targets.length) return;
 
-    const isParallaxEnabled = () => {
-        return desktopMQ.matches && !prefersReducedMotionMQ.matches;
-    };
+    targets.forEach((el) => {
+        el.dataset.linesReady = '1';
 
-    const isEligibleCard = (card) => {
-        if (!card) return false;
-        if (!card.classList.contains('card')) return false;
-        if (card.classList.contains('card--add')) return false;
-        if (card.classList.contains('card--project')) return false; // Keep project interactions intact.
-        if (card.classList.contains('card--invisible')) return false;
-        return true;
-    };
+        if (prefersReducedMotion) return;
 
-    const clearCardParallax = (card) => {
-        const trigger = parallaxTriggers.get(card);
-        if (trigger) {
-            trigger.kill();
-            parallaxTriggers.delete(card);
+        if (typeof window.SplitType === 'undefined') {
+            gsap.fromTo(el, { opacity: 0, y: 16 }, {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 88%',
+                    once: true
+                }
+            });
+            return;
         }
-        card.dataset.parallaxApplied = '0';
-        gsap.set(card, { clearProps: 'y,willChange' });
-    };
 
-    const applyCardParallax = (card, index) => {
-        if (!isEligibleCard(card)) return false;
-        if (card.dataset.parallaxApplied === '1') return false;
-        if (!isParallaxEnabled()) return false;
+        const split = new window.SplitType(el, {
+            types: 'lines',
+            lineClass: 'reveal-line'
+        });
 
-        const distance = 24 + ((index % 4) * 8); // Stronger depth: 24-48px
+        const lines = split.lines || [];
+        if (!lines.length) return;
 
-        gsap.set(card, { willChange: 'transform' });
-        const tween = gsap.fromTo(card, {
-            y: -distance
-        }, {
-            y: distance,
-            ease: 'none',
+        lines.forEach((line) => {
+            if (line.parentElement && line.parentElement.classList.contains('reveal-line-mask')) return;
+            const mask = document.createElement('span');
+            mask.className = 'reveal-line-mask';
+            line.parentNode.insertBefore(mask, line);
+            mask.appendChild(line);
+        });
+
+        gsap.set(lines, { yPercent: 105 });
+        gsap.to(lines, {
+            yPercent: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            stagger: 0.08,
             scrollTrigger: {
-                trigger: card,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: 0.3
+                trigger: el,
+                start: 'top 88%',
+                once: true
             }
         });
-
-        card.dataset.parallaxApplied = '1';
-        parallaxTriggers.set(card, tween.scrollTrigger);
-        return true;
-    };
-
-    const applyParallax = () => {
-        const cards = document.querySelectorAll('.card');
-        let appliedAny = false;
-
-        cards.forEach((card, index) => {
-            if (!isParallaxEnabled()) {
-                if (card.dataset.parallaxApplied === '1') clearCardParallax(card);
-                return;
-            }
-            if (applyCardParallax(card, index)) appliedAny = true;
-        });
-
-        if (appliedAny) ScrollTrigger.refresh();
-    };
-
-    const scheduleApply = () => {
-        if (rafScheduled) return;
-        rafScheduled = true;
-        requestAnimationFrame(() => {
-            rafScheduled = false;
-            applyParallax();
-        });
-    };
-
-    applyParallax();
-    window.addEventListener('load', scheduleApply, { passive: true });
-    window.addEventListener('resize', scheduleApply, { passive: true });
-
-    const grid = document.querySelector('.card-grid');
-    if (!grid) return;
-
-    const observer = new MutationObserver(() => {
-        scheduleApply();
     });
+}
 
-    observer.observe(grid, {
-        childList: true,
-        subtree: true
+function initCountUpStats() {
+    const counters = document.querySelectorAll('[data-count]:not([data-count-ready="1"])');
+    if (!counters.length) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    counters.forEach((el) => {
+        el.dataset.countReady = '1';
+
+        const target = Number(el.dataset.count || 0);
+        const suffix = el.dataset.suffix || '';
+        const decimals = Number(el.dataset.decimals || 0);
+        const triggerEl = el.closest('.about-stats') || el;
+        const state = { value: 0 };
+
+        const render = () => {
+            const rounded = decimals > 0 ? state.value.toFixed(decimals) : Math.round(state.value);
+            const formatted = Number(rounded).toLocaleString(undefined, {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+            el.textContent = `${formatted}${suffix}`;
+        };
+
+        if (prefersReducedMotion) {
+            state.value = target;
+            render();
+            return;
+        }
+
+        render();
+
+        gsap.to(state, {
+            value: target,
+            duration: 1.8,
+            ease: 'power2.out',
+            onUpdate: render,
+            scrollTrigger: {
+                trigger: triggerEl,
+                start: 'top 82%',
+                once: true
+            }
+        });
     });
 }

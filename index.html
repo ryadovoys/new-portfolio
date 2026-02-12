@@ -66,6 +66,7 @@
   <link rel="stylesheet" href="css/components/link-preview.css">
   <link rel="stylesheet" href="css/components/maze-feature.css">
   <link rel="stylesheet" href="css/components/ai-chat.css">
+  <link rel="stylesheet" href="css/components/motion-features.css">
   <link rel="stylesheet" href="css/components/console-button.css">
 
 </head>
@@ -139,12 +140,13 @@
       <!-- Sidebar Content (Drawer) -->
       <div class="sidebar__content">
         <div class="sidebar__identity" aria-label="Contact details">
-          <p class="sidebar__identity-name">Sergey Ryadovoy</p>
-          <p class="sidebar__identity-email">VP of Design</p>
-          <p class="sidebar__identity-email">ryadovoys@gmail.com</p>
-          <p class="sidebar__identity-email">415.966.8762</p>
-          <a href="https://www.linkedin.com/in/sergeyryadovoy/" class="sidebar__identity-link" target="_blank"
+          <p class="sidebar__identity-name" data-reveal-lines>Sergey Ryadovoy</p>
+          <p class="sidebar__identity-email" data-reveal-lines>VP of Design</p>
+          <p class="sidebar__identity-email" data-reveal-lines>ryadovoys@gmail.com</p>
+          <p class="sidebar__identity-email" data-reveal-lines>415.966.8762</p>
+          <a href="https://www.linkedin.com/in/sergeyryadovoy/" class="sidebar__identity-link" data-reveal-lines target="_blank"
             rel="noopener noreferrer">LinkedIn</a>
+
           <button class="theme-toggle-text-mobile" type="button">Dark mode</button>
         </div>
       </div>
@@ -344,6 +346,8 @@
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.16/dist/lenis.min.js"></script>
+  <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
   <!-- Scripts -->
