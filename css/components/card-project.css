@@ -54,12 +54,20 @@
 /* Hover: Show layers with random offset and rotation (Desktop) */
 @media (hover: hover) {
     .card--project:hover .project-main-media {
-        transform: translate(var(--hover-x, 0px), var(--hover-y, 0px)) rotate(var(--hover-rotation, 0deg)) scale(1);
+        transform: translate(calc(var(--hover-x, 0px) + var(--push-x, 0px)), calc(var(--hover-y, 0px) + var(--push-y, 0px))) rotate(calc(var(--hover-rotation, 0deg) + var(--push-rotation, 0deg))) scale(1);
     }
 
     .card--project:hover .project-layer {
         opacity: 1;
-        transform: translate(var(--hover-x, 20px), var(--hover-y, -10px)) rotate(var(--hover-rotation, 5deg)) scale(1);
+        transform: translate(calc(var(--hover-x, 20px) + var(--push-x, 0px)), calc(var(--hover-y, -10px) + var(--push-y, 0px))) rotate(calc(var(--hover-rotation, 5deg) + var(--push-rotation, 0deg))) scale(1);
+    }
+
+    .card--project.is-hover-tracking .project-main-media {
+        transition-duration: 0.2s;
+    }
+
+    .card--project.is-hover-tracking .project-layer {
+        transition-duration: 0.2s, 0.8s, 0s;
     }
 }
 

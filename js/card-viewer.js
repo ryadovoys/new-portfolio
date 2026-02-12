@@ -21,6 +21,7 @@ class CardViewer {
         this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         this.cardsInViewport = new Set();
         this.cardVisibilityObserver = null;
+        this.projectHoverStates = new WeakMap();
 
         this.init();
     }
@@ -582,11 +583,7 @@ class CardViewer {
 
             // Initial Randomization
             this.randomizeLayerInitialState(card);
-
-            // Re-randomize on hover
-            card.addEventListener('mouseenter', () => {
-                this.randomizeLayerHover(card);
-            });
+            this.setupProjectHoverPhysics(card);
 
             this.updateCardVideoPlayback(card);
 
@@ -729,6 +726,124 @@ class CardViewer {
             // Flip side for the next layer
             side = 1 - side;
         });
+    }
+
+    clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+    }
+
+    getProjectHoverTargets(card) {
+        const layers = Array.from(card.querySelectorAll('.project-layer'));
+        if (layers.length === 0) return [];
+
+        const mainMedia = card.querySelector('.project-main-media');
+        return mainMedia ? [mainMedia, ...layers] : layers;
+    }
+
+    randomizeProjectPushProfile(card) {
+        const targets = this.getProjectHoverTargets(card);
+        targets.forEach((target, index) => {
+            const depthTaper = 1 - (index * 0.08);
+            const primary = (0.24 + Math.random() * 0.22) * Math.max(0.55, depthTaper);
+            const cross = (Math.random() * 0.16) - 0.08;
+            const rotate = 0.03 + Math.random() * 0.05;
+
+            target.style.setProperty('--push-primary', `${primary}`);
+            target.style.setProperty('--push-cross', `${cross}`);
+            target.style.setProperty('--push-rotate', `${rotate}`);
+        });
+    }
+
+    applyProjectHoverPush(card, velocityX, velocityY) {
+        const targets = this.getProjectHoverTargets(card);
+        targets.forEach((target, index) => {
+            const primary = parseFloat(target.style.getPropertyValue('--push-primary')) || 0.6;
+            const cross = parseFloat(target.style.getPropertyValue('--push-cross')) || 0;
+            const rotate = parseFloat(target.style.getPropertyValue('--push-rotate')) || 0.1;
+            const twistSign = index % 2 === 0 ? 1 : -1;
+
+            const pushX = (velocityX * primary) + (velocityY * cross);
+            const pushY = (velocityY * primary) - (velocityX * cross);
+            const pushRotation = ((velocityX * rotate * twistSign) + (velocityY * rotate * 0.25));
+
+            target.style.setProperty('--push-x', `${pushX.toFixed(2)}px`);
+            target.style.setProperty('--push-y', `${pushY.toFixed(2)}px`);
+            target.style.setProperty('--push-rotation', `${pushRotation.toFixed(2)}deg`);
+        });
+    }
+
+    resetProjectHoverPush(card) {
+        const targets = this.getProjectHoverTargets(card);
+        targets.forEach((target) => {
+            target.style.setProperty('--push-x', '0px');
+            target.style.setProperty('--push-y', '0px');
+            target.style.setProperty('--push-rotation', '0deg');
+        });
+    }
+
+    setupProjectHoverPhysics(card) {
+        if (card.dataset.hoverPhysicsBound === 'true') return;
+
+        const state = {
+            lastX: 0,
+            lastY: 0,
+            pushX: 0,
+            pushY: 0,
+            isInside: false
+        };
+
+        card.addEventListener('mouseenter', (e) => {
+            if (this.prefersReducedMotion) return;
+            if (window.matchMedia('(pointer: coarse)').matches) return;
+            if (card.classList.contains('is-active') || document.body.classList.contains('is-project-expanded')) return;
+
+            this.randomizeLayerHover(card);
+            this.randomizeProjectPushProfile(card);
+            this.resetProjectHoverPush(card);
+
+            state.isInside = true;
+            state.lastX = e.clientX;
+            state.lastY = e.clientY;
+            state.pushX = 0;
+            state.pushY = 0;
+
+            card.classList.remove('is-hover-tracking');
+        });
+
+        card.addEventListener('mousemove', (e) => {
+            if (!state.isInside) return;
+            if (this.prefersReducedMotion) return;
+            if (window.matchMedia('(pointer: coarse)').matches) return;
+            if (card.classList.contains('is-active') || document.body.classList.contains('is-project-expanded')) return;
+
+            const deltaX = e.clientX - state.lastX;
+            const deltaY = e.clientY - state.lastY;
+            const movement = Math.abs(deltaX) + Math.abs(deltaY);
+
+            state.lastX = e.clientX;
+            state.lastY = e.clientY;
+
+            if (movement < 0.5) return;
+            if (!card.classList.contains('is-hover-tracking')) {
+                card.classList.add('is-hover-tracking');
+            }
+
+            const resistanceX = 1 - Math.min(0.8, Math.abs(state.pushX) / 140);
+            const resistanceY = 1 - Math.min(0.8, Math.abs(state.pushY) / 140);
+
+            state.pushX = this.clamp(state.pushX + (deltaX * 0.22 * resistanceX), -140, 140);
+            state.pushY = this.clamp(state.pushY + (deltaY * 0.22 * resistanceY), -140, 140);
+
+            this.applyProjectHoverPush(card, state.pushX, state.pushY);
+        });
+
+        card.addEventListener('mouseleave', () => {
+            state.isInside = false;
+            card.classList.remove('is-hover-tracking');
+        });
+
+        this.projectHoverStates.set(card, state);
+        card.dataset.hoverPhysicsBound = 'true';
     }
 
     makeCardKeyboardAccessible(card) {
