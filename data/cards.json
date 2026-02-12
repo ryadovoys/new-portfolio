@@ -196,7 +196,11 @@
     "media": "/assets/prototyping-figma-demo.gif",
     "mediaType": "image",
     "folder": null,
-    "link": null
+    "link": {
+      "text": "Download on iPhone",
+      "url": "https://apps.apple.com/us/app/racetrac/id1011864306",
+      "attributes": "target='_blank' rel='noopener noreferrer'"
+    }
   },
   {
     "title": "36 days of type",
