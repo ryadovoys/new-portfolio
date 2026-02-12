@@ -33,7 +33,7 @@
     "link": {
       "text": "Learn more",
       "url": "https://www.digitas.com/en-us/pressroom/digitas-unveils-new-generative-ai-platform-digitas-ai",
-      "attributes": "target='_blank'"
+      "attributes": "target='_blank' rel='noopener noreferrer'"
     }
   },
   {
@@ -77,7 +77,7 @@
     "link": {
       "text": "Try it in Figma!",
       "url": "https://www.figma.com/community/plugin/1593731353807484611/mindcomplete",
-      "attributes": "target='_blank'"
+      "attributes": "target='_blank' rel='noopener noreferrer'"
     }
   },
   {
@@ -131,7 +131,7 @@
     "link": {
       "text": "Download on iPad",
       "url": "https://apps.apple.com/us/app/journely/id6744461713",
-      "attributes": "target='_blank'"
+      "attributes": "target='_blank' rel='noopener noreferrer'"
     }
   },
   {
@@ -175,7 +175,7 @@
     "link": {
       "text": "Visit website",
       "url": "https://www.amway.com/",
-      "attributes": "target='_blank'"
+      "attributes": "target='_blank' rel='noopener noreferrer'"
     }
   },
   {

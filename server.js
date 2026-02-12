@@ -5,12 +5,97 @@ const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT || 3000);
+const ROOT_DIR = __dirname;
+const assetsDir = path.join(ROOT_DIR, 'assets');
+const dataPath = path.join(ROOT_DIR, 'data', 'cards.json');
+const MEDIA_FILE_REGEX = /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i;
+const MEDIA_MIME_REGEX = /^(image\/(jpeg|png|gif|webp)|video\/(mp4|webm|quicktime))$/i;
+const MAX_UPLOAD_MB = Number(process.env.MAX_UPLOAD_MB || 200);
+const ADMIN_TOKEN = process.env.PORTFOLIO_ADMIN_TOKEN || '';
 
-// Assets directory (flat structure with folder galleries)
-const assetsDir = path.join(__dirname, 'assets');
 if (!fs.existsSync(assetsDir)) {
   fs.mkdirSync(assetsDir, { recursive: true });
+}
+
+function sanitizeFilename(name) {
+  return path.basename(String(name || ''))
+    .replace(/[^\w.\- ]+/g, '_')
+    .trim();
+}
+
+function isValidMediaFile(filename, mimeType) {
+  const hasAllowedExt = MEDIA_FILE_REGEX.test(String(filename || ''));
+  if (!mimeType) return hasAllowedExt;
+  return hasAllowedExt && MEDIA_MIME_REGEX.test(String(mimeType));
+}
+
+function isSafeFolderName(folderName) {
+  return typeof folderName === 'string'
+    && folderName.length > 0
+    && !folderName.includes('..')
+    && !folderName.includes('/')
+    && !folderName.includes('\\');
+}
+
+function resolveInside(baseDir, relativePath) {
+  const base = path.resolve(baseDir);
+  const resolved = path.resolve(baseDir, String(relativePath || ''));
+  if (resolved !== base && !resolved.startsWith(base + path.sep)) {
+    return null;
+  }
+  return resolved;
+}
+
+function listMediaFiles(dirPath) {
+  return fs.readdirSync(dirPath, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && isValidMediaFile(entry.name))
+    .map((entry) => entry.name)
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+}
+
+function requireAdminTokenIfConfigured(req, res, next) {
+  if (!ADMIN_TOKEN) {
+    next();
+    return;
+  }
+
+  const authHeader = req.get('authorization') || '';
+  const bearer = authHeader.toLowerCase().startsWith('bearer ')
+    ? authHeader.slice(7).trim()
+    : '';
+  const providedToken = req.get('x-admin-token') || bearer;
+
+  if (providedToken !== ADMIN_TOKEN) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+
+  next();
+}
+
+function folderAssetsResponse(folderName) {
+  if (!isSafeFolderName(folderName)) {
+    return { status: 400, error: 'Invalid folder path' };
+  }
+
+  const folderPath = resolveInside(assetsDir, folderName);
+  if (!folderPath) {
+    return { status: 403, error: 'Invalid folder path' };
+  }
+
+  if (!fs.existsSync(folderPath)) {
+    return { status: 200, data: [] };
+  }
+
+  const files = listMediaFiles(folderPath);
+  const data = files.map((filename) => ({
+    filename,
+    path: `/assets/${folderName}/${filename}`,
+    isVideo: /\.(mp4|webm|mov)$/i.test(filename)
+  }));
+
+  return { status: 200, data };
 }
 
 // Configure multer for file uploads
@@ -19,19 +104,29 @@ const storage = multer.diskStorage({
     cb(null, assetsDir);
   },
   filename: (req, file, cb) => {
-    // Keep original filename - duplicates will be handled by check-file endpoint
-    cb(null, file.originalname);
+    const cleaned = sanitizeFilename(file.originalname);
+    const ext = path.extname(cleaned);
+    const base = path.basename(cleaned, ext) || 'upload';
+
+    let filename = `${base}${ext}`;
+    const candidatePath = () => path.join(assetsDir, filename);
+    let suffix = 1;
+    while (fs.existsSync(candidatePath())) {
+      filename = `${base}-${Date.now()}-${suffix}${ext}`;
+      suffix += 1;
+    }
+
+    cb(null, filename);
   }
 });
 
 const upload = multer({
   storage,
+  limits: {
+    fileSize: MAX_UPLOAD_MB * 1024 * 1024
+  },
   fileFilter: (req, file, cb) => {
-    // Accept images and videos
-    const allowedTypes = /jpeg|jpg|png|gif|webp|mp4|webm|mov/;
-    const ext = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mime = allowedTypes.test(file.mimetype);
-    if (ext && mime) {
+    if (isValidMediaFile(file.originalname, file.mimetype)) {
       cb(null, true);
     } else {
       cb(new Error('Only images and videos are allowed'));
@@ -41,45 +136,58 @@ const upload = multer({
 
 // Serve static files
 app.use(express.static(__dirname));
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // Check if file exists endpoint
-app.post('/api/check-file', express.json(), (req, res) => {
+app.post('/api/check-file', requireAdminTokenIfConfigured, (req, res) => {
   const { filename } = req.body;
+  const safeFilename = sanitizeFilename(filename);
+
+  if (!safeFilename || !isValidMediaFile(safeFilename)) {
+    res.status(400).json({ error: 'Valid media filename required' });
+    return;
+  }
 
   // Check for exact match first
-  const exactPath = path.join(assetsDir, filename);
-  if (fs.existsSync(exactPath)) {
-    return res.json({
+  const exactPath = resolveInside(assetsDir, safeFilename);
+  if (exactPath && fs.existsSync(exactPath)) {
+    res.json({
       exists: true,
-      path: `/assets/${filename}`
+      path: `/assets/${safeFilename}`
     });
+    return;
   }
 
   // Check for files with same base name (ignoring timestamp suffix)
-  const ext = path.extname(filename);
-  const baseName = path.basename(filename, ext);
+  const ext = path.extname(safeFilename).toLowerCase();
+  const baseName = path.basename(safeFilename, ext).toLowerCase();
 
-  const existingFiles = fs.readdirSync(assetsDir).filter(f => !fs.statSync(path.join(assetsDir, f)).isDirectory());
+  const existingFiles = fs.readdirSync(assetsDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && isValidMediaFile(entry.name))
+    .map((entry) => entry.name);
   const match = existingFiles.find(f => {
     // Match if file starts with same base name
-    return f.startsWith(baseName) && f.endsWith(ext);
+    const candidateExt = path.extname(f).toLowerCase();
+    const candidateBase = path.basename(f, candidateExt).toLowerCase();
+    return candidateExt === ext && candidateBase.startsWith(baseName);
   });
 
   if (match) {
-    return res.json({
+    res.json({
       exists: true,
       path: `/assets/${match}`
     });
+    return;
   }
 
   res.json({ exists: false });
 });
 
 // Upload endpoint
-app.post('/api/upload', upload.single('file'), (req, res) => {
+app.post('/api/upload', requireAdminTokenIfConfigured, upload.single('file'), (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
+    res.status(400).json({ error: 'No file uploaded' });
+    return;
   }
 
   const filePath = `/assets/${req.file.filename}`;
@@ -91,9 +199,12 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 });
 
 // Save card data endpoint
-app.post('/api/save-cards', (req, res) => {
+app.post('/api/save-cards', requireAdminTokenIfConfigured, (req, res) => {
   const cardsData = req.body;
-  const dataPath = path.join(__dirname, 'data', 'cards.json');
+  if (!Array.isArray(cardsData)) {
+    res.status(400).json({ error: 'Cards payload must be an array' });
+    return;
+  }
 
   // Ensure data directory exists
   const dataDir = path.dirname(dataPath);
@@ -107,8 +218,6 @@ app.post('/api/save-cards', (req, res) => {
 
 // Load card data endpoint
 app.get('/api/cards', (req, res) => {
-  const dataPath = path.join(__dirname, 'data', 'cards.json');
-
   if (fs.existsSync(dataPath)) {
     const data = fs.readFileSync(dataPath, 'utf8');
     res.json(JSON.parse(data));
@@ -120,14 +229,14 @@ app.get('/api/cards', (req, res) => {
 // List all assets endpoint (excludes folders and archive)
 app.get('/api/assets', (req, res) => {
   try {
-    const entries = fs.readdirSync(assetsDir, { withFileTypes: true });
-    const assets = entries
-      .filter(entry => !entry.isDirectory() && /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(entry.name))
-      .map(entry => ({
+    const assets = fs.readdirSync(assetsDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && isValidMediaFile(entry.name))
+      .map((entry) => ({
         filename: entry.name,
         path: `/assets/${entry.name}`,
         isVideo: /\.(mp4|webm|mov)$/i.test(entry.name)
-      }));
+      }))
+      .sort((a, b) => a.filename.localeCompare(b.filename, undefined, { numeric: true, sensitivity: 'base' }));
     res.json(assets);
   } catch (error) {
     res.json([]);
@@ -141,9 +250,9 @@ app.get('/api/folders', (req, res) => {
     const folders = entries
       .filter(entry => entry.isDirectory() && entry.name !== 'archive')
       .map(entry => {
-        const folderPath = path.join(assetsDir, entry.name);
-        const files = fs.readdirSync(folderPath);
-        const imageFiles = files.filter(f => /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(f));
+        const folderPath = resolveInside(assetsDir, entry.name);
+        if (!folderPath) return null;
+        const imageFiles = listMediaFiles(folderPath);
 
         // Get first image as preview
         const preview = imageFiles.length > 0
@@ -157,6 +266,7 @@ app.get('/api/folders', (req, res) => {
           preview
         };
       })
+      .filter(Boolean)
       .filter(folder => folder.fileCount > 0); // Only return folders with media
 
     res.json(folders);
@@ -168,33 +278,19 @@ app.get('/api/folders', (req, res) => {
 
 // Get assets from a specific folder
 app.get('/api/folder-assets', (req, res) => {
-  const folderName = req.query.folder;
+  const folderName = String(req.query.folder || '');
   if (!folderName) {
-    return res.status(400).json({ error: 'Folder name required' });
-  }
-
-  const folderPath = path.join(assetsDir, folderName);
-
-  // Security check: ensure path is within assetsDir
-  if (!folderPath.startsWith(assetsDir)) {
-    return res.status(403).json({ error: 'Invalid folder path' });
-  }
-
-  if (!fs.existsSync(folderPath)) {
-    return res.json([]); // Return empty if folder doesn't exist yet
+    res.status(400).json({ error: 'Folder name required' });
+    return;
   }
 
   try {
-    const files = fs.readdirSync(folderPath);
-    const assets = files
-      .filter(f => /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(f))
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })) // Natural sort (1, 2, 10)
-      .map(f => ({
-        filename: f,
-        path: `/assets/${folderName}/${f}`,
-        isVideo: /\.(mp4|webm|mov)$/i.test(f)
-      }));
-    res.json(assets);
+    const result = folderAssetsResponse(folderName);
+    if (result.error) {
+      res.status(result.status).json({ error: result.error });
+      return;
+    }
+    res.status(result.status).json(result.data);
   } catch (error) {
     console.error('Error reading folder assets:', error);
     res.status(500).json({ error: 'Failed to read folder assets' });
@@ -203,30 +299,15 @@ app.get('/api/folder-assets', (req, res) => {
 
 // Static-compatible endpoint for folder assets
 app.get('/api/folder-assets/:folderName.json', (req, res) => {
-  console.log('Server: Request for folder json', req.params.folderName);
-  const folderName = req.params.folderName;
-  // Reuse existing logic
-  const folderPath = path.join(assetsDir, folderName);
-
-  if (!folderPath.startsWith(assetsDir)) {
-    return res.status(403).json({ error: 'Invalid folder path' });
-  }
-
-  if (!fs.existsSync(folderPath)) {
-    return res.json([]);
-  }
+  const folderName = String(req.params.folderName || '');
 
   try {
-    const files = fs.readdirSync(folderPath);
-    const assets = files
-      .filter(f => /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i.test(f))
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
-      .map(f => ({
-        filename: f,
-        path: `/assets/${folderName}/${f}`,
-        isVideo: /\.(mp4|webm|mov)$/i.test(f)
-      }));
-    res.json(assets);
+    const result = folderAssetsResponse(folderName);
+    if (result.error) {
+      res.status(result.status).json({ error: result.error });
+      return;
+    }
+    res.status(result.status).json(result.data);
   } catch (error) {
     console.error('Error reading folder assets:', error);
     res.status(500).json({ error: 'Failed to read folder assets' });
@@ -303,6 +384,24 @@ app.post('/api/ai-chat', async (req, res) => {
     console.error('AI Chat error:', error);
     res.status(500).json({ error: error.message });
   }
+});
+
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      res.status(413).json({ error: `File is too large. Max size is ${MAX_UPLOAD_MB}MB.` });
+      return;
+    }
+    res.status(400).json({ error: error.message });
+    return;
+  }
+
+  if (error) {
+    res.status(400).json({ error: error.message || 'Bad request' });
+    return;
+  }
+
+  next();
 });
 
 app.listen(PORT, () => {

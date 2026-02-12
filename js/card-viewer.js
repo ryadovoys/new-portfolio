@@ -18,6 +18,7 @@ class CardViewer {
         this.lastTouchTime = 0;
         this.velocity = 0;
         this.momentumId = null;
+        this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         this.init();
     }
@@ -241,6 +242,7 @@ class CardViewer {
             imageContainer.innerHTML = '';
 
             let mainMediaEl;
+            const cardTitle = card.querySelector('.card__title')?.textContent?.trim() || 'Project';
             if (mainAsset.isVideo) {
                 mainMediaEl = document.createElement('video');
                 mainMediaEl.src = mainAsset.path;
@@ -252,7 +254,7 @@ class CardViewer {
             } else {
                 mainMediaEl = document.createElement('img');
                 mainMediaEl.src = mainAsset.path;
-                mainMediaEl.alt = mainAsset.filename;
+                mainMediaEl.alt = `${cardTitle} preview`;
             }
             imageContainer.appendChild(mainMediaEl);
 
@@ -279,6 +281,7 @@ class CardViewer {
             observer.observe(imageContainer);
 
             // Activate Click to Expand
+            this.makeCardKeyboardAccessible(card);
             this.activateCardInteraction(card, imageContainer, closeButton);
 
             // Initial Randomization
@@ -298,6 +301,7 @@ class CardViewer {
         if (assets.length === 0) return;
 
         container.classList.add('project-media-track');
+        const cardTitle = card.querySelector('.card__title')?.textContent?.trim() || 'Project';
 
         let currentOffsetIndex = 1;
 
@@ -342,6 +346,7 @@ class CardViewer {
             } else {
                 const img = document.createElement('img');
                 img.src = asset.path;
+                img.alt = `${cardTitle} detail ${i}`;
                 img.style.width = '100%';
                 img.style.height = '100%';
                 img.style.objectFit = 'cover';
@@ -402,8 +407,29 @@ class CardViewer {
         });
     }
 
+    makeCardKeyboardAccessible(card) {
+        const title = card.querySelector('.card__title')?.textContent?.trim();
+        const label = title ? `Open project details: ${title}` : 'Open project details';
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', label);
+
+        if (card.dataset.a11yBound === 'true') return;
+
+        card.addEventListener('keydown', (e) => {
+            if (e.target && e.target.closest && e.target.closest('a')) return;
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.click();
+            }
+        });
+
+        card.dataset.a11yBound = 'true';
+    }
+
     activateCardInteraction(card, imageContainer, closeButton) {
         const self = this;
+        const expandDuration = this.prefersReducedMotion ? 0 : 800;
 
         card.addEventListener('click', (e) => {
             // Allow links to work normally
@@ -472,18 +498,22 @@ class CardViewer {
                 }
 
                 requestAnimationFrame(() => {
-                    card.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+                    card.style.transition = this.prefersReducedMotion
+                        ? 'none'
+                        : 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
                     card.style.top = '50%';
                     card.style.left = targetLeft + 'px';
                     card.style.transform = 'translateY(-50%)';
                     card.style.height = targetHeight + 'px';
                     card.style.width = targetWidth + 'px';
 
-                    setTimeout(() => {
-                        if (self.activeExpandedCard === card) {
-                            card.style.transition = 'none';
-                        }
-                    }, 800);
+                    if (expandDuration > 0) {
+                        setTimeout(() => {
+                            if (self.activeExpandedCard === card) {
+                                card.style.transition = 'none';
+                            }
+                        }, expandDuration);
+                    }
                 });
             }
         });
@@ -509,9 +539,31 @@ class CardViewer {
     closeExpanded(card) {
         if (!card.classList.contains('is-active')) return;
 
-        card.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
-
+        card.style.transition = this.prefersReducedMotion
+            ? 'none'
+            : 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
         const placeholder = document.querySelector('.card--placeholder');
+        const cleanup = () => {
+            card.style.position = '';
+            card.style.top = '';
+            card.style.left = '';
+            card.style.width = '';
+            card.style.height = '';
+            card.style.zIndex = '';
+            card.style.margin = '';
+            card.style.transform = '';
+            card.style.transition = '';
+            card.style.overflow = '';
+
+            const imgContainer = card.querySelector('.card__image');
+            if (imgContainer) imgContainer.style.flexShrink = '';
+
+            if (placeholder && placeholder.isConnected) {
+                placeholder.remove();
+            }
+            card.classList.remove('is-closing');
+        };
+
         if (placeholder) {
             const rect = placeholder.getBoundingClientRect();
 
@@ -528,29 +580,17 @@ class CardViewer {
             this.activeExpandedCard = null;
             this.activeCloseFunction = null;
 
-            card.addEventListener('transitionend', function cleanup() {
-                card.style.position = '';
-                card.style.top = '';
-                card.style.left = '';
-                card.style.width = '';
-                card.style.height = '';
-                card.style.zIndex = '';
-                card.style.margin = '';
-                card.style.transform = '';
-                card.style.transition = '';
-                card.style.overflow = '';
-
-                const imgContainer = card.querySelector('.card__image');
-                if (imgContainer) imgContainer.style.flexShrink = '';
-
-                placeholder.remove();
-                card.removeEventListener('transitionend', cleanup);
-                card.classList.remove('is-closing');
-            }, { once: true });
+            if (this.prefersReducedMotion) {
+                cleanup();
+            } else {
+                card.addEventListener('transitionend', cleanup, { once: true });
+            }
         } else {
             document.body.classList.remove('is-project-expanded');
             card.classList.remove('is-active');
             this.activeExpandedCard = null;
+            this.activeCloseFunction = null;
+            cleanup();
         }
     }
 
@@ -563,6 +603,12 @@ class CardViewer {
         window.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
         window.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
         window.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.activeExpandedCard && document.body.classList.contains('is-project-expanded')) {
+                e.preventDefault();
+                this.closeExpanded(this.activeExpandedCard);
+            }
+        });
     }
 
     handleWheel(e) {
@@ -736,15 +782,19 @@ class CardViewer {
         if (!this.activeExpandedCard) return;
 
         if (this.currentScrollX > 0) {
-            this.activeExpandedCard.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+            this.activeExpandedCard.style.transition = this.prefersReducedMotion
+                ? 'none'
+                : 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
             this.currentScrollX = 0;
             this.activeExpandedCard.style.transform = `translateY(-50%) translateX(0px)`;
 
-            setTimeout(() => {
-                if (this.activeExpandedCard && this.currentScrollX === 0) {
-                    this.activeExpandedCard.style.transition = 'none';
-                }
-            }, 500);
+            if (!this.prefersReducedMotion) {
+                setTimeout(() => {
+                    if (this.activeExpandedCard && this.currentScrollX === 0) {
+                        this.activeExpandedCard.style.transition = 'none';
+                    }
+                }, 500);
+            }
         }
     }
 

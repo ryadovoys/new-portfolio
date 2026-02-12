@@ -1,6 +1,0 @@
-feat: Enhance chat error handling and messaging
-
-- Update welcome message for clearer introduction
-- Rename system prompt filename
-- Add retry logic for API requests
-- Remove temporary commit message file

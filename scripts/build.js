@@ -6,6 +6,56 @@ const DIST_DIR = path.join(ROOT_DIR, 'dist');
 const DATA_FILE = path.join(ROOT_DIR, 'data', 'cards.json');
 const INDEX_FILE = path.join(ROOT_DIR, 'index.html');
 
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function parseAttributeString(attrs) {
+    const parsed = {};
+    const source = String(attrs || '');
+    const regex = /([^\s=]+)(?:=(["'])(.*?)\2|=([^\s"']+))?/g;
+    let match;
+
+    while ((match = regex.exec(source)) !== null) {
+        const key = match[1];
+        const quoted = match[3];
+        const unquoted = match[4];
+        parsed[key] = quoted !== undefined ? quoted : (unquoted !== undefined ? unquoted : '');
+    }
+
+    return parsed;
+}
+
+function serializeAttributes(map) {
+    return Object.entries(map)
+        .map(([key, value]) => value === '' ? key : `${key}="${escapeHtml(value)}"`)
+        .join(' ');
+}
+
+function normalizeLinkAttributes(attrs) {
+    const parsed = parseAttributeString(attrs);
+    const target = (parsed.target || '').toLowerCase();
+
+    if (target === '_blank') {
+        const tokens = new Set(
+            String(parsed.rel || '')
+                .split(/\s+/)
+                .map(t => t.trim())
+                .filter(Boolean)
+        );
+        tokens.add('noopener');
+        tokens.add('noreferrer');
+        parsed.rel = Array.from(tokens).join(' ');
+    }
+
+    return serializeAttributes(parsed);
+}
+
 // 1. Prepare Dist Directory
 if (fs.existsSync(DIST_DIR)) {
     fs.rmSync(DIST_DIR, { recursive: true, force: true });
@@ -29,6 +79,10 @@ if (fs.existsSync(DATA_FILE)) {
 function generateCardHTML(card, index) {
     const isWide = card.width === 'wide';
     const hasFolder = !!card.folder;
+    const safeTitle = escapeHtml(card.title || 'Card title');
+    const safeTag = escapeHtml(card.tag || '');
+    const safeDescription = escapeHtml(card.description || '');
+    const imageAlt = safeTitle || 'Project image';
 
     let cardClass = 'card';
     if (isWide) cardClass += ' card--wide';
@@ -45,7 +99,7 @@ function generateCardHTML(card, index) {
     else if (tagText === 'EXPERIENCE') tagClass += ' card__tag--experience';
     else if (tagText === 'EXPERIMENT') tagClass += ' card__tag--experiment';
 
-    tagHTML = `<span class="${tagClass}" data-card-index="${index}">${card.tag || ''}</span>`;
+    tagHTML = `<span class="${tagClass}" data-card-index="${index}">${safeTag}</span>`;
 
     // Media HTML
     let mediaHTML = '';
@@ -55,16 +109,18 @@ function generateCardHTML(card, index) {
     if (mediaType === 'carousel' && Array.isArray(media)) {
         // Carousel
         let slidesHTML = '';
-        media.forEach(item => {
+        media.forEach((item, mediaIndex) => {
+            const safePath = escapeHtml(item);
+            const slideAlt = `${imageAlt} slide ${mediaIndex + 1}`;
             if (item.endsWith('.mp4') || item.endsWith('.webm') || item.endsWith('.mov')) {
                 slidesHTML += `
                  <div class="carousel__slide">
-                    <video src="${item}" autoplay loop muted playsinline></video>
+                    <video src="${safePath}" autoplay loop muted playsinline></video>
                  </div>`;
             } else {
                 slidesHTML += `
                  <div class="carousel__slide">
-                    <img src="${item}" alt="">
+                    <img src="${safePath}" alt="${slideAlt}" loading="lazy" decoding="async">
                  </div>`;
             }
         });
@@ -79,15 +135,17 @@ function generateCardHTML(card, index) {
 
     } else if (mediaType === 'video' || (typeof media === 'string' && (media.endsWith('.mp4') || media.endsWith('.webm') || media.endsWith('.mov')))) {
         // Video
+        const safePath = escapeHtml(media);
         mediaHTML = `
         <div class="card__image" data-card-index="${index}">
-            <video src="${media}" autoplay loop muted playsinline></video>
+            <video src="${safePath}" autoplay loop muted playsinline></video>
         </div>`;
     } else if (media) {
         // Image
+        const safePath = escapeHtml(media);
         mediaHTML = `
         <div class="card__image" data-card-index="${index}">
-            <img src="${media}" alt="">
+            <img src="${safePath}" alt="${imageAlt}" loading="lazy" decoding="async">
         </div>`;
     } else {
         // Empty
@@ -95,18 +153,22 @@ function generateCardHTML(card, index) {
     }
 
     // Build attributes
-    const folderAttr = hasFolder ? ` data-folder="${card.folder}"` : '';
+    const folderAttr = hasFolder ? ` data-folder="${escapeHtml(card.folder)}"` : '';
+    const linkUrl = card.link ? escapeHtml(card.link.url) : '';
+    const linkText = card.link ? escapeHtml(card.link.text) : '';
+    const linkAttrs = card.link ? normalizeLinkAttributes(card.link.attributes || '') : '';
+    const linkAttrString = linkAttrs ? ` ${linkAttrs}` : '';
 
     return `
     <div class="${cardClass}"${folderAttr}>
         ${mediaHTML}
         <div class="card__content">
             <div class="card__header">
-                <h3 class="card__title" data-card-index="${index}">${card.title || 'Card title'}</h3>
+                <h3 class="card__title" data-card-index="${index}">${safeTitle}</h3>
                 ${tagHTML}
             </div>
-            <p class="card__description" data-card-index="${index}">${card.description || ''}</p>
-            ${card.link ? `<a href="${card.link.url}" class="card__link" ${card.link.attributes || ''}>${card.link.text}</a>` : ''}
+            <p class="card__description" data-card-index="${index}">${safeDescription}</p>
+            ${card.link ? `<a href="${linkUrl}" class="card__link"${linkAttrString}>${linkText}</a>` : ''}
         </div>
     </div>
     `;
@@ -126,9 +188,9 @@ html = html.replace(gridRegex, `<div class="card-grid">\n${cardsHTML}\n</div>\n 
 
 // Remove Editor Scripts & Styles
 // Remove Sortable
-html = html.replace(/<script src=".*sortable.*"><\/script>/i, '');
-// Remove card-editor.js, replace with card-viewer.js
-html = html.replace(/<script src="js\/card-editor\.js"><\/script>/, '<script src="js/card-viewer.js"></script>');
+html = html.replace(/\s*<script[^>]*src=["'][^"']*sortable[^"']*["'][^>]*>\s*<\/script>/gi, '');
+// Remove editor script with or without cache query strings
+html = html.replace(/\s*<script[^>]*src=["'][^"']*js\/card-editor\.js(?:\?[^"']*)?["'][^>]*>\s*<\/script>/gi, '');
 
 // Add card-project.css link if not present
 if (!html.includes('card-project.css')) {
@@ -137,6 +199,15 @@ if (!html.includes('card-project.css')) {
         '<link rel="stylesheet" href="css/components/card-editor.css">\n  <link rel="stylesheet" href="css/components/card-project.css">'
     );
 }
+
+// Ensure external links opened in new tabs are safe in static output.
+html = html.replace(/<a\b([^>]*?)>/gi, (full, attrs) => {
+    if (!/target\s*=\s*(['"])_blank\1/i.test(attrs) && !/target\s*=\s*_blank/i.test(attrs)) {
+        return full;
+    }
+    const normalized = normalizeLinkAttributes(attrs);
+    return `<a ${normalized}>`;
+});
 
 // Add close button for project cards (after theme toggle)
 const closeButtonHTML = `
@@ -152,6 +223,18 @@ if (!html.includes('close-button')) {
         '</button>\n\n  <div class="page">',
         `</button>\n${closeButtonHTML}\n\n  <div class="page">`
     );
+}
+
+const forbiddenInProdHtml = [
+    /js\/card-editor\.js/i,
+    /sortable(?:\.min)?\.js/i,
+    /id="addCardPlaceholder"/i
+];
+
+for (const pattern of forbiddenInProdHtml) {
+    if (pattern.test(html)) {
+        throw new Error(`Build contains forbidden production artifact: ${pattern}`);
+    }
 }
 
 // Write HTML
@@ -192,6 +275,14 @@ const assetsGridSrc = path.join(ROOT_DIR, 'assets-grid.html');
 if (fs.existsSync(assetsGridSrc)) {
     fs.copyFileSync(assetsGridSrc, path.join(DIST_DIR, 'assets-grid.html'));
 }
+
+// Copy root static files used by SEO and crawlers if they exist.
+['robots.txt', 'sitemap.xml'].forEach((filename) => {
+    const src = path.join(ROOT_DIR, filename);
+    if (fs.existsSync(src)) {
+        fs.copyFileSync(src, path.join(DIST_DIR, filename));
+    }
+});
 
 // 6. Generate JSON API Files for Static Hosting
 const ASSETS_DIR = path.join(ROOT_DIR, 'assets');

@@ -43,17 +43,16 @@
     const overlay = document.createElement('div');
     overlay.className = 'ai-chat-overlay';
     overlay.innerHTML = `
-        <div class="ai-chat__close-btn" aria-label="Close AI Chat">
+        <button type="button" class="ai-chat__close-btn" aria-label="Close AI Chat">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
-        </div>
-        <div class="ai-chat__response-area"></div>
+        </button>
+        <div class="ai-chat__response-area" aria-live="polite"></div>
         <div class="ai-chat__input-bar">
             <span class="ai-chat__prompt">&gt;</span>
             <input type="text" class="ai-chat__input" placeholder="What's on your mind?" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-        </div>
         </div>
         <div class="ai-chat__footer">
             <a href="/assets/sergey-ryadovoy-context.md" download class="ai-chat__context-link">Download Sergey's Context</a>
@@ -126,7 +125,7 @@
             if (isUser) {
                 html += `<div class="ai-chat__line ai-chat__line--user"><span class="ai-chat__prompt">&gt;</span><span class="ai-chat__content">${content}</span></div>`;
             } else {
-                html += `<div class="ai-chat__line ai-chat__line--assistant"><span class="ai-chat__avatar-wrap"><img class="ai-chat__avatar" src="/assets/terminal-me.png" alt=""></span><span class="ai-chat__content">${content}</span></div>`;
+                html += `<div class="ai-chat__line ai-chat__line--assistant"><span class="ai-chat__avatar-wrap"><img class="ai-chat__avatar" src="/assets/terminal-me.png" alt="Sergey avatar"></span><span class="ai-chat__content">${content}</span></div>`;
             }
         });
         responseEl.innerHTML = html;

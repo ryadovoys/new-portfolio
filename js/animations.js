@@ -13,6 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initScrollReveal() {
     const cards = document.querySelectorAll('.card');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+        gsap.set(cards, { opacity: 1, y: 0, clearProps: 'transform' });
+        const sidebarStatic = document.querySelector('.sidebar');
+        if (sidebarStatic) {
+            gsap.set(sidebarStatic, { opacity: 1, x: 0, clearProps: 'transform' });
+        }
+        return;
+    }
 
     // Set initial state
     gsap.set(cards, {
