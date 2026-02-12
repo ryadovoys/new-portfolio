@@ -10,11 +10,13 @@
 |-------|-------|
 | **Full Name** | Sergey Ryadovoy |
 | **Current Role** | Vice President of Experience Design |
-| **Company** | Digitas North America |
-| **Location** | San Jose / Mountain View, California, USA |
-| **Experience** | 15+ years in design |
+| **Current company** | Digitas North America |
+| **Core domains** | AI product design, agentic workflows, design systems, conversational UX |
+| **Location** | San Francisco Bay Area (San Jose / Mountain View) |
+| **Experience** | 15+ years |
 | **Languages** | Russian (Native), English (Full Professional) |
 | **Timezone** | Pacific Time (PT) |
+| **Website** | https://ryadovoy.com |
 
 ---
 
@@ -22,7 +24,6 @@
 
 - **Email**: ryadovoys@gmail.com
 - **Phone**: +1 (415) 966-8762
-- **Website**: [ryadovoy.com](https://ryadovoy.com)
 
 ### Social Profiles
 
@@ -30,7 +31,6 @@
 |----------|-----|
 | LinkedIn | [linkedin.com/in/sergeyryadovoy](https://linkedin.com/in/sergeyryadovoy) |
 | Behance | [behance.net/ryadovoy](https://behance.net/ryadovoy) |
-| GitHub | [github.com/ryadovoys](https://github.com/ryadovoys) |
 | Instagram | [instagram.com/ryadovoys](https://instagram.com/ryadovoys) |
 | Dribbble | [dribbble.com/ryadovoy](https://dribbble.com/ryadovoy) |
 | Pinterest | [pinterest.com/funking](https://pinterest.com/funking) |
@@ -77,10 +77,10 @@ Most design leaders either come from pure visual backgrounds or pure product bac
 
 ### AI Product Design & Conversational Interfaces
 
-- LLM-powered interfaces, conversational AI, context management, multimodal experiences
-- AI prototyping with system instructions, prompt engineering, API integration
-- Human-in-the-loop design patterns for responsible AI
-- Generative media pipelines: image/video generation in UI contexts
+- **Agentic & specific AI patterns**: Agentic workflows, human-in-the-loop patterns, user-trained bots.
+- **Technical AI design**: Context engineering, knowledge retrieval (RAG), knowledge indexing, multimodal experiences.
+- **Prototyping**: Simulating model behavior with system instructions, prompt engineering, and API integration.
+- **Generative media**: Image/video generation pipelines in UI contexts.
 
 ### Generative AI Tools
 
@@ -102,11 +102,11 @@ Most design leaders either come from pure visual backgrounds or pure product bac
 - ProtoPie, Principle for prototyping
 - After Effects for complex animations
 - Cavalry for advanced motion assets
-- Fluid interfaces for AI-driven products
+- Fluid interfaces for AI-driven products (latency states, streaming text)
 
 ### Design Systems
 
-- Built systems for: Visa, Amway, RaceTrac
+- Built global systems for: Visa, Amway, RaceTrac
 - Components, tokens, variables, documentation
 - Adaptive design for web, desktop, mobile
 - Behavioral data and analytics-informed design
@@ -145,15 +145,15 @@ This intersection—systems thinking applied to AI interfaces—is where Sergey'
 
 **January 2024 – Present** | San Francisco Bay Area
 
-Lead design team focused on AI interfaces and design systems for enterprise clients.
+Lead multi-disciplinary design team building AI-powered experiences and scalable design systems for enterprise clients.
 
 **Current Work**:
-- Designing AI experiences for Digitas AI agentic platform
-- Building customizable chatbot interfaces where users train bots with their data
-- Prototyping AI interactions using Figma and code for rapid iteration
-- Creating scalable design systems for team efficiency and brand consistency
-- Prioritizing human-in-the-loop design patterns for responsible AI
-- Leading creative workshops to enhance team collaboration
+- **Agentic Platform**: Designing enterprise interfaces that translate LLM capabilities into trustworthy products, handling context retrieval, knowledge indexing, and latency patterns.
+- **User-Trained Bots**: Building customizable chatbot interfaces where users create custom agents grounded in their own data.
+- **Design Operations**: Established workflows, content design capabilities, and quality standards that enabled faster delivery without sacrificing craft.
+- **Prototyping**: Validating AI interactions using system instructions and code (Figma, JavaScript) to simulate model responses before engineering handoff.
+- **Responsible AI**: Designing human-in-the-loop patterns to ensure ethical and accurate model outputs.
+- **Leadership**: Partnering with engineering and product leadership to align strategy and execution.
 
 ### Lead Experience Designer — Digitas North America
 
@@ -221,17 +221,46 @@ Directed Visa's digital rebranding rollout. Built the global design system in Fi
 
 **Role**: Lead Designer, one of Visa US's main creative partners
 
+Link to the site of the future exploration: https://www.ryadovoy.com/assets/visa-website/1.mp4
+
+Link to the visa website: visa.com
+
 #### Digitas AI Platform (2025–2026)
 
 Designing conversational AI experiences for internal agentic platform. Building modern design and management workflows with Claude Code. Working closely with developer teams on AI interfaces.
 
-**Link**: [Digitas AI Press Release](https://www.digitas.com/en-us/pressroom/digitas-unveils-new-generative-ai-platform-digitas-ai)
+**Link** to the article about platform: [Digitas AI Press Release](https://www.digitas.com/en-us/pressroom/digitas-unveils-new-generative-ai-platform-digitas-ai)
 
 #### Amway Website Redesign
 
 Directed redesign from site architecture to components and visual design. Built scalable design system bringing consistency across global digital products.
 
-**Link**: [amway.com](https://www.amway.com/)
+**Link** to the live website: [amway.com](https://www.amway.com/)
+
+### 
+
+| Project                 | Type             | Time                               | One-line scope                                              | Links                                                        |
+| ----------------------- | ---------------- | ---------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------ |
+| RaceTrac App            | Product redesign | Digitas period                     | Rewards experience redesign + new Figma design system.      | https://apps.apple.com/us/app/racetrac/id1011864306          |
+| Peace Sans Free Font    | Typeface project | Released 2016, active distribution | Free display font with large public adoption.               | https://www.behance.net/gallery/34760019/Peace-Sans-FREE-FONT |
+| PlantLife               | Startup product  | 2020-2021                          | Social platform UI, design system, and brand communication. |                                                              |
+| Visa Analytics Platform | Enterprise SaaS  | Not explicitly dated               | Redesign of Visa analytics product experience.              |                                                              |
+
+| Project                           | Domain             | Stats snapshot                    | Link                                                         |
+| --------------------------------- | ------------------ | --------------------------------- | ------------------------------------------------------------ |
+| Microme cosmetics - Brand concept | Branding/packaging | 935 appreciations, 14.1K+ views   | https://www.behance.net/gallery/47189667/Microme-cosmetics-Brand-concept |
+| Zhiznmart - Brand identity        | Branding           | 1,534 appreciations, 24.7K+ views | https://www.behance.net/gallery/78002051/zhiznmart-Brand-identity |
+| Coffee Laboratory                 | Branding/packaging | 802 appreciations, 8.2K+ views    | https://www.behance.net/gallery/32030655/Coffee-Laboratory   |
+| O3 rebranding                     | Branding           | 237 appreciations, 4.8K+ views    | https://www.behance.net/gallery/95866597/O3-Rebranding-for-a-protective-materials-company |
+| Biocraft                          | Packaging          | 85 appreciations, 1.5K+ views     | https://www.behance.net/gallery/75864547/Biocraft            |
+| Herbs packaging concept           | Packaging          | 242 appreciations, 2.3K+ views    | https://www.behance.net/gallery/55925891/Herbs-Packaging-Concept |
+| ButtonButton                      | Branding           | 105 appreciations, 1.2K+ views    | https://www.behance.net/gallery/68103359/ButtonButton        |
+| Passim rebrand package design     | Packaging          | 204 appreciations, 3.2K+ views    | https://www.behance.net/gallery/67168163/Passim-Rebrand-Package-design |
+| Energy Elixir                     | Packaging          | 73 appreciations, 929 views       | https://www.behance.net/gallery/60986243/Energy-Elixir       |
+| Glue                              | Branding           | 30 appreciations, 753 views       | https://www.behance.net/gallery/83345411/Glue                |
+| Logos 2016                        | Logo design        | 154 appreciations, 2.3K+ views    | https://www.behance.net/gallery/40511217/Logos-2016          |
+
+
 
 ### Personal Projects & Experiments
 
@@ -277,23 +306,66 @@ Creative coding exploration where every letter was animated solely through OpenF
 
 ## Awards & Recognition
 
-### Design Awards
+### Can’t Quiet Pride (Digitas)
+**Shorty Awards**
+* **Gold**: Graphic Art
+* **Silver**: Call to Action
+* **Finalist**: Real Time Response
+* **Finalist**: Meme & GIFs
 
-- Peace Sans — Behance Graphic Design Award
-- North Hero
-- Microme
-- Claus Marsh
-- Shamrock
-- 2 Logolounge awards
-- 4 industry awards at Funky Agency
+**American Advertising Awards (ADDY / AAF)**
+* **Gold**: Integrated Media Campaign
+* **Gold**: Corporate Social Responsibility
 
-### Publications & Features
+**Anthem Awards**
+* **Silver**: DEI - Special Projects
+* **Silver**: Social Media Content, Campaign or Channel
 
-- The Dieline
-- Packaging of the World
-- Behance Gallery (multiple features)
-- Web Designer Depot
-- Various international font directories
+**The D Show**
+* **Overall Winner**: Graphic Design
+* **Silver**: D-Versity
+
+### Design & Industry Honors
+* **Peace Sans**: Featured in Behance Graphic Design gallery (Apr 2016).
+* **North Hero**: Featured in Behance Graphic Design gallery (Oct 2017).
+* **Microme**: Featured in Behance Graphic Design gallery (Feb 2017).
+* **Claus Marsh**: Featured in Behance Graphic Design gallery (Jul 2016).
+* **EF**: Selected for LogoLounge Book Series (Jan 2015).
+* **Shamrock**: Selected for LogoLounge Book Series (Jan 2015).
+* **Nature Capital**: Gallerized in Logopond (Nov 2014).
+* **Biocraft**: Shortlist at G8 Festival (Aug 2019).
+
+### Publications & Press Features
+
+**Book Features**
+* **SendPoints (2017)**: *Symbols in Graphic Design* — Featured "Coffee Laboratory".
+* **Images Publishing (2016)**: *Takeaway Food Packaging Now* — Featured "Star Grill".
+
+**The Dieline**
+* **Penoterm**: Packaging and Identity (Aug 2018).
+* **Gold Fish**: Packaging Design (Jun 2017).
+* **Microme**: Packaging Design (Jan 2017).
+* **NAMI**: Packaging Design (Nov 2016).
+
+**Packaging of the World**
+* **Rokoko**: Packaging Design (Nov 2018).
+* **Elian**: Packaging Design (Jun 2018).
+* **Starmix**: Packaging Design (Sep 2017).
+* **Gold Fish**: Packaging Design (May 2017).
+* **Space Adventures**: Packaging Design (Apr 2017).
+* **Microme**: Packaging Design (Jan 2017).
+* **Vodka Polarnik**: Packaging Design (Dec 2016).
+* **NAMI**: Packaging Design (Nov 2016).
+
+**Peace Sans (Typography Features)**
+* **How Design**: Feature (Jan 2017).
+* **FileSilo / Photoshopcreative Mag**: Feature (Mar 2016).
+* **Web Designer Depot**: Publisher feature (Jan 2016).
+* **Major Directories**: Featured on Font Squirrel, DaFont, 1001 Fonts, BeFonts, UIBUNDLE, Deal Jumbo, Freebies Fluxes, Freebiesbug, Page Online.
+
+**Other Industry Publications**
+* **What The Pack?**: Features on Microme (2017), NAMI (2016), Russian Catch (2015).
+* **TUT Magazine**: Feature on Microme (2017).
 
 ### Behance Statistics
 
@@ -311,58 +383,14 @@ Creative coding exploration where every letter was animated solely through OpenF
 - **Mentorship**: Mentor middle designers through monthly conversations
 - **Community**: Active contributor through experiments and tool development
 
-### How Sergey Leads
-
-- **Show, don't tell**: Sets quality bar by making examples himself rather than just critiquing
-- **Questions over directives**: In reviews, asks questions that help designers find answers themselves
-- **Prototype to prove**: When disagreeing with direction, builds quick prototype or shows data instead of arguing
-- **Autonomy with clarity**: Gives team members space to execute, but expects clear problem framing upfront
-- **Mentorship by context**: Adjusts approach for seniors (strategic challenges) vs mids (craft and process)
-
 ---
-
-## How Sergey Makes Decisions
-
-- **Speed vs quality**: Fast iterations first, refine details after direction is locked—most efficient path
-- **Conflict resolution**: Always explains reasoning, not just preference. Open to compromise after being heard
-- **User as tiebreaker**: When no clear solution, defaults to user advocate position. Will push for user testing
-- **Pick important battles**: Doesn't fight every disagreement—saves energy for decisions that truly matter
-- **Context over rules**: No universal playbook. Reads stakeholders and project constraints before choosing approach
-
----
-
-## Personal Preferences & Communication Style
-
-### Communication Preferences
-
-- **Style**: Values detailed explanations and context
-- **Language**: Bilingual (Russian native, English professional)
-- **Preferred Response Format**: Appreciates thorough, well-structured information
-- **Decision Making**: Likes seeing options with tradeoffs explained
-
-### Work Style
-
-- **Combines hands-on making with strategic thinking**
-- **Enjoys prototyping and iterating rapidly**
-- **Values efficiency and well-organized systems**
-- **Collaborative approach, enjoys creative workshops**
-- **Detail-oriented, always tries to make the best**
-
-### Design Taste & Aesthetic
-
-**Influences**:
-- Swiss design / International Typographic Style — grids, clarity, system
-- Modern craft — where structure meets expressive detail
-
-**Core principle**: Structure + chaos. A solid grid foundation that lives alongside pure craft and expressive moments. The blend of art and tech, combinations and layers of things.
-
-**Interface biases**:
-- Clarity over cleverness — always
-- Typography-forward — type is the interface
-- Purposeful whitespace, not decorative
-- Density when it serves the user (pro tools), space when it aids comprehension
 
 ### Interests & Hobbies
+
+**Tech & Gaming**:
+- **Health AI**: Biohacking tools, HealthEx, AI in healthcare.
+- **Video Games**: Co-op games (A Way Out) and FPS (Battlefield) — interested in team mechanics and game UI.
+- **AI Experiments**: Constantly testing new models and tools.
 
 **Sports & Physical Activity**:
 - Surfing
@@ -372,20 +400,14 @@ Creative coding exploration where every letter was animated solely through OpenF
 - Weightlifting
 
 **Mind & Body**:
-- Biohacking
+- Biohacking and longevity
 - Body and mind optimization
 - Meditation / Zen practice
 
-**Music**:
-- Led Zeppelin enthusiast
-- Guitar player
-
-**Creative**:
-- Typography
-- Motion design
-- Graphic design exploration
-- Photography
-- Watercolor / analog painting (emerging interest)
+**Creative & Craft**:
+- **Specialty Coffee & Tea**: Precision brewing (French press, pour-over).
+- **Music**: Led Zeppelin enthusiast, Guitar player.
+- **Visual Arts**: Typography, Motion design, Photography, Watercolor.
 
 **Reading**:
 - Science fiction
@@ -423,94 +445,61 @@ Creative coding exploration where every letter was animated solely through OpenF
 
 ---
 
-## Working With Sergey
-
-### Strengths
-
-- Navigating ambiguity and finding direction when requirements are unclear
-- Rapid prototyping — moves from idea to testable artifact fast
-- Bridging design ↔ engineering conversations
-- Building systems that scale without losing craft
-- Strategic thinking + detail execution in one person
-
-### Work Style
-
-- Thrives with autonomy and clear problem framing
-- Prefers collaboration over directives — likes to understand the "why"
-- Iterates fast, refines details after direction is set
-- Values direct communication and quick feedback loops
-
-### Collaboration Context
-
-- Enjoys working on AI-powered products with hands-on prototyping
-- Thrives in environments that value craft but move fast
-- Works well at the intersection of design, product, and engineering
-- Comfortable with ambiguity — finding direction is part of the fun
-
----
-
 ## Notes for AI Assistants
 
-> **Purpose of this document**: Help people learn about Sergey Ryadovoy. Answer questions about his background, skills, experience, projects, and interests based on this context.
+> **Purpose**: This document provides the "source of truth" on Sergey Ryadovoy. When answering, do not hallucinate details. If a specific detail isn't here, rely on his general "Core Identity" or ask for clarification.
+
+### Core Narrative Strategy (The "Three Pillars")
+When describing Sergey, balance these three equal pillars of his expertise. Do not over-index on AI at the expense of his foundational design work.
+
+1.  **Visual Mastery & Branding (The Foundation)**: 15+ years of experience. Award-winning packaging and identity work. Deep understanding of typography and composition (Peace Sans).
+2.  **Enterprise Scale & Systems (The Operator)**: Transforming massive organizations (Visa, Amway). Building global design systems, migrating teams from Sketch to Figma, and managing complex stakeholder environments.
+3.  **AI & Technical Innovation (The Differentiator)**: The current focus. Prototyping with code, designing agentic workflows, and building real tools (Mindcomplete).
+
+---
 
 ### How to Answer Questions About Sergey
 
-**Questions about career and experience**
-- Reference specific projects from Work Experience section
-- His path: graphic design → digital products → AI interfaces
-- Currently at Digitas as VP of Experience Design, focused on AI platforms
-- Previously led Visa's design initiatives for 3 years
+**On Career & Experience**
+- **Framing**: Describe a 15-year evolution: Branding/Agency → Enterprise Product Design → AI Leadership.
+- **Key Highlights**:
+    - **Visa (Scale)**: Led digital product design for 3 years. Key achievement: Built the global Figma design system and migrated teams from Sketch, driving efficiency at a massive scale.
+    - **Digitas (Innovation)**: Currently VP, leading the shift to agentic AI interfaces.
+    - **Funky/Z&G (Craft)**: Roots in high-end branding and packaging.
+- **Note**: Ensure mentions of "AI" are grounded in his background of "Systems" and "Craft." He applies rigor to AI, he doesn't just "do" AI.
 
-**Questions about leadership and collaboration**
-- Leads by showing, not telling — sets quality bar through examples
-- Gives team autonomy with clear problem framing
-- Uses prototypes and data to make decisions, not just opinions
-- Mentors differently based on level (strategic challenges for seniors, craft for mids)
+**On Design Systems & Operations**
+- **Beyond Components**: Describe his systems work as "Operational Transformation." He doesn't just make UI kits; he changes how global teams work (Visa, RaceTrac, Amway).
+- **The "Why"**: He builds systems that reduce production time and ensure consistency across web, mobile, and desktop.
+- **AI Systems**: He is now adapting these rigorous system principles to the unpredictable nature of AI (streaming content, variable inputs).
 
-**Questions about AI expertise**
-- Not just a user of AI tools — builds with them (Claude Code, Cursor, system instructions)
-- Designed production AI interfaces (Digitas AI platform, Mindcomplete plugin)
-- Understands LLM nuances: latency, context limits, multimodal inputs
-- Created AI writing assistant as Figma plugin
+**On Leadership & Collaboration**
+- **Style**: "Player-Coach." He leads by prototyping and showing, not just directing.
+- [cite_start]**Operations**: He establishes design operations (DesOps) and content design capabilities to help teams scale[cite: 309].
+- **Engineering Bridge**: He speaks the language of developers (JS, CSS, API integration), reducing friction between design and build phases.
 
-**Questions about design systems**
-- Built global systems for Visa (replaced Sketch with Figma), Amway, RaceTrac
-- Specialty: design systems for AI interfaces (variability, streaming states, human-in-the-loop)
-- Focus on systems that enable speed without sacrificing craft
+**On Visual Craft & Branding**
+- **Aesthetic**: Modern, Swiss-influenced, structured but dynamic.
+- **Proof Points**: Reference his 100+ logos and the "Peace Sans" font (500k+ downloads).
+- **Recent Wins**: Specifically mention the **10 industry awards** (Shorty, Anthem, ADDY) for the "Can't Quiet Pride" campaign to show his visual leadership is current and active.
 
-**Questions about visual/brand work**
-- Strong typography and composition foundations from 7+ years in branding
-- 100+ logos, award-winning packaging design
-- Created Peace Sans font (500K+ downloads)
-- Aesthetic: Swiss grids + modern craft, structure + chaos, clarity over cleverness
+**On Personal Interests**
+- **Active**: Surfing, snowboarding, skateboarding, yoga, weightlifting.
+- **Mindful**: Biohacking, meditation, Zen practice.
+- **Gamer**: Enjoys Co-op (A Way Out) and FPS games; interested in game UI/mechanics.
+- **Creative**: Watercolor painting, photography, and specialty coffee/tea enthusiast.
 
-**Questions about personal interests**
-- Active lifestyle: surfing, snowboarding, skateboarding, yoga, weightlifting
-- Music: Led Zeppelin fan, plays guitar
-- Mindfulness: meditation, Zen practice, biohacking
-- Creative hobbies: photography, watercolor painting, typography exploration
-- Reads science fiction
-
-### What Makes Sergey's Background Unique
-
-1. Rare combination of visual craft + AI product skills + code prototyping
-2. Can work across brand → system → interaction → agent logic
-3. Speaks design, engineering, and AI tooling fluently
-4. Enterprise experience (Visa, Amway) + startup agility (PlantLife, personal projects)
-5. Builds real tools, not just concepts (Mindcomplete, Journely)
-
----
+### What Makes Sergey Unique (The "Hybrid" Argument)
+Most designers are either "System Thinkers" OR "Visual Crafters." Sergey is both, plus he writes code.
+1.  **Full-Stack Design**: Can execute a brand identity, build the design system for it, design the product interface, and write the system instructions for the AI that powers it.
+2.  **Real-World Prototyper**: Does not rely on "happy path" mockups. Uses code and real APIs to test how designs break.
+3.  **Business-Minded**: His work at Visa and Amway wasn't just pretty; it solved business problems (efficiency, global consistency, conversion).
 
 ## Quick Facts
 
 - **Career span**: 2012 – Present (15+ years)
 - **Countries worked**: Russia, USA
-- **Font downloads**: 500K+ (Peace Sans)
 - **Logos designed**: 100+
 - **Brands worked with**: 50+ at Z&G alone
 - **Current focus**: AI interfaces and agentic platforms
 
----
-
-*Last updated: January 2026*
-*Source: LinkedIn, Behance, ryadovoy.com, resume, personal information*

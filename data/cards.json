@@ -8,8 +8,9 @@
     "mediaType": null,
     "folder": "introduction",
     "link": {
-      "text": "Ask me anything",
-      "url": "#chat"
+      "text": "Download my context.md",
+      "url": "assets/sergey-ryadovoy-context.md",
+      "attributes": "target='_blank' rel='noopener noreferrer'"
     }
   },
   {

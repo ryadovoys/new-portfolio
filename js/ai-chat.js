@@ -12,6 +12,14 @@
     let inputText = '';
     let isLoading = false;
     let showingResponse = false;
+    let contextText = '';
+    let isContextLoading = false;
+    let contextLoadPromise = null;
+    let contextCopyResetTimer = null;
+    const CONTEXT_FILES = [
+        '/assets/sergey-ryadovoy-context-2.md',
+        '/assets/sergey-ryadovoy-context.md'
+    ];
 
     let chatHistory = [];
     let suggestionIndex = -1;
@@ -55,7 +63,7 @@
             <input type="text" class="ai-chat__input" placeholder="What's on your mind?" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
         <div class="ai-chat__footer">
-            <a href="/assets/sergey-ryadovoy-context.md" download class="ai-chat__context-link">Download Sergey's Context</a>
+            <button type="button" class="ai-chat__context-link ai-chat__context-copy">Copy Sergey's Context</button>
             <span class="ai-chat__hint">Press up or down key for suggestions</span>
         </div>
     `;
@@ -64,6 +72,7 @@
 
     const inputEl = overlay.querySelector('.ai-chat__input');
     const responseEl = overlay.querySelector('.ai-chat__response-area');
+    const contextCopyEl = overlay.querySelector('.ai-chat__context-copy');
 
     // Activate overlay (start typing)
     function activate() {
@@ -159,17 +168,105 @@
     // System prompt placeholder - will be fetched
     let SYSTEM_PROMPT = '';
 
-    // Fetch system prompt
-    fetch('/assets/sergey-ryadovoy-context.md')
-        .then(response => response.text())
-        .then(text => {
-            SYSTEM_PROMPT = text;
-        })
-        .catch(err => {
-            console.error('Failed to load system prompt:', err);
-            // Fallback prompt if fetch fails
-            SYSTEM_PROMPT = `You are Sergey Ryadovoy's digital twin. You speak in first person. You are a Design VP at Digitas.`;
-        });
+    function setContextCopyLabel(label) {
+        if (contextCopyResetTimer) {
+            clearTimeout(contextCopyResetTimer);
+            contextCopyResetTimer = null;
+        }
+        contextCopyEl.textContent = label;
+    }
+
+    function queueContextCopyLabelReset() {
+        contextCopyResetTimer = setTimeout(() => {
+            contextCopyEl.textContent = "Copy Sergey's Context";
+            contextCopyResetTimer = null;
+        }, 1800);
+    }
+
+    function fallbackCopyText(text) {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        temp.setAttribute('readonly', '');
+        temp.style.position = 'absolute';
+        temp.style.left = '-9999px';
+        document.body.appendChild(temp);
+        temp.select();
+        const copied = document.execCommand('copy');
+        document.body.removeChild(temp);
+        return copied;
+    }
+
+    async function loadContextFile() {
+        if (contextLoadPromise) return contextLoadPromise;
+
+        contextLoadPromise = (async () => {
+            if (isContextLoading) return;
+            isContextLoading = true;
+            setContextCopyLabel('Loading context...');
+
+            try {
+                for (const path of CONTEXT_FILES) {
+                    try {
+                        const response = await fetch(path);
+                        if (!response.ok) continue;
+                        const text = await response.text();
+                        if (!text || !text.trim()) continue;
+                        contextText = text;
+                        SYSTEM_PROMPT = text;
+                        setContextCopyLabel("Copy Sergey's Context");
+                        return;
+                    } catch (err) {
+                        console.warn(`Context fetch failed for ${path}:`, err);
+                    }
+                }
+
+                throw new Error('No context file could be loaded');
+            } catch (err) {
+                console.error('Failed to load context file:', err);
+                SYSTEM_PROMPT = `You are Sergey Ryadovoy's digital twin. You speak in first person. You are a Design VP at Digitas.`;
+                setContextCopyLabel('Context unavailable');
+                queueContextCopyLabelReset();
+            } finally {
+                isContextLoading = false;
+            }
+        })();
+
+        try {
+            await contextLoadPromise;
+        } finally {
+            contextLoadPromise = null;
+        }
+    }
+
+    async function copyContext() {
+        if (!contextText) {
+            await loadContextFile();
+        }
+
+        if (!contextText) {
+            setContextCopyLabel('Context unavailable');
+            queueContextCopyLabelReset();
+            return;
+        }
+
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(contextText);
+            } else {
+                const copied = fallbackCopyText(contextText);
+                if (!copied) throw new Error('Fallback copy failed');
+            }
+            setContextCopyLabel('Context copied');
+        } catch (err) {
+            console.error('Copy failed:', err);
+            setContextCopyLabel('Copy failed');
+        }
+
+        queueContextCopyLabelReset();
+    }
+
+    contextCopyEl.addEventListener('click', copyContext);
+    loadContextFile();
 
     // Send message to AI
     // Send message
