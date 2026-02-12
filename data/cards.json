@@ -24,7 +24,7 @@
   },
   {
     "title": "Digitas AI",
-    "description": "Digitas internal AI agentic orchestration platform. In Digitas I am deeply involved in building AI products for internal and client teams. From developing workflows to designing interfaces and working closely with dev team.",
+    "description": "AI\nWe built an internal platform to orchestrate AI agents for Digitas. My role covered everything from defining the workflows and designing the interface to working right alongside the developers to ship it.",
     "tag": "Project",
     "width": "regular",
     "media": "/assets/digitas-ai-agentic-platform.gif",
@@ -68,7 +68,7 @@
   },
   {
     "title": "Amway Website",
-    "description": "Directed the redesign of Amway's digital experience, from site architecture to components and visual design. Worked closely with their team to build a scalable design system that brought consistency across their global digital products.",
+    "description": "Directed the digital redesign. We looked at everything—site architecture, component libraries, visual design. The goal was to build a system that actually works across all their global products.",
     "tag": "Project",
     "width": "wide",
     "media": null,
@@ -82,7 +82,7 @@
   },
   {
     "title": "Generative Media",
-    "description": "I work with a bunch of generative tools: Google Nano Banana Pro, Midjourney, Visual Electric, Qwen for images; Kling, Wan, Sora for video. Workflows range from apps like Higgsfield to custom pipelines in ComfyUI and Weavy.",
+    "description": "I use a lot of generative tools: Google Nano Banana Pro, Midjourney, Visual Electric, Qwen for images; Kling, Wan, Sora for video. My workflows range from quick apps like Higgsfield to building custom pipelines in ComfyUI and Weavy.",
     "tag": "Skill",
     "width": "regular",
     "media": null,
@@ -135,7 +135,7 @@
     }
   },
   {
-    "title": "UI UX design",
+    "title": "UI UX",
     "description": "Led product design for Visa's global digital presence, directed redesigns for Amway, RaceTrac, Delta. Websites, apps, dashboards, design systems. Always thinking about how it looks and how it actually works.",
     "tag": "Skill",
     "width": "regular",
@@ -145,7 +145,7 @@
     "link": null
   },
   {
-    "title": "Branding and identity design",
+    "title": "Branding",
     "description": "Brand identity work across 15 years, from startups to federal brands. Logo systems, visual identities, brand guidelines. Foundation that shaped how I think about consistency and systems.",
     "tag": "Skill",
     "width": "regular",
@@ -204,7 +204,7 @@
   },
   {
     "title": "36 days of type",
-    "description": "A creative coding exploration for 36 Days of Type. Every letter was animated solely through OpenFrameworks and AI, blending algorithmic logic with artificial intelligence.",
+    "description": "Creative coding exploration. I animated every letter using OpenFrameworks and AI, trying to see how code and design could mix.",
     "tag": "Experiment",
     "width": "wide",
     "media": "/assets/36-days-of-type-creative-coding.gif",
@@ -214,7 +214,7 @@
   },
   {
     "title": "Logo design",
-    "description": "I've designed over 100 logos throughout my career, from startups to global brands. My logos have been printed on ships with containers, factories, store signs, and tons of merchandise and print productions all over the world.",
+    "description": "I've designed over 100 logos throughout my career. Seeing them printed on shipping containers, store signs, and merchandise all over the world never gets old.",
     "tag": "Skill",
     "width": "regular",
     "media": null,
@@ -224,22 +224,22 @@
   },
   {
     "title": "Packaging design",
-    "description": "Packaging taught me to think about the physical world. Materials, production, how things look on a shelf. Work featured in Dieline and Packaging of the World.",
+    "description": "Packaging design taught me to think about the physical world—materials, production, and how things actually look on a shelf. My work was featured in Dieline and Packaging of the World.",
     "tag": "Skill",
     "width": "regular",
-    "media": "/assets/packaging-design-featured.webp",
-    "mediaType": "image",
-    "folder": null,
+    "media": null,
+    "mediaType": null,
+    "folder": "packaging",
     "link": null
   },
   {
     "title": "Peace Sans Free Font",
-    "description": "Peace Sans is a free display font I designed. It reached 500K+ downloads and became one of the most popular free fonts on Behance. I wanted to give something back to the design community.",
+    "description": "Peace Sans is a free display font I designed. It reached 500K+ downloads and became one of the most popular free fonts on Behance.",
     "tag": "Project",
     "width": "regular",
-    "media": "/assets/peace-sans-font-preview.jpg",
-    "mediaType": "image",
-    "folder": null,
+    "media": null,
+    "mediaType": null,
+    "folder": "peace",
     "link": {
       "text": "Download Peace Sans",
       "url": "assets/Peace Sans.zip",
