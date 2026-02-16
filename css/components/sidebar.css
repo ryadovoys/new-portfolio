@@ -61,6 +61,13 @@
     margin-top: -12px;
     margin-left: -12px;
     transition: opacity 0.3s ease, transform 0.3s ease;
+    width: 24px;
+    height: 24px;
+}
+
+.menu-toggle__icon--menu {
+    opacity: 1;
+    transform: rotate(0);
 }
 
 .menu-toggle__icon--close {
@@ -149,25 +156,6 @@
 .sidebar__identity-link:hover::after,
 .sidebar__identity-link:focus-visible::after {
     margin-left: 0.38em;
-}
-
-.theme-toggle-text-mobile {
-    display: none;
-    margin-top: var(--space-2);
-    padding: 0;
-    border: none;
-    background: transparent;
-    font-family: inherit;
-    font-size: var(--font-size-sm);
-    line-height: var(--line-height-normal);
-    color: var(--link-color);
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.theme-toggle-text-mobile:hover {
-    color: var(--link-hover);
-    text-decoration: underline;
 }
 
 .sidebar__nav-link {
@@ -387,10 +375,6 @@
     .menu-toggle {
         display: block;
         margin-right: -8px;
-    }
-
-    .theme-toggle-text-mobile {
-        display: inline-flex;
     }
 
     /* Burger Menu Drawer */

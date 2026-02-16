@@ -1,0 +1,194 @@
+/* =================================================================
+   COMMAND PALETTE - Action Input Field
+   ================================================================= */
+
+:root,
+[data-theme="light"] {
+    --cmd-bg: rgba(255, 255, 255, 0.92);
+    --cmd-bg-hover: rgba(255, 255, 255, 0.95);
+    --cmd-border: rgba(0, 0, 0, 0.1);
+    --cmd-text: var(--color-neutral-900);
+    --cmd-text-muted: var(--color-neutral-600);
+    --cmd-suggestions-bg: rgba(255, 255, 255, 0.92);
+    --cmd-suggestion-hover: rgba(0, 0, 0, 0.06);
+    --cmd-backdrop: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] {
+    --cmd-bg: rgba(30, 30, 30, 0.95);
+    --cmd-bg-hover: rgba(40, 40, 40, 0.95);
+    --cmd-border: rgba(255, 255, 255, 0.1);
+    --cmd-text: #ffffff;
+    --cmd-text-muted: rgba(255, 255, 255, 0.5);
+    --cmd-suggestions-bg: rgba(30, 30, 30, 0.95);
+    --cmd-suggestion-hover: rgba(255, 255, 255, 0.08);
+    --cmd-backdrop: rgba(0, 0, 0, 0.25);
+}
+
+.command-palette {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 320px;
+    max-width: calc(100vw - 32px);
+}
+
+.command-palette__suggestions {
+    width: 100%;
+    background: var(--cmd-suggestions-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--cmd-border);
+    border-radius: 30px;
+    padding: 24px;
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    color: var(--cmd-text-muted);
+}
+
+.command-palette__suggestions.is-visible {
+    display: flex;
+}
+
+.command-palette__suggestion {
+    cursor: pointer;
+    transition: color 0.15s ease;
+    color: var(--cmd-text-muted);
+}
+
+.command-palette__suggestion:hover,
+.command-palette__suggestion.is-selected {
+    color: var(--cmd-text);
+}
+
+.command-palette__input-wrap {
+    width: 100%;
+    height: 60px;
+    background: var(--cmd-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 999px;
+    border: 1px solid var(--cmd-border);
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    gap: 8px;
+    transition: background 0.2s ease;
+    cursor: text;
+}
+
+.command-palette__input-wrap:hover {
+    background: var(--cmd-bg-hover);
+}
+
+.command-palette__input-wrap:focus,
+.command-palette__input-wrap:focus-visible,
+.command-palette__input-wrap:focus-within {
+    outline: none;
+    border: 1px solid var(--cmd-border);
+    box-shadow: none;
+}
+
+.command-palette__input-wrap:focus,
+.command-palette__input-wrap:focus-visible {
+    outline: none;
+    border: none;
+}
+
+.command-palette__input-wrap:hover {
+    background: var(--cmd-bg-hover);
+}
+
+
+
+.command-palette__input-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.command-palette__input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    color: var(--cmd-text);
+    padding: 0;
+}
+
+.command-palette__input:focus,
+.command-palette__input:focus-visible {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
+.command-palette__input::placeholder {
+    color: var(--cmd-text-muted);
+}
+
+.command-palette__shortcut {
+    flex-shrink: 0;
+    padding: 5px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 12px;
+    color: var(--cmd-text-muted);
+    background: transparent;
+    border: 1px solid var(--cmd-border);
+    border-radius: 4px;
+    line-height: 1;
+}
+
+.command-palette__feedback {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--cmd-suggestions-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--cmd-border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    color: var(--cmd-text);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 9999;
+}
+
+.command-palette__feedback.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+@media (max-width: 768px) {
+    .command-palette {
+        bottom: 40px;
+        width: calc(100vw - 32px);
+    }
+
+    .command-palette__input,
+    .command-palette__suggestions {
+        font-size: 16px;
+    }
+}
