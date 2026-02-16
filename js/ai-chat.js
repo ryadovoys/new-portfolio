@@ -67,7 +67,7 @@
         "Show me web design projects.",
         "What awards have you won?",
         "Tell me a joke.",
-        "Who is Snow the cat?",
+        "Who are you?",
         "What is 'mindcomplete'?",
         "Show me the VISA project.",
         "What tools do you use daily?",
@@ -640,10 +640,9 @@
             } catch (err) {
                 console.error('Failed to load context file:', err);
                 SYSTEM_PROMPT = [
-                    `You are Snow, Sergey Ryadovoy's cat and digital twin assistant.`,
-                    `Speak in first person and keep answers short, playful, helpful, and proactive.`,
-                    `Use simple childlike phrasing and occasional cat humor, but stay clear and accurate.`,
-                    `You may briefly drift topics like a cat, then return to the user's question.`,
+                    `You are Sergey Ryadovoy's digital assistant.`,
+                    `Speak in first person and keep answers short, professional, helpful, and proactive.`,
+                    `Be direct and clear in your communication.`,
                     `You are helping people learn about Sergey's work and projects.`
                 ].join(' ');
             } finally {
