@@ -15,12 +15,12 @@
 }
 
 [data-theme="dark"] {
-    --cmd-bg: rgba(30, 30, 30, 0.95);
-    --cmd-bg-hover: rgba(40, 40, 40, 0.95);
+    --cmd-bg: rgba(45, 45, 45, 0.88);
+    --cmd-bg-hover: rgba(55, 55, 55, 0.88);
     --cmd-border: rgba(255, 255, 255, 0.1);
     --cmd-text: #ffffff;
     --cmd-text-muted: rgba(255, 255, 255, 0.5);
-    --cmd-suggestions-bg: rgba(30, 30, 30, 0.95);
+    --cmd-suggestions-bg: rgba(45, 45, 45, 0.88);
     --cmd-suggestion-hover: rgba(255, 255, 255, 0.08);
     --cmd-backdrop: rgba(0, 0, 0, 0.25);
 }
@@ -45,7 +45,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--cmd-border);
-    border-radius: 30px;
+    border-radius: 36px;
     padding: 0;
     max-height: 0;
     font-family: 'Instrument Sans', sans-serif;
@@ -63,7 +63,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 24px;
+    padding: 24px 32px;
     max-height: 400px;
     overflow-y: auto;
 }
@@ -74,7 +74,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--cmd-border);
-    border-radius: 30px;
+    border-radius: 36px;
     padding: 0;
     max-height: 0;
     font-family: 'Instrument Sans', sans-serif;
@@ -93,7 +93,8 @@
     visibility: visible;
     display: flex;
     flex-direction: column;
-    padding: 24px;
+    padding: 24px 32px;
+    min-height: 72px;
     max-height: 600px;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -170,17 +171,17 @@
 
 .command-palette__input-wrap {
     width: 100%;
-    height: 60px;
+    height: 72px;
     background: var(--cmd-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-radius: 999px;
+    border-radius: 36px;
     border: 1px solid var(--cmd-border);
     outline: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
+    padding: 0 32px;
     gap: 8px;
     transition: background 0.2s ease;
     cursor: text;
