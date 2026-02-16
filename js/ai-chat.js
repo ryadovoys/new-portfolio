@@ -49,6 +49,11 @@
     };
 
     const SUGGESTED_QUESTIONS = [
+        "What you can do?",
+        "Make website in light mode.",
+        "Make website in dark mode.",
+        "Shuffle cards.",
+        "Reset playground.",
         "Who is Sergey?",
         "What is your tech stack?",
         "Show me your best projects.",
@@ -497,13 +502,7 @@
         overlay.classList.add('active');
         document.body.classList.add('ai-chat-active');
 
-        // Initial welcome message (only if history is empty)
-        if (chatHistory.length === 0) {
-            const welcomeMsg = "Hello! My name is Snow. I'm Sergey's cat. He's not home right now. Maybe I can help?";
-            chatHistory.push({ role: 'assistant', content: welcomeMsg });
-        }
-
-        // Always render history (restored or new)
+        // Always render history (restored or empty)
         renderHistory();
     }
 
@@ -591,7 +590,6 @@
         '- {"type":"set_layout_transform","scale":0.6..1.4,"rotate_deg":-20..20,"skew_deg":-20..20}',
         '- {"type":"set_token","token":"--token-name","value":"any css value"}',
         '- {"type":"set_tokens","tokens":{"--token":"value","--token-2":"value"}}',
-        '- {"type":"set_chat_height","height_vh":24..90}',
         '- {"type":"shuffle_cards"}',
         '- {"type":"chaos_mode","intensity":0..1}',
         '- {"type":"reset_playground"}',
@@ -856,20 +854,6 @@
                         return;
                     }
                     result.applied.push(`${stats.applied}/${stats.total} tokens updated`);
-                    return;
-                }
-
-                case 'set_chat_height': {
-                    const vh = clampNumber(action.height_vh ?? action.vh, CHAT_MIN_HEIGHT_RATIO * 100, CHAT_MAX_HEIGHT_RATIO * 100, null);
-                    const px = clampNumber(action.height_px ?? action.px, 120, getViewportHeight(), null);
-                    if (vh === null && px === null) {
-                        result.rejected.push('set_chat_height requires height_vh or height_px');
-                        return;
-                    }
-
-                    const nextHeightPx = vh !== null ? (getViewportHeight() * vh) / 100 : px;
-                    const finalHeight = applyChatHeight(nextHeightPx);
-                    result.applied.push(`chat height set to ${finalHeight}px`);
                     return;
                 }
 

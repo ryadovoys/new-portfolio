@@ -1,7 +1,7 @@
 # Project Intelligence & Agent Instructions
 
 ## 1. Project Overview
-**Project Name**: New Portfolio (Sergey Ryadovoy)
+**Project Name**: Portfolio (Sergey Ryadovoy)
 **Description**: A premium, "workspace-aware" personal portfolio and digital assistant for a Design Leader. It combines a high-aesthetic public portfolio with private productivity tools.
 
 ### Tech Stack

@@ -1,7 +1,7 @@
 [
   {
     "title": "About me",
-    "description": "Sergey Ryadovoy, VP of Design with 15 years across product design, branding and AI-enabled experiences. I combine visual craft, systems thinking, and hands-on collaboration with engineering.",
+    "description": "Sergey Ryadovoy, VP of Design with strong visual design foundations, technical depth and product thinking. 15 years in design and leadership across different categories, from branding and visual design to product design and AI integration.",
     "tag": "Personal",
     "width": "regular",
     "media": null,
@@ -52,9 +52,9 @@
     "description": "Worked with many global brands like Visa, Sephora, Delta, Amway, Mondelez, L'Oreal, RaceTrac. Everything from products and interfaces to global campaigns and immersive experiences.",
     "tag": "Experience",
     "width": "regular",
-    "media": null,
-    "mediaType": null,
-    "folder": "global-brands-logos-of-brands-i-worked-with",
+    "media": "/assets/sephora.gif",
+    "mediaType": "image",
+    "folder": null,
     "link": null
   },
   {
@@ -170,9 +170,9 @@
     "description": "Journely is an iPad app exploring handwriting-first conversational journaling. I created it as an experiment in more natural AI interaction, blending handwritten input with conversational intelligence.",
     "tag": "Project",
     "width": "wide",
-    "media": null,
-    "mediaType": null,
-    "folder": "journely-journaling-with-ai-app",
+    "media": "/assets/journely-ipad-app-preview.jpg",
+    "mediaType": "image",
+    "folder": null,
     "link": {
       "text": "Download on iPad",
       "url": "https://apps.apple.com/us/app/journely/id6744461713",
@@ -194,9 +194,9 @@
     "description": "A full redesign of the RaceTrac app, including a complete interface overhaul, a rebuilt rewards experience, and a new design system. I was the Lead Designer on both the pitch design that won the project and the product redesign execution.",
     "tag": "Project",
     "width": "regular",
-    "media": null,
-    "mediaType": null,
-    "folder": "race-track-app-project",
+    "media": "/assets/prototyping-figma-demo.gif",
+    "mediaType": "image",
+    "folder": null,
     "link": {
       "text": "Download on iPhone",
       "url": "https://apps.apple.com/us/app/racetrac/id1011864306",
