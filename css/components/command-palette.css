@@ -330,4 +330,8 @@
     .command-palette__response {
         font-size: 16px;
     }
+
+    .command-palette__shortcut {
+        display: none;
+    }
 }
