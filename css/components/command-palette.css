@@ -34,7 +34,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     width: 320px;
     max-width: calc(100vw - 32px);
 }
@@ -46,23 +46,121 @@
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--cmd-border);
     border-radius: 30px;
-    padding: 24px;
-    display: none;
-    flex-direction: column;
-    gap: 16px;
+    padding: 0;
+    max-height: 0;
     font-family: 'Instrument Sans', sans-serif;
     font-size: 14px;
     color: var(--cmd-text-muted);
+    opacity: 0;
+    display: none;
+    transition: opacity 0.15s ease, padding 0.15s ease, max-height 0.15s ease;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .command-palette__suggestions.is-visible {
+    opacity: 1;
     display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.command-palette__response {
+    width: 100%;
+    background: var(--cmd-suggestions-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--cmd-border);
+    border-radius: 30px;
+    padding: 0;
+    max-height: 0;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--cmd-text);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s, padding 0.15s ease, max-height 0.15s ease;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.command-palette__response.is-visible {
+    opacity: 1;
+    visibility: visible;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    max-height: 600px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.command-palette__response::-webkit-scrollbar {
+    width: 6px;
+}
+
+.command-palette__response::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.command-palette__response::-webkit-scrollbar-thumb {
+    background: var(--cmd-border);
+    border-radius: 3px;
+}
+
+.command-palette__response-content {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+    padding: 0;
+}
+
+.command-palette__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+}
+
+.command-palette__loading-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cmd-text-muted);
+    animation: cmd-pulse 1.2s ease-in-out infinite;
+}
+
+.command-palette__loading-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.command-palette__loading-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes cmd-pulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .command-palette__suggestion {
     cursor: pointer;
     transition: color 0.15s ease;
     color: var(--cmd-text-muted);
+    margin: 0;
+    padding: 0;
 }
 
 .command-palette__suggestion:hover,
@@ -99,18 +197,6 @@
     border: 1px solid var(--cmd-border);
     box-shadow: none;
 }
-
-.command-palette__input-wrap:focus,
-.command-palette__input-wrap:focus-visible {
-    outline: none;
-    border: none;
-}
-
-.command-palette__input-wrap:hover {
-    background: var(--cmd-bg-hover);
-}
-
-
 
 .command-palette__input-area {
     display: flex;
@@ -153,6 +239,57 @@
     border: 1px solid var(--cmd-border);
     border-radius: 4px;
     line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.command-palette__shortcut:hover {
+    color: var(--cmd-text);
+    border-color: var(--cmd-text-muted);
+}
+
+
+
+.command-palette__shortcut svg {
+    width: 14px;
+    height: 14px;
+}
+
+.command-palette__clear {
+    flex-shrink: 0;
+    padding: 5px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 12px;
+    color: var(--cmd-text-muted);
+    background: transparent;
+    border: 1px solid var(--cmd-border);
+    border-radius: 4px;
+    line-height: 1;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.command-palette__clear.is-visible {
+    display: flex;
+}
+
+.command-palette__clear:hover {
+    color: var(--cmd-text);
+    border-color: var(--cmd-text-muted);
+}
+
+.command-palette__shortcut.is-hidden {
+    display: none;
 }
 
 .command-palette__feedback {
@@ -188,7 +325,8 @@
     }
 
     .command-palette__input,
-    .command-palette__suggestions {
+    .command-palette__suggestions,
+    .command-palette__response {
         font-size: 16px;
     }
 }
