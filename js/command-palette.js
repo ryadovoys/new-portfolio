@@ -13,7 +13,8 @@
         'Show only skills',
         'Show only experience',
         'Show only experiments',
-        'Show all cards'
+        'Show all cards',
+        'Download Context'
     ];
 
     const CORE_CONTEXT_FILE = '/assets/sergey-ryadovoy-context.md';
@@ -388,12 +389,15 @@
         selectedIndex = -1;
     }
 
-    async function sendToAI(message) {
+    async function sendToAI(message, isSpecialPrompt = false) {
         if (isLoading) return;
         isLoading = true;
         showLoading();
 
-        chatHistory.push({ role: 'user', content: message });
+        // Only add to visible chat history if not a special prompt
+        if (!isSpecialPrompt) {
+            chatHistory.push({ role: 'user', content: message });
+        }
 
         try {
             const response = await fetch('/api/ai-chat', {
@@ -436,6 +440,14 @@
         input.value = '';
 
         await loadContextFile();
+
+        // Handle special suggestions
+        if (commandText === 'Download Context') {
+            const downloadPrompt = `Provide a download link for Sergey's context file. Reply with: "Here is a full context about Sergey in markdown format that is easy to read for any LLM. [Download Context.md](/assets/sergey-ryadovoy-context.md)". Make "Download Context.md" underlined to indicate it's a link.`;
+            await sendToAI(downloadPrompt, true);
+            return;
+        }
+
         await sendToAI(commandText);
     }
 
