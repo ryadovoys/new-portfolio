@@ -938,6 +938,13 @@ class CardViewer {
             // Allow links to work normally
             if (e.target.closest('a')) return;
 
+            // Article view for cards with article data
+            if (card._articleData) {
+                e.stopPropagation();
+                this.openArticleView(card);
+                return;
+            }
+
             // Disable expansion on mobile for projects with layers
             if (window.innerWidth <= 768 && card.querySelectorAll('.project-layer').length > 0) {
                 return;
@@ -1102,6 +1109,109 @@ class CardViewer {
         }
 
         this.updateAllCardVideoPlayback();
+    }
+
+    // =================================================================
+    // ARTICLE VIEW
+    // =================================================================
+
+    openArticleView(card) {
+        const article = card._articleData;
+        if (!article) return;
+
+        const overlay = document.getElementById('articleOverlay');
+        if (!overlay) return;
+
+        const title = card.querySelector('.card__title')?.textContent?.trim() || 'Project';
+        const assetsBase = 'assets/';
+
+        // Build hero
+        let heroHTML = '';
+        if (article.hero) {
+            const heroSrc = assetsBase + article.hero;
+            if (article.heroType === 'video') {
+                heroHTML = `<div class="article-hero"><video src="${heroSrc}" autoplay loop muted playsinline></video></div>`;
+            } else {
+                heroHTML = `<div class="article-hero"><img src="${heroSrc}" alt="${title}"></div>`;
+            }
+        }
+
+        // Build blocks
+        let blocksHTML = '';
+        for (const block of article.blocks) {
+            const [type, value] = block;
+            if (type === 'text') {
+                blocksHTML += `<p class="article-block--text">${value}</p>`;
+            } else if (type === 'section') {
+                blocksHTML += `<h2 class="article-block--section">${value}</h2>`;
+            } else if (type === 'image' && article.images && article.images[value] != null) {
+                const src = assetsBase + article.images[value];
+                const isVideo = /\.(mp4|webm|mov)$/i.test(src);
+                if (isVideo) {
+                    blocksHTML += `<div class="article-block--image"><video src="${src}" autoplay loop muted playsinline></video></div>`;
+                } else {
+                    blocksHTML += `<div class="article-block--image"><img src="${src}" alt="${title}"></div>`;
+                }
+            }
+        }
+
+        // Tags
+        let tagsHTML = '';
+        if (article.tags && article.tags.length > 0) {
+            tagsHTML = `<div class="article-tags">${article.tags.map(t => `<span class="article-tag">${t}</span>`).join('')}</div>`;
+        }
+
+        overlay.innerHTML = `
+            <button class="article-overlay__close" aria-label="Close article">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            ${heroHTML}
+            <div class="article-body">
+                <div class="article-header">
+                    <div class="article-meta">${title}</div>
+                    <h1 class="article-headline">${article.headline || title}</h1>
+                    ${tagsHTML}
+                </div>
+                ${blocksHTML}
+            </div>
+        `;
+
+        // Open
+        overlay.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        this._articleOverlayOpen = true;
+
+        // Prevent Lenis from intercepting scroll on the overlay
+        overlay.addEventListener('wheel', (e) => e.stopPropagation(), { passive: false });
+
+        // Close handlers
+        const closeArticle = () => {
+            overlay.classList.remove('is-open');
+            document.body.style.overflow = '';
+            this._articleOverlayOpen = false;
+
+            // Pause videos
+            overlay.querySelectorAll('video').forEach(v => v.pause());
+
+            setTimeout(() => {
+                overlay.innerHTML = '';
+            }, 400);
+        };
+
+        overlay.querySelector('.article-overlay__close').addEventListener('click', closeArticle);
+
+        // Escape key
+        const escHandler = (e) => {
+            if (e.key === 'Escape' && this._articleOverlayOpen) {
+                e.preventDefault();
+                closeArticle();
+                window.removeEventListener('keydown', escHandler);
+            }
+        };
+        window.addEventListener('keydown', escHandler);
     }
 
     // =================================================================

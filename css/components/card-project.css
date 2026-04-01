@@ -82,7 +82,7 @@ body.is-project-expanded {
 }
 
 body.is-project-expanded .card-grid>.card:not(.is-active),
-body.is-project-expanded .sidebar,
+body.is-project-expanded .top-nav,
 body.is-project-expanded .theme-toggle {
     opacity: 0 !important;
     visibility: hidden;

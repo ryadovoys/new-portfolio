@@ -21,7 +21,33 @@
     "media": null,
     "mediaType": null,
     "folder": "visa-website",
-    "link": null
+    "link": null,
+    "article": {
+      "headline": "One design system for six continents",
+      "tags": ["Design System", "Figma", "50+ Pages", "Global Scale"],
+      "hero": "visa-website/1.mp4",
+      "heroType": "video",
+      "images": [
+        "visa-design-system.jpg",
+        "visa-website/3.mp4",
+        "visa-website/8.mp4"
+      ],
+      "blocks": [
+        ["text", "When Visa unveiled its 2021 brand refresh, the question was never whether the new identity looked good on a slide deck. The question was whether it could survive contact with 200+ product teams shipping across six continents. I joined as Lead Designer to make sure it did."],
+        ["section", "Killing Sketch, One Token at a Time"],
+        ["text", "The legacy system was a patchwork of Sketch files maintained by regional teams who rarely talked to each other. Tokyo's button had 16px padding. London's had 12px. New York had both. We migrated everything to Figma, but the migration was never the hard part. The hard part was convincing people that a single source of truth was worth the pain of changing how they worked."],
+        ["image", 0],
+        ["section", "Components That Teach Themselves"],
+        ["text", "We built every component with embedded usage guidelines directly in the Figma file. Hover over a button variant and you'd see when to use it, when not to, and which accessibility requirements it satisfied. This reduced design review cycles by roughly 40% in the first quarter after rollout."],
+        ["image", 1],
+        ["section", "Fifty Pages, One Campaign Season"],
+        ["text", "During the FIFA World Cup partnership, we shipped 54 landing pages in eleven languages across eight weeks. Each page shared a layout system but needed to feel locally relevant. The design system made this possible."],
+        ["text", "I designed the template architecture — a flexible grid of interchangeable content blocks that marketing teams could assemble without touching Figma. They'd fill a spreadsheet, and the dev team would generate the page."],
+        ["image", 2],
+        ["section", "What I Learned"],
+        ["text", "Design systems are political projects disguised as technical ones. The hardest conversations weren't about border-radius values. They were about whose opinion gets encoded into the default, and who has to override it."]
+      ]
+    }
   },
   {
     "title": "Digitas AI",

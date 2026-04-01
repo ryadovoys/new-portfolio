@@ -129,6 +129,11 @@ class CardEditor {
             cardEl.dataset.folder = data.folder;
         }
 
+        // Store article data for case-study view
+        if (data.article) {
+            cardEl._articleData = data.article;
+        }
+
         // Build HTML structure
         cardEl.innerHTML = `
           <div class="card__image"></div>
