@@ -3,5 +3,9 @@
     "buildCommand": "npm run build",
     "outputDirectory": "dist",
     "framework": null,
-    "trailingSlash": false
+    "trailingSlash": false,
+    "rewrites": [
+        { "source": "/case-studies", "destination": "https://case-studies-drab.vercel.app/" },
+        { "source": "/case-studies/:path*", "destination": "https://case-studies-drab.vercel.app/:path*" }
+    ]
 }
